@@ -1,13 +1,8 @@
 ARG PYTHON_VERSION=3.14
 
-FROM oven/bun:1 AS dashboard-builder
-WORKDIR /dashboard
-COPY dashboard/package.json dashboard/bun.lock ./
-RUN bun install
-COPY dashboard/ ./
-ENV VITE_BASE_API=/
-RUN bun run build && cp ./build/index.html ./build/404.html
-
+# The dashboard is built once by CI (build.yml / build-dev.yml) and downloaded
+# into dashboard/build before this image is built. Keep the Docker build focused
+# on the Python application so the frontend dependency graph is not rebuilt twice.
 FROM ghcr.io/astral-sh/uv:python$PYTHON_VERSION-bookworm-slim AS builder
 ENV UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy
 
@@ -22,9 +17,9 @@ ENV UV_PYTHON_DOWNLOADS=0
 
 WORKDIR /build
 ADD . /build
-COPY --from=dashboard-builder /dashboard/build /build/dashboard/build
+RUN test -f /build/dashboard/build/index.html
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --no-dev
+    uv sync --frozen --no-dev
 
 FROM python:$PYTHON_VERSION-slim-bookworm
 
