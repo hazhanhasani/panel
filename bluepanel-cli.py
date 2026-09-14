@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """
 BluePanel CLI Wrapper
 This script provides the command-line entry point for BluePanel.
