@@ -13,8 +13,8 @@ interface NodeReleaseResult {
   hasUpdate: (currentVersion: string | null) => boolean
 }
 
-const GITHUB_API_URL = 'https://api.github.com/repos/PasarGuard/node/releases/latest'
-const CACHE_KEY = 'pg_node_release'
+const GITHUB_API_URL = 'https://api.github.com/repos/hazhanhasani/node/releases/latest'
+const CACHE_KEY = 'bluepanel_node_release'
 const CACHE_DURATION = 10 * 60 * 1000
 
 function compareVersions(current: string, latest: string): number {
@@ -89,7 +89,7 @@ async function fetchLatestNodeRelease(): Promise<{ version: string; url: string 
 
 export function useNodeReleases(): NodeReleaseResult {
   const { data, isLoading } = useQuery({
-    queryKey: ['github-node-release-check'],
+    queryKey: ['bluepanel-node-release-check'],
     queryFn: fetchLatestNodeRelease,
     staleTime: CACHE_DURATION,
     gcTime: CACHE_DURATION * 2,
