@@ -1,6 +1,6 @@
 import asyncio
 
-from PasarGuardNodeBridge import PasarGuardNode
+from BluePanelNodeBridge import BluePanelNode
 
 from app import scheduler
 from app.db import GetDB
@@ -12,7 +12,7 @@ from config import job_settings, runtime_settings, usage_settings
 logger = get_logger("jobs")
 
 
-async def get_stat(id: int, node: PasarGuardNode) -> NodeStat:
+async def get_stat(id: int, node: BluePanelNode) -> NodeStat:
     try:
         stats = await node.get_system_stats()
     except Exception:
