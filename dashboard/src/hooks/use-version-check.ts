@@ -18,8 +18,8 @@ interface UseVersionCheckOptions {
   enabled?: boolean
 }
 
-const GITHUB_API_URL = 'https://api.github.com/repos/PasarGuard/panel/releases/latest'
-const CACHE_KEY = 'pg_release'
+const GITHUB_API_URL = 'https://api.github.com/repos/hazhanhasani/panel/releases/latest'
+const CACHE_KEY = 'bluepanel_release'
 const CACHE_DURATION = 10 * 60 * 1000
 
 function compareVersions(current: string, latest: string): number {
@@ -85,7 +85,7 @@ async function fetchLatestRelease(): Promise<{ version: string; url: string } | 
 export function useVersionCheck(currentVersion: string | null, options: UseVersionCheckOptions = {}): VersionCheckResult {
   const enabled = options.enabled ?? true
   const { data, isLoading } = useQuery({
-    queryKey: ['github-release-check'],
+    queryKey: ['bluepanel-release-check'],
     queryFn: fetchLatestRelease,
     enabled,
     staleTime: CACHE_DURATION,
