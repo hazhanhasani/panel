@@ -13,8 +13,9 @@ import { useSystemVersion } from '@/hooks/use-system-version'
 import { useAdmin } from '@/hooks/use-admin'
 import { isOwner } from '@/utils/rbac'
 
-const VERSION_BANNER_STORAGE_KEY = 'version_update_banner_closed'
+const VERSION_BANNER_STORAGE_KEY = 'bluepanel_version_update_banner_closed'
 const HOURS_TO_HIDE = 24
+const UPDATE_COMMAND = 'bluepanel update'
 
 interface BannerStorage {
   timestamp: number
@@ -51,42 +52,28 @@ export function VersionUpdateBanner() {
         const stored = localStorage.getItem(VERSION_BANNER_STORAGE_KEY)
         let bannerData: BannerStorage | null = null
 
-        if (stored) {
-          bannerData = JSON.parse(stored)
-        }
+        if (stored) bannerData = JSON.parse(stored)
 
-        // If user closed for a different version, show again
         if (bannerData && bannerData.version !== latestVersion) {
           setIsVisible(true)
-          setTimeout(() => {
-            setIsAnimating(true)
-          }, 100)
+          setTimeout(() => setIsAnimating(true), 100)
           return
         }
 
         if (!bannerData) {
           setIsVisible(true)
-          setTimeout(() => {
-            setIsAnimating(true)
-          }, 100)
+          setTimeout(() => setIsAnimating(true), 100)
           return
         }
 
-        const now = Date.now()
-        const hoursSinceClose = (now - bannerData.timestamp) / (1000 * 60 * 60)
-
+        const hoursSinceClose = (Date.now() - bannerData.timestamp) / (1000 * 60 * 60)
         if (hoursSinceClose >= HOURS_TO_HIDE) {
           setIsVisible(true)
-          setTimeout(() => {
-            setIsAnimating(true)
-          }, 100)
+          setTimeout(() => setIsAnimating(true), 100)
         }
-      } catch (error) {
-        // If parsing fails, show the banner
+      } catch {
         setIsVisible(true)
-        setTimeout(() => {
-          setIsAnimating(true)
-        }, 100)
+        setTimeout(() => setIsAnimating(true), 100)
       }
     }
 
@@ -99,28 +86,23 @@ export function VersionUpdateBanner() {
     setIsClosing(true)
 
     if (latestVersion) {
-      const bannerData: BannerStorage = {
-        timestamp: Date.now(),
-        version: latestVersion,
-      }
+      const bannerData: BannerStorage = { timestamp: Date.now(), version: latestVersion }
       localStorage.setItem(VERSION_BANNER_STORAGE_KEY, JSON.stringify(bannerData))
     }
 
-    setTimeout(() => {
-      setIsVisible(false)
-    }, 300)
+    setTimeout(() => setIsVisible(false), 300)
   }
 
   const handleCopyCommand = async (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
-    await copy('pasarguard update')
+    await copy(UPDATE_COMMAND)
     toast.success(t('usersTable.copied'))
   }
 
   if (!isOwnerAdmin || isLoading || !hasUpdate || !isVisible || !latestVersion || !normalizedVersion) return null
 
-  const releaseLink = releaseUrl || 'https://github.com/PasarGuard/panel/releases/latest'
+  const releaseLink = releaseUrl || 'https://github.com/hazhanhasani/panel/releases/latest'
 
   return (
     <div
@@ -159,7 +141,7 @@ export function VersionUpdateBanner() {
                 onClick={handleCopyCommand}
                 title={t('copy')}
               >
-                pasarguard update
+                {UPDATE_COMMAND}
               </code>
             </div>
           </div>
