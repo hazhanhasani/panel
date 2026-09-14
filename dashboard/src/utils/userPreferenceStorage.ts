@@ -5,34 +5,33 @@ export const CORE_EDITOR_VIEW_MODE_STORAGE_KEY = 'view-mode:core-editor-lists'
 
 export const DEFAULT_CORE_EDITOR_VIEW_MODE: CoreEditorViewMode = 'list'
 
-const NUM_USERS_PER_PAGE_LOCAL_STORAGE_KEY = 'pasarguard-num-users-per-page'
-const NUM_ADMINS_PER_PAGE_LOCAL_STORAGE_KEY = 'pasarguard-num-admins-per-page'
+const NUM_USERS_PER_PAGE_LOCAL_STORAGE_KEY = 'bluepanel-num-users-per-page'
+const NUM_ADMINS_PER_PAGE_LOCAL_STORAGE_KEY = 'bluepanel-num-admins-per-page'
 const NUM_ITEMS_PER_PAGE_DEFAULT = 10
 
-const USERS_AUTO_REFRESH_INTERVAL_KEY = 'pasarguard-users-auto-refresh-interval'
+const USERS_AUTO_REFRESH_INTERVAL_KEY = 'bluepanel-users-auto-refresh-interval'
 const DEFAULT_USERS_AUTO_REFRESH_INTERVAL_SECONDS = 15
-const USERS_SHOW_CREATED_BY_KEY = 'pasarguard-users-show-created-by'
+const USERS_SHOW_CREATED_BY_KEY = 'bluepanel-users-show-created-by'
 const DEFAULT_USERS_SHOW_CREATED_BY = true
-const USERS_SHOW_SELECTION_CHECKBOX_KEY = 'pasarguard-users-show-selection-checkbox'
+const USERS_SHOW_SELECTION_CHECKBOX_KEY = 'bluepanel-users-show-selection-checkbox'
 const DEFAULT_USERS_SHOW_SELECTION_CHECKBOX = true
-const CHART_VIEW_TYPE_KEY = 'pasarguard-chart-view-type'
+const CHART_VIEW_TYPE_KEY = 'bluepanel-chart-view-type'
 
-const CORES_LIST_USE_CONFIG_MODAL_KEY = 'pasarguard-cores-list-use-config-modal'
+const CORES_LIST_USE_CONFIG_MODAL_KEY = 'bluepanel-cores-list-use-config-modal'
 const DEFAULT_CORES_LIST_USE_CONFIG_MODAL = false
 
-export const DATE_PICKER_PREFERENCE_KEY = 'pasarguard-date-picker-preference'
+export const DATE_PICKER_PREFERENCE_KEY = 'bluepanel-date-picker-preference'
 export type DatePickerPreference = 'locale' | 'gregorian' | 'persian'
 const DEFAULT_DATE_PICKER_PREFERENCE: DatePickerPreference = 'locale'
 
-export const CHART_VIEW_TYPE_CHANGE_EVENT = 'pasarguard-chart-view-type-change'
+export const CHART_VIEW_TYPE_CHANGE_EVENT = 'bluepanel-chart-view-type-change'
 export type ChartViewType = 'bar' | 'area'
 const DEFAULT_CHART_VIEW_TYPE: ChartViewType = 'bar'
 
-// Generic function for any table type
 export const getItemsPerPageLimitSize = (tableType: 'users' | 'admins' = 'users') => {
   const storageKey = tableType === 'users' ? NUM_USERS_PER_PAGE_LOCAL_STORAGE_KEY : NUM_ADMINS_PER_PAGE_LOCAL_STORAGE_KEY
-  const numItemsPerPage = (typeof localStorage !== 'undefined' && localStorage.getItem(storageKey)) || NUM_ITEMS_PER_PAGE_DEFAULT.toString() // this catches `null` values
-  return parseInt(numItemsPerPage) || NUM_ITEMS_PER_PAGE_DEFAULT // this catches NaN values
+  const numItemsPerPage = (typeof localStorage !== 'undefined' && localStorage.getItem(storageKey)) || NUM_ITEMS_PER_PAGE_DEFAULT.toString()
+  return parseInt(numItemsPerPage) || NUM_ITEMS_PER_PAGE_DEFAULT
 }
 
 export const setItemsPerPageLimitSize = (value: string, tableType: 'users' | 'admins' = 'users') => {
@@ -40,7 +39,6 @@ export const setItemsPerPageLimitSize = (value: string, tableType: 'users' | 'ad
   return typeof localStorage !== 'undefined' && localStorage.setItem(storageKey, value)
 }
 
-// Legacy functions for backward compatibility
 export const getUsersPerPageLimitSize = () => getItemsPerPageLimitSize('users')
 export const setUsersPerPageLimitSize = (value: string) => setItemsPerPageLimitSize(value, 'users')
 
