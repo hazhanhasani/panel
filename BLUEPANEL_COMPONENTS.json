@@ -23,7 +23,7 @@
     "python_bridge": {
       "repository": "hazhanhasani/node_bridge_py",
       "branch": "main",
-      "revision": "576b5f4fd8ba24683ceac51368e4e2de2f6b5d63",
+      "revision": "ca9fc57fce45dcb013fcf52c81ff5c1ae9a5e2d0",
       "package": "bluepanel-node-bridge",
       "public_import": "BluePanelNodeBridge",
       "version": "0.10.0"
