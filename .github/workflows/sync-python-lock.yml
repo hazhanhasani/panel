@@ -1,0 +1,51 @@
+name: Sync BluePanel Python Lock
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - pyproject.toml
+      - .github/workflows/sync-python-lock.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  lock:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.14'
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+
+      - name: Refresh lockfile
+        run: uv lock
+
+      - name: Validate frozen dependency graph
+        run: uv sync --frozen --no-install-project --no-dev
+
+      - name: Verify BluePanel bridge import
+        run: uv run --frozen python -c "from BluePanelNodeBridge import BluePanelNode, Health, NodeType, create_node; print('BluePanelNodeBridge OK')"
+
+      - name: Commit lockfile
+        run: |
+          if git diff --quiet -- uv.lock; then
+            echo "uv.lock already synchronized"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add uv.lock
+          git commit -m "chore: sync BluePanel Python dependency lock"
+          git push
