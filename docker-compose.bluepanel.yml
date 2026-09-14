@@ -1,6 +1,9 @@
 services:
   bluepanel:
-    image: ghcr.io/hazhanhasani/bluepanel:latest
+    build:
+      context: ./source
+      dockerfile: Dockerfile
+    image: bluepanel:local
     restart: always
     env_file: .env
     network_mode: host
