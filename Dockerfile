@@ -13,6 +13,7 @@ ENV UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc \
+    git \
     python3-dev \
     libc6-dev \
     && rm -rf /var/lib/apt/lists/*
@@ -20,9 +21,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 ENV UV_PYTHON_DOWNLOADS=0
 
 WORKDIR /build
-COPY pyproject.toml uv.lock README.md ./
-RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --no-install-project --no-dev
 ADD . /build
 COPY --from=dashboard-builder /dashboard/build /build/dashboard/build
 RUN --mount=type=cache,target=/root/.cache/uv \
