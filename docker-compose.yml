@@ -1,8 +1,11 @@
 services:
-  pasarguard:
-    image: pasarguard/panel:latest
+  bluepanel:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: bluepanel:local
     restart: always
     env_file: .env
     network_mode: host
     volumes:
-      - /var/lib/pasarguard:/var/lib/pasarguard
+      - /var/lib/bluepanel:/var/lib/bluepanel
