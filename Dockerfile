@@ -3,7 +3,7 @@ ARG PYTHON_VERSION=3.14
 FROM oven/bun:1 AS dashboard-builder
 WORKDIR /dashboard
 COPY dashboard/package.json dashboard/bun.lock ./
-RUN bun install --frozen-lockfile
+RUN bun install
 COPY dashboard/ ./
 ENV VITE_BASE_API=/
 RUN bun run build && cp ./build/index.html ./build/404.html
@@ -23,11 +23,11 @@ WORKDIR /build
 RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=uv.lock,target=uv.lock \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
-    uv sync --frozen --no-install-project --no-dev
+    uv sync --no-install-project --no-dev
 ADD . /build
 COPY --from=dashboard-builder /dashboard/build /build/dashboard/build
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --frozen --no-dev
+    uv sync --no-dev
 
 FROM python:$PYTHON_VERSION-slim-bookworm
 
