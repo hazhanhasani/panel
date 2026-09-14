@@ -4,11 +4,10 @@ import { FC } from 'react'
 const FooterContent = () => {
   return (
     <p className="text-muted-foreground inline-block flex-grow text-center text-xs">
-      Made with ❤️ by &nbsp;
-      <a className="text-primary hover:underline" href={REPO_URL}>
-        PasarGuard
-      </a>{' '}
-      Team
+      BluePanel&nbsp;
+      <a className="text-primary hover:underline" href={REPO_URL} target="_blank" rel="noopener noreferrer">
+        GitHub
+      </a>
     </p>
   )
 }
