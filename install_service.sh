@@ -1,13 +1,12 @@
 #!/bin/bash
 
-SERVICE_NAME="pasarguard"
-SERVICE_DESCRIPTION="PasarGuard Service"
-SERVICE_DOCUMENTATION="https://github.com/pasarguard/panel"
+SERVICE_NAME="bluepanel"
+SERVICE_DESCRIPTION="BluePanel Service"
+SERVICE_DOCUMENTATION="https://github.com/hazhanhasani/panel"
 MAIN_PY_PATH="$PWD/main.py"
 SERVICE_FILE="/etc/systemd/system/$SERVICE_NAME.service"
 
-# Create the service file
-cat > $SERVICE_FILE <<EOF
+cat > "$SERVICE_FILE" <<EOF
 [Unit]
 Description=$SERVICE_DESCRIPTION
 Documentation=$SERVICE_DOCUMENTATION
@@ -24,4 +23,4 @@ EOF
 
 systemctl daemon-reload
 
-echo "Service file created at: $SERVICE_FILE"
+echo "BluePanel service file created at: $SERVICE_FILE"
