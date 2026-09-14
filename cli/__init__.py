@@ -1,7 +1,7 @@
 """
-PasarGuard CLI Package
+BluePanel CLI Package
 
-A modern, type-safe CLI built with Typer for managing PasarGuard instances.
+A modern, type-safe CLI built with Typer for managing BluePanel instances.
 """
 
 from pydantic import ValidationError
@@ -11,7 +11,6 @@ from rich.table import Table
 from app.operation import OperatorType
 from app.operation.admin import AdminOperation
 
-# Initialize console for rich output
 console = Console()
 
 
