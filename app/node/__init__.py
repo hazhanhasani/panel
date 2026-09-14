@@ -1,8 +1,8 @@
 import asyncio
 
 from aiorwlock import RWLock
-from PasarGuardNodeBridge import Health, NodeType, PasarGuardNode, create_node
-from PasarGuardNodeBridge.common.service_pb2 import User as ProtoUser
+from BluePanelNodeBridge import BluePanelNode, Health, NodeType, create_node
+from BluePanelNodeBridge.common.service_pb2 import User as ProtoUser
 
 from app.db.models import Node, NodeConnectionType
 from app.node.nats_memory import ensure_bridge_memory, get_bridge_memory
@@ -18,7 +18,7 @@ type_map = {
 
 class NodeManager:
     def __init__(self):
-        self._nodes: dict[int, PasarGuardNode] = {}
+        self._nodes: dict[int, BluePanelNode] = {}
         self._node_signatures: dict[int, tuple] = {}
         self._user_sync_locks: dict[int, asyncio.Lock] = {}
         self._lock = RWLock(fast=True)
@@ -62,7 +62,7 @@ class NodeManager:
             kwargs["worker_id"] = worker_id
         return kwargs
 
-    async def _shutdown_node(self, node: PasarGuardNode | None, *, remote_stop: bool = True):
+    async def _shutdown_node(self, node: BluePanelNode | None, *, remote_stop: bool = True):
         if node is None:
             return
 
@@ -73,7 +73,7 @@ class NodeManager:
         except Exception:
             pass
 
-    async def update_node(self, node: Node) -> PasarGuardNode:
+    async def update_node(self, node: Node) -> BluePanelNode:
         await ensure_bridge_memory()
 
         # Serialize against in-flight full syncs (sync_full) so a reconnect/health-check
@@ -97,7 +97,7 @@ class NodeManager:
                     return existing
 
             async with self._lock.writer_lock:
-                old_node: PasarGuardNode | None = self._nodes.pop(node.id, None)
+                old_node: BluePanelNode | None = self._nodes.pop(node.id, None)
 
                 new_node = create_node(**self._create_node_kwargs(node))
 
@@ -115,47 +115,47 @@ class NodeManager:
         # a current waiter still holds that lock identity.
         lock = self._user_sync_locks.setdefault(id, asyncio.Lock())
         async with lock, self._lock.writer_lock:
-            old_node: PasarGuardNode | None = self._nodes.pop(id, None)
+            old_node: BluePanelNode | None = self._nodes.pop(id, None)
             self._node_signatures.pop(id, None)
             self._user_sync_locks.pop(id, None)
 
         # Do cleanup without holding the lock to avoid slow delete operations.
         asyncio.create_task(self._shutdown_node(old_node, remote_stop=remote_stop))
 
-    async def get_node(self, id: int) -> PasarGuardNode | None:
+    async def get_node(self, id: int) -> BluePanelNode | None:
         async with self._lock.reader_lock:
             return self._nodes.get(id, None)
 
-    async def get_nodes(self) -> dict[int, PasarGuardNode]:
+    async def get_nodes(self) -> dict[int, BluePanelNode]:
         async with self._lock.reader_lock:
             return self._nodes
 
-    async def get_healthy_nodes(self) -> list[tuple[int, PasarGuardNode]]:
+    async def get_healthy_nodes(self) -> list[tuple[int, BluePanelNode]]:
         async with self._lock.reader_lock:
-            nodes: list[tuple[int, PasarGuardNode]] = [
+            nodes: list[tuple[int, BluePanelNode]] = [
                 (id, node) for id, node in self._nodes.items() if (await node.get_health() == Health.HEALTHY)
             ]
             return nodes
 
-    async def get_broken_nodes(self) -> list[tuple[int, PasarGuardNode]]:
+    async def get_broken_nodes(self) -> list[tuple[int, BluePanelNode]]:
         async with self._lock.reader_lock:
-            nodes: list[tuple[int, PasarGuardNode]] = [
+            nodes: list[tuple[int, BluePanelNode]] = [
                 (id, node) for id, node in self._nodes.items() if (await node.get_health() == Health.BROKEN)
             ]
             return nodes
 
-    async def get_not_connected_nodes(self) -> list[tuple[int, PasarGuardNode]]:
+    async def get_not_connected_nodes(self) -> list[tuple[int, BluePanelNode]]:
         async with self._lock.reader_lock:
-            nodes: list[tuple[int, PasarGuardNode]] = [
+            nodes: list[tuple[int, BluePanelNode]] = [
                 (id, node) for id, node in self._nodes.items() if (await node.get_health() == Health.NOT_CONNECTED)
             ]
             return nodes
 
-    async def _snapshot_nodes(self) -> list[PasarGuardNode]:
+    async def _snapshot_nodes(self) -> list[BluePanelNode]:
         async with self._lock.reader_lock:
             return list(self._nodes.values())
 
-    async def _snapshot_node_items(self) -> list[tuple[int, PasarGuardNode]]:
+    async def _snapshot_node_items(self) -> list[tuple[int, BluePanelNode]]:
         async with self._lock.reader_lock:
             return list(self._nodes.items())
 
@@ -163,7 +163,7 @@ class NodeManager:
     def _chunk_users(users: list[ProtoUser], size: int) -> list[list[ProtoUser]]:
         return [users[start : start + size] for start in range(0, len(users), size)]
 
-    async def _sync_user_batch_to_node(self, node: PasarGuardNode, batch: list[ProtoUser]) -> int:
+    async def _sync_user_batch_to_node(self, node: BluePanelNode, batch: list[ProtoUser]) -> int:
         users_to_sync = batch
         supports_chunked = True
         supports_chunked_check = getattr(node, "_supports_chunked_sync", None)
@@ -185,7 +185,7 @@ class NodeManager:
 
         return len(users_to_sync)
 
-    async def _sync_users_to_node(self, node_id: int, node: PasarGuardNode, users: list[ProtoUser]):
+    async def _sync_users_to_node(self, node_id: int, node: BluePanelNode, users: list[ProtoUser]):
         batch_size = max(1, nats_settings.node_update_users_batch_size)
         lock = self._user_sync_locks.setdefault(node_id, asyncio.Lock())
         failed_count = 0
@@ -199,7 +199,7 @@ class NodeManager:
 
     async def sync_full(
         self, node_id: int, users: list[ProtoUser], *, flush_pending: bool = False
-    ) -> PasarGuardNode | None:
+    ) -> BluePanelNode | None:
         """Push a full user snapshot to a node, serialized against update_node/remove_node.
 
         Guards against the reconnect/health-check watchdog tearing down the node object
