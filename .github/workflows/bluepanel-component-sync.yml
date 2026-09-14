@@ -48,6 +48,7 @@ jobs:
           import json
           import pathlib
           import re
+          import subprocess
           import tomllib
 
           root = pathlib.Path('.')
@@ -87,6 +88,14 @@ jobs:
           if f'@{revision}' not in bridge_dep:
               raise SystemExit('BLUEPANEL_COMPONENTS python bridge revision does not match panel dependency pin')
 
+          bridge_head = subprocess.check_output(
+              ['git', '-C', '_components/node_bridge_py', 'rev-parse', 'HEAD'], text=True
+          ).strip()
+          if revision != bridge_head:
+              raise SystemExit(
+                  f'Panel pins Python bridge {revision}, but current bridge main is {bridge_head}'
+              )
+
           go_mod = pathlib.Path('_components/node_bridge/go.mod').read_text()
           if 'module github.com/hazhanhasani/node_bridge' not in go_mod:
               raise SystemExit('Go bridge module does not point to hazhanhasani/node_bridge')
@@ -123,7 +132,7 @@ jobs:
         run: uv sync --frozen --group dev
 
       - name: Ruff
-        run: uv run ruff check .
+        run: uv run ruff check . --no-fix
 
       - name: Pytest
         run: uv run pytest -q
@@ -246,7 +255,7 @@ jobs:
         run: uv sync --group dev
 
       - name: Ruff
-        run: uv run ruff check .
+        run: uv run ruff check . --no-fix
 
       - name: Pytest
         run: uv run pytest -q
