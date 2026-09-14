@@ -88,29 +88,21 @@ class DashboardSettings(EnvSettings):
 class NatsSettings(EnvSettings):
     enabled: bool = Field(default=False, validation_alias="NATS_ENABLED")
     url: str = Field(default="nats://localhost:4222", validation_alias="NATS_URL")
-    worker_sync_subject: str = Field(default="pasarguard.worker_sync", validation_alias="NATS_WORKER_SYNC_SUBJECT")
-    node_command_subject: str = Field(default="pasarguard.node.command", validation_alias="NATS_NODE_COMMAND_SUBJECT")
-    node_rpc_subject: str = Field(default="pasarguard.node.rpc", validation_alias="NATS_NODE_RPC_SUBJECT")
-    scheduler_rpc_subject: str = Field(
-        default="pasarguard.scheduler.rpc", validation_alias="NATS_SCHEDULER_RPC_SUBJECT"
-    )
-    node_log_subject: str = Field(default="pasarguard.node.logs", validation_alias="NATS_NODE_LOG_SUBJECT")
+    worker_sync_subject: str = Field(default="bluepanel.worker_sync", validation_alias="NATS_WORKER_SYNC_SUBJECT")
+    node_command_subject: str = Field(default="bluepanel.node.command", validation_alias="NATS_NODE_COMMAND_SUBJECT")
+    node_rpc_subject: str = Field(default="bluepanel.node.rpc", validation_alias="NATS_NODE_RPC_SUBJECT")
+    scheduler_rpc_subject: str = Field(default="bluepanel.scheduler.rpc", validation_alias="NATS_SCHEDULER_RPC_SUBJECT")
+    node_log_subject: str = Field(default="bluepanel.node.logs", validation_alias="NATS_NODE_LOG_SUBJECT")
     node_rpc_timeout: float = Field(default=30.0, validation_alias="NATS_NODE_RPC_TIMEOUT")
     scheduler_rpc_timeout: float = Field(default=5.0, validation_alias="NATS_SCHEDULER_RPC_TIMEOUT")
     node_command_max_payload_bytes: int = Field(default=900000, validation_alias="NATS_NODE_COMMAND_MAX_PAYLOAD_BYTES")
     node_update_users_batch_size: int = Field(default=100, validation_alias="NATS_NODE_UPDATE_USERS_BATCH_SIZE")
     core_pubsub_channel: str = Field(default="core_hosts_updates", validation_alias="CORE_PUBSUB_CHANNEL")
     host_pubsub_channel: str = Field(default="host_manager_updates", validation_alias="HOST_PUBSUB_CHANNEL")
-    telegram_kv_bucket: str = Field(default="pasarguard_telegram", validation_alias="NATS_TELEGRAM_KV_BUCKET")
-    node_user_sync_kv_bucket: str = Field(
-        default="pasarguard_node_user_sync", validation_alias="NATS_NODE_USER_SYNC_KV_BUCKET"
-    )
-    node_lifecycle_kv_bucket: str = Field(
-        default="pasarguard_node_lifecycle", validation_alias="NATS_NODE_LIFECYCLE_KV_BUCKET"
-    )
-    scheduler_leader_kv_bucket: str = Field(
-        default="pasarguard_scheduler_leader", validation_alias="NATS_SCHEDULER_LEADER_KV_BUCKET"
-    )
+    telegram_kv_bucket: str = Field(default="bluepanel_telegram", validation_alias="NATS_TELEGRAM_KV_BUCKET")
+    node_user_sync_kv_bucket: str = Field(default="bluepanel_node_user_sync", validation_alias="NATS_NODE_USER_SYNC_KV_BUCKET")
+    node_lifecycle_kv_bucket: str = Field(default="bluepanel_node_lifecycle", validation_alias="NATS_NODE_LIFECYCLE_KV_BUCKET")
+    scheduler_leader_kv_bucket: str = Field(default="bluepanel_scheduler_leader", validation_alias="NATS_SCHEDULER_LEADER_KV_BUCKET")
     notification_stream: str = Field(default="NOTIFICATIONS", validation_alias="NATS_NOTIFICATION_STREAM")
     notification_subject: str = Field(default="notifications.queue", validation_alias="NATS_NOTIFICATION_SUBJECT")
     notification_consumer: str = Field(default="notification_workers", validation_alias="NATS_NOTIFICATION_CONSUMER")
@@ -144,9 +136,7 @@ class JwtSettings(EnvSettings):
 
 class TemplateSettings(EnvSettings):
     custom_templates_directory: str | None = Field(default=None, validation_alias="CUSTOM_TEMPLATES_DIRECTORY")
-    subscription_page_template: str = Field(
-        default="subscription/index.html", validation_alias="SUBSCRIPTION_PAGE_TEMPLATE"
-    )
+    subscription_page_template: str = Field(default="subscription/index.html", validation_alias="SUBSCRIPTION_PAGE_TEMPLATE")
     home_page_template: str = Field(default="home/index.html", validation_alias="HOME_PAGE_TEMPLATE")
 
 
@@ -161,7 +151,7 @@ class TelegramEnvSettings(EnvSettings):
 
 class LoggingSettings(EnvSettings):
     save_to_file: bool = Field(default=False, validation_alias="SAVE_LOGS_TO_FILE")
-    file_path: str = Field(default="pasarguard.log", validation_alias="LOG_FILE_PATH")
+    file_path: str = Field(default="bluepanel.log", validation_alias="LOG_FILE_PATH")
     backup_count: int = Field(default=72, validation_alias="LOG_BACKUP_COUNT")
     rotation_enabled: bool = Field(default=False, validation_alias="LOG_ROTATION_ENABLED")
     rotation_interval: int = Field(default=1, validation_alias="LOG_ROTATION_INTERVAL")
@@ -182,7 +172,7 @@ class AuthSettings(EnvSettings):
     sudoers: dict[str, str] = Field(default_factory=dict)
 
     @model_validator(mode="after")
-    def build_sudoers(self) -> AuthSettings:
+    def build_sudoers(self) -> "AuthSettings":
         if self.sudo_username and self.sudo_password and not self.sudoers:
             self.sudoers[self.sudo_username] = self.sudo_password
         return self
@@ -191,10 +181,7 @@ class AuthSettings(EnvSettings):
 class UsageSettings(EnvSettings):
     disable_recording_node_usage: bool = Field(default=False, validation_alias="DISABLE_RECORDING_NODE_USAGE")
     enable_recording_nodes_stats: bool = Field(default=False, validation_alias="ENABLE_RECORDING_NODES_STATS")
-    reset_user_usage_clean_chart_data: bool = Field(
-        default=False,
-        validation_alias="RESET_USER_USAGE_CLEAN_CHART_DATA",
-    )
+    reset_user_usage_clean_chart_data: bool = Field(default=False, validation_alias="RESET_USER_USAGE_CLEAN_CHART_DATA")
 
 
 class JobSettings(EnvSettings):
@@ -210,9 +197,7 @@ class JobSettings(EnvSettings):
     reset_user_data_usage_interval: int = Field(default=600, validation_alias="JOB_RESET_USER_DATA_USAGE_INTERVAL")
     reset_node_usage_interval: int = Field(default=60, validation_alias="JOB_RESET_NODE_USAGE_INTERVAL")
     check_node_limits_interval: int = Field(default=60, validation_alias="JOB_CHECK_NODE_LIMITS_INTERVAL")
-    cleanup_subscription_updates_interval: int = Field(
-        default=600, validation_alias="JOB_CLEANUP_SUBSCRIPTION_UPDATES_INTERVAL"
-    )
+    cleanup_subscription_updates_interval: int = Field(default=600, validation_alias="JOB_CLEANUP_SUBSCRIPTION_UPDATES_INTERVAL")
 
 
 class FeatureSettings(EnvSettings):
