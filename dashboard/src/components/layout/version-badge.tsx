@@ -18,11 +18,10 @@ export function VersionBadge({ currentVersion, className }: VersionBadgeProps) {
     return null
   }
 
-  const releaseLink = releaseUrl || 'https://github.com/PasarGuard/panel/releases/latest'
+  const releaseLink = releaseUrl || 'https://github.com/hazhanhasani/panel/releases/latest'
   const showText = isMobile || state === 'expanded'
   const showBadge = state === 'collapsed' && !isMobile
 
-  // Show badge when collapsed on desktop
   if (showBadge && hasUpdate) {
     return (
       <span
@@ -32,7 +31,6 @@ export function VersionBadge({ currentVersion, className }: VersionBadgeProps) {
     )
   }
 
-  // Show text on mobile or when expanded with tooltip
   if (showText && hasUpdate && latestVersion) {
     return (
       <Tooltip delayDuration={100}>
@@ -64,7 +62,6 @@ export function VersionBadge({ currentVersion, className }: VersionBadgeProps) {
     )
   }
 
-  // Show "Up to date" text when expanded on desktop or mobile and there's no update
   if (showText && !hasUpdate) {
     return (
       <Tooltip delayDuration={100}>
@@ -84,7 +81,6 @@ export function VersionBadge({ currentVersion, className }: VersionBadgeProps) {
     )
   }
 
-  // Default: show dot with tooltip (for collapsed desktop state when no update)
   if (!hasUpdate) {
     return (
       <Tooltip delayDuration={100}>
