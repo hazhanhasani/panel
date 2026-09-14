@@ -1,4 +1,4 @@
-# Makefile to check and set up Python 3.14 and a virtual environment
+# BluePanel development Makefile
 
 PYTHON_VERSION=3.14
 VENV_DIR=.venv
@@ -13,7 +13,6 @@ install_uv:
 		echo "uv is already installed."; \
 	fi
 
-# Install Python dependencies from pyproject.toml
 .PHONY: requirements
 requirements:
 	@uv sync
@@ -22,7 +21,6 @@ requirements:
 requirements-dev:
 	@uv sync --group dev
 
-# Check if nvm is installed, if not, install it
 .PHONY: check-nvm
 check-nvm:
 	@if ! command -v nvm > /dev/null 2>&1; then \
@@ -39,7 +37,6 @@ check-nvm:
 		echo "nvm is already installed. Version: `nvm --version`"; \
 	fi
 
-# Check if nodejs is installed, if not, install it
 .PHONY: check-nodejs
 check-nodejs: check-nvm
 	@if ! node -v > /dev/null 2>&1; then \
@@ -52,7 +49,6 @@ check-nodejs: check-nvm
 		echo "nodejs is already installed."; \
 	fi
 
-# Check if bun is installed, if not, install it
 .PHONY: check-bun
 check-bun: check-nodejs
 	@if ! bun --version > /dev/null 2>&1; then \
@@ -65,12 +61,10 @@ check-bun: check-nodejs
 		echo "bun is already installed."; \
 	fi
 
-# Install frontend dependencies (Node.js packages)
 .PHONY: install-front
 install-front: check-bun
 	@cd dashboard && bun install
 
-# Run database migrations using Alembic
 .PHONY: run-migration
 run-migration:
 	@uv run alembic upgrade head
@@ -79,63 +73,53 @@ run-migration:
 check-migrations:
 	@uv run alembic check
 
-# run PasarGuard
+# Run BluePanel
 .PHONY: run
 run:
 	@uv run main.py
 
-# run pasarguard-cli
+# Run BluePanel CLI
 .PHONY: run-cli
 run-cli:
-	@uv run pasarguard-cli.py
+	@uv run bluepanel-cli.py
 
-# Run tests
 .PHONY: test
 test:
 	@uv run pytest tests/
 
-# Run tests-watch
 .PHONY: test-whatch
 test-whatch:
 	@uv run ptw
 
-# Run PasarGuard with watchfiles
+# Run BluePanel with watchfiles
 .PHONY: run-watch
 run-watch:
-	@echo "Running application with watchfiles..."
+	@echo "Running BluePanel with watchfiles..."
 	@uv run watchfiles --filter python "uv run main.py" .
 
-# Generate the API client (orval) WITHOUT running the server:
-# dump the OpenAPI schema offline, then feed the file to orval.
-# Cross-platform: the Python helper sets OPENAPI_INPUT and invokes orval itself.
 .PHONY: gen-api
 gen-api:
 	@uv run python scripts/export_openapi.py --gen-client
 
-# Check code
 .PHONY: check
 check:
 	@uv run ruff check .
 
-# Format code
 .PHONY: format
 format:
 	@uv run ruff format .
 
-# Clean the environment
 .PHONY: clean
 clean:
 	@rm -rf $(VENV_DIR)
 	@echo "Virtual environment removed."
 
-# Setup environment: check Python, install uv, and sync requirements
 .PHONY: setup
 setup: install_uv requirements
 
 .PHONY: setup-test
 setup-test: install_uv requirements-dev
 
-# Format code (front-end)
 .PHONY: fformat
 fformat:
 	@cd dashboard && bun run prettier . --write
