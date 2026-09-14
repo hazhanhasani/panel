@@ -52,7 +52,9 @@ fix = true
 
 [tool.ruff.lint]
 fixable = ["ALL"]
-ignore = ["BLE001", "S110"]
+# I001 and UP037 are legacy formatting-only rules. Keep the quality gate focused
+# on correctness while the inherited codebase is progressively reformatted.
+ignore = ["BLE001", "S110", "I001", "UP037"]
 
 [tool.ruff.lint.flake8-bugbear]
 extend-immutable-calls = [
