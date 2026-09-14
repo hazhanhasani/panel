@@ -377,7 +377,7 @@ requires-dist = [
     { name = "asyncmy", marker = "sys_platform != 'win32'", specifier = ">=0.2.14" },
     { name = "asyncpg", specifier = ">=0.31.0" },
     { name = "bcrypt", specifier = "==5.0.0" },
-    { name = "bluepanel-node-bridge", git = "https://github.com/hazhanhasani/node_bridge_py.git?rev=576b5f4fd8ba24683ceac51368e4e2de2f6b5d63" },
+    { name = "bluepanel-node-bridge", git = "https://github.com/hazhanhasani/node_bridge_py.git?rev=ca9fc57fce45dcb013fcf52c81ff5c1ae9a5e2d0" },
     { name = "certifi", specifier = ">=2026.7.22" },
     { name = "click", specifier = ">=8.5.0" },
     { name = "commentjson", specifier = "==0.9.0" },
@@ -420,7 +420,7 @@ dev = [
 [[package]]
 name = "bluepanel-node-bridge"
 version = "0.10.0"
-source = { git = "https://github.com/hazhanhasani/node_bridge_py.git?rev=576b5f4fd8ba24683ceac51368e4e2de2f6b5d63#576b5f4fd8ba24683ceac51368e4e2de2f6b5d63" }
+source = { git = "https://github.com/hazhanhasani/node_bridge_py.git?rev=ca9fc57fce45dcb013fcf52c81ff5c1ae9a5e2d0#ca9fc57fce45dcb013fcf52c81ff5c1ae9a5e2d0" }
 dependencies = [
     { name = "aiohttp" },
     { name = "aiohttp-socks" },
