@@ -1,0 +1,102 @@
+name: BluePanel Component Contract
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - BLUEPANEL_COMPONENTS.json
+      - pyproject.toml
+      - dashboard/src/hooks/use-node-releases.ts
+      - .github/workflows/bluepanel-component-sync.yml
+  workflow_dispatch:
+  schedule:
+    - cron: '17 */6 * * *'
+
+permissions:
+  contents: read
+
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout panel
+        uses: actions/checkout@v7
+
+      - name: Checkout BluePanel Node
+        uses: actions/checkout@v7
+        with:
+          repository: hazhanhasani/node
+          ref: main
+          path: _components/node
+
+      - name: Checkout Go bridge
+        uses: actions/checkout@v7
+        with:
+          repository: hazhanhasani/node_bridge
+          ref: main
+          path: _components/node_bridge
+
+      - name: Checkout Python bridge
+        uses: actions/checkout@v7
+        with:
+          repository: hazhanhasani/node_bridge_py
+          ref: main
+          path: _components/node_bridge_py
+
+      - name: Validate four-component contract
+        run: |
+          python - <<'PY'
+          import json
+          import pathlib
+          import re
+          import tomllib
+
+          root = pathlib.Path('.')
+          manifest = json.loads((root / 'BLUEPANEL_COMPONENTS.json').read_text())
+          expected = {
+              'panel': 'hazhanhasani/panel',
+              'node': 'hazhanhasani/node',
+              'go_bridge': 'hazhanhasani/node_bridge',
+              'python_bridge': 'hazhanhasani/node_bridge_py',
+          }
+          for key, repo in expected.items():
+              actual = manifest['components'][key]['repository']
+              if actual != repo:
+                  raise SystemExit(f'{key}: expected {repo}, got {actual}')
+
+          def normalize_proto(path):
+              text = pathlib.Path(path).read_text(encoding='utf-8')
+              text = re.sub(r'//.*', '', text)
+              text = re.sub(r'option\s+go_package\s*=\s*"[^"]+"\s*;', '', text)
+              return re.sub(r'\s+', '', text)
+
+          canonical = normalize_proto('_components/node/common/service.proto')
+          go_bridge = normalize_proto('_components/node_bridge/common/service.proto')
+          py_bridge = normalize_proto('_components/node_bridge_py/PasarGuardNodeBridge/common/service.proto')
+          if canonical != go_bridge:
+              raise SystemExit('Go bridge service.proto is out of sync with BluePanel Node')
+          if canonical != py_bridge:
+              raise SystemExit('Python bridge service.proto is out of sync with BluePanel Node')
+
+          panel = tomllib.loads((root / 'pyproject.toml').read_text())
+          deps = panel['project']['dependencies']
+          bridge_dep = next((d for d in deps if d.startswith('bluepanel-node-bridge ')), None)
+          if not bridge_dep or 'github.com/hazhanhasani/node_bridge_py.git@' not in bridge_dep:
+              raise SystemExit('Panel is not pinned to hazhanhasani/node_bridge_py')
+
+          go_mod = pathlib.Path('_components/node_bridge/go.mod').read_text()
+          if 'module github.com/hazhanhasani/node_bridge' not in go_mod:
+              raise SystemExit('Go bridge module does not point to hazhanhasani/node_bridge')
+
+          pyproject = tomllib.loads(pathlib.Path('_components/node_bridge_py/pyproject.toml').read_text())
+          if pyproject['project']['name'] != 'bluepanel-node-bridge':
+              raise SystemExit('Python bridge package name mismatch')
+          if not pathlib.Path('_components/node_bridge_py/BluePanelNodeBridge/__init__.py').exists():
+              raise SystemExit('BluePanelNodeBridge public namespace is missing')
+
+          release_hook = pathlib.Path('dashboard/src/hooks/use-node-releases.ts').read_text()
+          if 'repos/hazhanhasani/node/releases/latest' not in release_hook:
+              raise SystemExit('Panel release hook is not using hazhanhasani/node')
+
+          print('All four BluePanel repositories are contract-compatible')
+          PY
