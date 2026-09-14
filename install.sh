@@ -4,8 +4,9 @@ set -Eeuo pipefail
 APP_NAME="bluepanel"
 REPO="hazhanhasani/panel"
 BRANCH="main"
-IMAGE="ghcr.io/hazhanhasani/bluepanel:latest"
+REPO_URL="https://github.com/${REPO}.git"
 INSTALL_DIR="/opt/bluepanel"
+SOURCE_DIR="${INSTALL_DIR}/source"
 DATA_DIR="/var/lib/bluepanel"
 ENV_FILE="${INSTALL_DIR}/.env"
 COMPOSE_FILE="${INSTALL_DIR}/docker-compose.yml"
@@ -20,17 +21,23 @@ require_root() {
   [ "$(id -u)" -eq 0 ] || die "Run this command as root (sudo)."
 }
 
-ensure_curl() {
-  command -v curl >/dev/null 2>&1 && return
+install_packages() {
+  local packages=("$@")
   if command -v apt-get >/dev/null 2>&1; then
-    apt-get update && apt-get install -y curl ca-certificates
+    apt-get update
+    DEBIAN_FRONTEND=noninteractive apt-get install -y "${packages[@]}"
   elif command -v dnf >/dev/null 2>&1; then
-    dnf install -y curl ca-certificates
+    dnf install -y "${packages[@]}"
   elif command -v yum >/dev/null 2>&1; then
-    yum install -y curl ca-certificates
+    yum install -y "${packages[@]}"
   else
-    die "curl is required. Install curl and run BluePanel again."
+    die "Unsupported package manager. Install curl, git and Docker manually."
   fi
+}
+
+ensure_tools() {
+  command -v curl >/dev/null 2>&1 || install_packages curl ca-certificates
+  command -v git >/dev/null 2>&1 || install_packages git ca-certificates
 }
 
 ensure_docker() {
@@ -50,13 +57,25 @@ install_cli() {
   rm -f "$tmp"
 }
 
-sync_project_files() {
+sync_source() {
   mkdir -p "$INSTALL_DIR" "$DATA_DIR" "$DATA_DIR/templates"
 
-  curl -fsSL "${RAW_BASE}/docker-compose.bluepanel.yml" -o "$COMPOSE_FILE"
+  if [ -d "${SOURCE_DIR}/.git" ]; then
+    log "Updating source from ${REPO}:${BRANCH}..."
+    git -C "$SOURCE_DIR" remote set-url origin "$REPO_URL"
+    git -C "$SOURCE_DIR" fetch --prune origin "$BRANCH"
+    git -C "$SOURCE_DIR" reset --hard "origin/${BRANCH}"
+    git -C "$SOURCE_DIR" clean -fd
+  else
+    rm -rf "$SOURCE_DIR"
+    log "Cloning BluePanel from ${REPO}:${BRANCH}..."
+    git clone --depth 1 --branch "$BRANCH" "$REPO_URL" "$SOURCE_DIR"
+  fi
+
+  cp "${SOURCE_DIR}/docker-compose.bluepanel.yml" "$COMPOSE_FILE"
 
   if [ ! -f "$ENV_FILE" ]; then
-    curl -fsSL "${RAW_BASE}/.env.example" -o "$ENV_FILE"
+    cp "${SOURCE_DIR}/.env.example" "$ENV_FILE"
     cat >> "$ENV_FILE" <<'EOF'
 
 # BluePanel local data paths
@@ -66,47 +85,45 @@ EOF
   fi
 }
 
-pull_image() {
-  log "Pulling BluePanel image from ${IMAGE}..."
-  if ! docker pull "$IMAGE"; then
-    die "Could not pull ${IMAGE}. Make sure the BluePanel build workflow completed and the GHCR package is public/readable."
-  fi
+build_image() {
+  log "Building BluePanel from ${REPO}:${BRANCH}..."
+  (cd "$INSTALL_DIR" && docker compose -f "$COMPOSE_FILE" -p "$APP_NAME" build --pull bluepanel)
 }
 
 start_stack() {
-  (cd "$INSTALL_DIR" && docker compose -f "$COMPOSE_FILE" -p "$APP_NAME" up -d --remove-orphans)
+  (cd "$INSTALL_DIR" && docker compose -f "$COMPOSE_FILE" -p "$APP_NAME" up -d --remove-orphans bluepanel)
 }
 
 cmd_install() {
   require_root
-  ensure_curl
+  ensure_tools
   ensure_docker
-  sync_project_files
+  sync_source
   install_cli
-  pull_image
+  build_image
   start_stack
   log "BluePanel installed successfully."
   log "Dashboard: http://YOUR_SERVER_IP:8000/dashboard/"
-  log "Create the owner setup key with: docker exec -it bluepanel-bluepanel-1 bluepanel-cli generate-temp-key"
+  log "Create the owner setup key with: cd ${INSTALL_DIR} && docker compose -p ${APP_NAME} exec bluepanel bluepanel-cli generate-temp-key"
 }
 
 cmd_update() {
   require_root
-  ensure_curl
+  ensure_tools
   ensure_docker
   [ -d "$INSTALL_DIR" ] || die "BluePanel is not installed in ${INSTALL_DIR}."
-  sync_project_files
+  sync_source
   install_cli
-  pull_image
+  build_image
   start_stack
   docker image prune -f >/dev/null 2>&1 || true
-  log "BluePanel updated from ${REPO}."
+  log "BluePanel updated only from ${REPO}:${BRANCH}."
 }
 
 cmd_restart() {
   require_root
   [ -f "$COMPOSE_FILE" ] || die "BluePanel is not installed."
-  (cd "$INSTALL_DIR" && docker compose -f "$COMPOSE_FILE" -p "$APP_NAME" restart)
+  (cd "$INSTALL_DIR" && docker compose -f "$COMPOSE_FILE" -p "$APP_NAME" restart bluepanel)
 }
 
 cmd_status() {
@@ -116,7 +133,7 @@ cmd_status() {
 
 cmd_logs() {
   [ -f "$COMPOSE_FILE" ] || die "BluePanel is not installed."
-  (cd "$INSTALL_DIR" && docker compose -f "$COMPOSE_FILE" -p "$APP_NAME" logs -f --tail=200)
+  (cd "$INSTALL_DIR" && docker compose -f "$COMPOSE_FILE" -p "$APP_NAME" logs -f --tail=200 bluepanel)
 }
 
 cmd_uninstall() {
