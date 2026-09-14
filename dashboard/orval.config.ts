@@ -12,6 +12,10 @@ export default defineConfig({
       tslint: true,
       headers: false,
       override: {
+        fetch: {
+          includeHttpResponseReturnType: false,
+          forceSuccessResponse: true,
+        },
         mutator: {
           path: './src/service/http.ts',
           name: 'orvalFetcher',
