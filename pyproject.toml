@@ -39,7 +39,7 @@ dependencies = [
     "uvloop>=0.22.1; sys_platform != 'win32'",
     "aiorwlock>=1.5.0",
     "typer>=0.27.2",
-    "pasarguard-node-bridge==0.9.1",
+    "bluepanel-node-bridge @ git+https://github.com/hazhanhasani/node_bridge_py.git@ccfe2d4bf8f0495bfe63b5f9706202420aa1642c",
     "nats-py>=2.15.0",
 ]
 
