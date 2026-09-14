@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "name": "BluePanel",
+  "protocol_authority": {
+    "repository": "hazhanhasani/node",
+    "branch": "main",
+    "path": "common/service.proto"
+  },
+  "components": {
+    "panel": {
+      "repository": "hazhanhasani/panel",
+      "branch": "main"
+    },
+    "node": {
+      "repository": "hazhanhasani/node",
+      "branch": "main"
+    },
+    "go_bridge": {
+      "repository": "hazhanhasani/node_bridge",
+      "branch": "main",
+      "module": "github.com/hazhanhasani/node_bridge"
+    },
+    "python_bridge": {
+      "repository": "hazhanhasani/node_bridge_py",
+      "branch": "main",
+      "package": "bluepanel-node-bridge",
+      "public_import": "BluePanelNodeBridge",
+      "version": "0.10.0"
+    }
+  }
+}
