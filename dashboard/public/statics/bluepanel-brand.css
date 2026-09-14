@@ -1,0 +1,4 @@
+img[alt="PasarGuard Logo"],
+img[alt="Pasarguard Logo"] {
+  content: url('/statics/favicon/bluepanel.svg');
+}
