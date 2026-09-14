@@ -25,27 +25,20 @@ interface GoalsResponse {
   cancelled_count: number
 }
 
+const EMPTY_GOALS: GoalsResponse = {
+  next_pending: [],
+  last_completed: [],
+  last_cancelled: [],
+  pending_count: 0,
+  completed_count: 0,
+  cancelled_count: 0,
+}
+
 export function useAllGoals() {
   return useQuery({
-    queryKey: ['all-goals'],
-    queryFn: async () => {
-      const response = await fetch('https://api.github.com/repos/pasarguard/ads/contents/goal.json', {
-        method: 'GET',
-        referrerPolicy: 'no-referrer',
-        credentials: 'omit',
-      })
-      if (response.ok) {
-        const apiData = await response.json()
-        if (apiData.content && apiData.encoding === 'base64') {
-          const base64Content = apiData.content.replace(/\n/g, '')
-          const binaryString = atob(base64Content)
-          const utf8String = decodeURIComponent(Array.from(binaryString, char => '%' + ('00' + char.charCodeAt(0).toString(16)).slice(-2)).join(''))
-          const data: GoalsResponse = JSON.parse(utf8String)
-          return data
-        }
-      }
-    },
-    refetchInterval: 300000, // Refetch every 5 minutes
-    retry: 2,
+    queryKey: ['bluepanel-goals'],
+    queryFn: async () => EMPTY_GOALS,
+    staleTime: Infinity,
+    gcTime: Infinity,
   })
 }
