@@ -1,43 +1,24 @@
-# PasarGuard CLI
+# BluePanel CLI
 
-A modern, type-safe command-line interface for managing PasarGuard, built with Typer. PasarGuard supports both [Xray-core](https://github.com/XTLS/Xray-core) and [WireGuard](https://www.wireguard.com/).
+The BluePanel command-line interface is included in the BluePanel image and source tree.
 
-## Features
-
--   🎯 Type-safe CLI with rich output
--   🔒 One-time temp key generation for owner setup
--   ⌨️ Simple project-root and installed-service usage
-
-## Installation
-
-The CLI is included with PasarGuard and can be used directly:
+## Commands
 
 ```bash
-PasarGuard cli --help
-
-# Or from the project root
-uv run PasarGuard-cli.py --help
+bluepanel-cli --help
+bluepanel-cli version
+bluepanel-cli generate-temp-key
 ```
 
-## Usage
-
-### General Commands
+From the project source tree:
 
 ```bash
-# Show version
-pasarguard cli version
-
-# Generate a one-time temp key for owner setup
-pasarguard cli generate-temp-key
-
-# Show help
-pasarguard cli --help
+uv run bluepanel-cli.py --help
 ```
 
-### Owner Setup
-
-Admin management is handled from the dashboard. For owner setup, reset, delete, or upgrade operations, generate a one-time temp key and use it on the dashboard login page.
+For an installed Docker deployment:
 
 ```bash
-pasarguard cli generate-temp-key
+cd /opt/bluepanel
+docker compose -p bluepanel exec bluepanel bluepanel-cli generate-temp-key
 ```
