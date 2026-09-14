@@ -1,0 +1,8 @@
+services:
+  bluepanel:
+    image: ghcr.io/hazhanhasani/bluepanel:latest
+    restart: always
+    env_file: .env
+    network_mode: host
+    volumes:
+      - /var/lib/bluepanel:/var/lib/bluepanel
