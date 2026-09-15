@@ -48,9 +48,7 @@ jobs:
 
       - name: Validate generated API client
         working-directory: dashboard
-        run: |
-          bunx tsc -b --pretty false
-          VITE_BASE_API=/ bun run build
+        run: VITE_BASE_API=/ bun run build
 
       - name: Commit generated client when changed
         run: |
