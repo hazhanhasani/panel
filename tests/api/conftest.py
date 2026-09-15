@@ -24,6 +24,9 @@ aiocache.cached = dummy_cached
 def mock_db_session(monkeypatch: pytest.MonkeyPatch):
     db_session = MagicMock(spec=TestSession)
     monkeypatch.setattr("app.settings.GetDB", db_session)
+    # JWT helpers import GetDB at module load time, so overriding the FastAPI
+    # dependency alone does not redirect token creation to the integration DB.
+    monkeypatch.setattr("app.utils.jwt.GetDB", GetTestDB)
     monkeypatch.setattr("app.subscription.client_templates.GetDB", GetTestDB)
     monkeypatch.setattr("app.subscription.sub_update_buffer.GetDB", GetTestDB)
     return db_session
