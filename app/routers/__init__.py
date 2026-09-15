@@ -19,6 +19,9 @@ from . import (
     user,
     user_template,
 )
+from app.subscription.tor_hosts import install_tor_host_overlay
+
+install_tor_host_overlay()
 
 api_router = APIRouter()
 
