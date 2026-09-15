@@ -3,7 +3,6 @@ import os
 import socket
 import ssl
 
-import click
 import uvicorn
 from cryptography import x509
 from cryptography.hazmat.backends import default_backend
@@ -24,40 +23,28 @@ elif workers > 1:
 
 
 def check_and_modify_ip(ip_address: str) -> str:
+    """Validate and preserve the configured bind host.
+
+    BluePanel is commonly installed in Docker with host networking. In that setup
+    ``0.0.0.0`` is intentional and must not be rewritten to localhost, otherwise
+    the installer reports success while the dashboard is unreachable remotely.
     """
-    Check if an IP address is private. If not, return localhost.
+    host = str(ip_address or "").strip()
+    if not host:
+        raise ValueError("UVICORN_HOST cannot be empty")
 
-    IPv4 Private range = [
-        "192.168.0.0",
-        "192.168.255.255",
-        "10.0.0.0",
-        "10.255.255.255",
-        "172.16.0.0",
-        "172.31.255.255"
-    ]
+    if host == "localhost":
+        return host
 
-    Args:
-        ip_address (str): IP address to check
-
-    Returns:
-        str: Original IP if private, otherwise localhost
-
-    Raises:
-        ValueError: If the provided IP address is invalid, return localhost.
-    """
     try:
-        resolved_ip = socket.gethostbyname(ip_address)
-        ip = ipaddress.ip_address(resolved_ip)
+        ipaddress.ip_address(host)
+    except ValueError:
+        try:
+            socket.getaddrinfo(host, None)
+        except socket.gaierror as exc:
+            raise ValueError(f"Invalid UVICORN_HOST: {host}") from exc
 
-        if ip == ipaddress.ip_address("0.0.0.0"):
-            return "localhost"
-        elif ip.is_private:
-            return ip_address
-        else:
-            return "localhost"
-
-    except ValueError, socket.gaierror:
-        return "localhost"
+    return host
 
 
 def validate_cert_and_key(cert_file_path, key_file_path, ca_type: str = "public"):
@@ -107,32 +94,20 @@ if __name__ == "__main__":
         if server_settings.uds:
             bind_args["uds"] = server_settings.uds
         else:
-            bind_args["host"] = server_settings.host
+            bind_args["host"] = check_and_modify_ip(server_settings.host)
             bind_args["port"] = server_settings.port
 
     else:
         if server_settings.uds:
             bind_args["uds"] = server_settings.uds
         else:
-            ip = check_and_modify_ip(server_settings.host)
-
-            logger.warning(f"""
-{click.style("IMPORTANT!", blink=True, bold=True, fg="yellow")}
-You're running BluePanel without specifying {click.style("UVICORN_SSL_CERTFILE", italic=True, fg="magenta")} and {click.style("UVICORN_SSL_KEYFILE", italic=True, fg="magenta")}.
-The application will only be accessible through localhost. This means that {click.style("BluePanel and subscription URLs will not be accessible externally", bold=True)}.
-
-If you need external access, please provide the SSL files to allow the server to bind to 0.0.0.0. Alternatively, you can run the server on localhost or a Unix socket and use a reverse proxy, such as Nginx or Caddy, to handle SSL termination and provide external access.
-
-If you wish to continue without SSL, you can use SSH port forwarding to access the application from your machine. Note that in this case, subscription functionality will not work.
-
-Use the following command:
-
-{click.style(f"ssh -L {server_settings.port}:localhost:{server_settings.port} user@server", italic=True, fg="cyan")}
-
-Then, navigate to {click.style(f"http://{ip}:{server_settings.port}", bold=True)} on your computer.
-            """)
-
-            bind_args["host"] = ip
+            host = check_and_modify_ip(server_settings.host)
+            if host in {"0.0.0.0", "::"}:
+                logger.warning(
+                    "BluePanel is listening on all interfaces without application-level TLS. "
+                    "Use a firewall and preferably terminate HTTPS at a trusted reverse proxy."
+                )
+            bind_args["host"] = host
             bind_args["port"] = server_settings.port
 
     if runtime_settings.debug:
@@ -143,18 +118,15 @@ Then, navigate to {click.style(f"http://{ip}:{server_settings.port}", bold=True)
     for logger_name in ("uvicorn", "uvicorn.error", "uvicorn.access"):
         LOGGING_CONFIG["loggers"][logger_name]["level"] = effective_log_level
 
-    try:
-        uvicorn.run(
-            "main:create_app",
-            factory=True,
-            **bind_args,
-            workers=workers,
-            reload=runtime_settings.debug,
-            log_config=LOGGING_CONFIG,
-            log_level=effective_log_level.lower(),
-            loop=server_settings.loop,
-            proxy_headers=server_settings.proxy_headers,
-            forwarded_allow_ips=server_settings.forwarded_allow_ips,
-        )
-    except FileNotFoundError:
-        pass
+    uvicorn.run(
+        "main:create_app",
+        factory=True,
+        **bind_args,
+        workers=workers,
+        reload=runtime_settings.debug,
+        log_config=LOGGING_CONFIG,
+        log_level=effective_log_level.lower(),
+        loop=server_settings.loop,
+        proxy_headers=server_settings.proxy_headers,
+        forwarded_allow_ips=server_settings.forwarded_allow_ips,
+    )
