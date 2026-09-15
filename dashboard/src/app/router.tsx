@@ -9,6 +9,7 @@ import { TabbedRouteSuspenseFallback } from '@/components/layout/tabbed-route-su
 import { lazyWithChunkRecovery } from '@/utils/chunk-recovery'
 import { isAuthenticationError } from '@/utils/error-utils'
 import { getAuthToken } from '@/utils/authStorage'
+import Login from '../pages/login'
 // Replace direct imports with lazy imports for route-level components
 const CoresLayout = lazyWithChunkRecovery(() => import('@/pages/_dashboard.nodes.cores'))
 const CoresIndex = lazyWithChunkRecovery(() => import('@/pages/_dashboard.nodes.cores._index'))
@@ -44,7 +45,6 @@ const TemplatesLayout = lazyWithChunkRecovery(() => import('../pages/_dashboard.
 const UserTemplates = lazyWithChunkRecovery(() => import('../pages/_dashboard.templates.user'))
 const ClientTemplates = lazyWithChunkRecovery(() => import('../pages/_dashboard.templates.client'))
 const Users = lazyWithChunkRecovery(() => import('../pages/_dashboard.users'))
-const Login = lazyWithChunkRecovery(() => import('../pages/login'))
 
 // Component to handle default settings routing based on user permissions
 function SettingsIndex() {
