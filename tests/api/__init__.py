@@ -17,7 +17,9 @@ from config import database_settings
 
 class TestSettings(BaseSettings):
     test_from: str = "local"
-    database_url: str = "sqlite+aiosqlite:///./test.db"
+    # API integration tests must not share the database used by unit tests;
+    # several unit-test fixtures intentionally drop all metadata.
+    database_url: str = "sqlite+aiosqlite:///./test-api.db"
 
     model_config = SettingsConfigDict(env_file=".env", case_sensitive=False, extra="ignore")
 

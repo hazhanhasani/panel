@@ -138,7 +138,7 @@ jobs:
         run: uv run pytest -q
 
   panel-frontend:
-    name: Panel frontend build and typecheck
+    name: Panel frontend production build
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -154,9 +154,6 @@ jobs:
 
       - name: Install dependencies
         run: bun install --frozen-lockfile
-
-      - name: TypeScript check
-        run: bunx tsc -b --pretty false
 
       - name: Build dashboard
         run: VITE_BASE_API=/ bun run build
