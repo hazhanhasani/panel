@@ -1,0 +1,79 @@
+name: BluePanel Install Smoke
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "install.sh"
+      - "docker-compose.bluepanel.yml"
+      - "Dockerfile"
+      - "start.sh"
+      - "healthcheck.sh"
+      - "main.py"
+      - "app/**"
+      - "cli/**"
+      - "bluepanel-cli.py"
+      - "pyproject.toml"
+      - "uv.lock"
+      - "dashboard/**"
+      - ".github/workflows/install-smoke.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: bluepanel-install-smoke-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  install-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate installer shell syntax
+        run: |
+          bash -n install.sh
+          bash -n start.sh
+          bash -n healthcheck.sh
+          bash -n cli_wrapper.sh
+
+      - name: Clean possible stale state
+        run: |
+          sudo rm -rf /opt/bluepanel /var/lib/bluepanel
+          docker rm -f bluepanel-bluepanel-1 >/dev/null 2>&1 || true
+
+      - name: Install BluePanel from scratch
+        env:
+          BLUEPANEL_HEALTH_TIMEOUT: "180"
+        run: sudo -E bash ./install.sh install
+
+      - name: Run installation doctor
+        run: sudo bluepanel doctor
+
+      - name: Verify public bind and health endpoint
+        run: |
+          curl --fail --show-error --silent --max-time 10 http://127.0.0.1:8000/healthz
+          curl --fail --show-error --silent --max-time 10 http://127.0.0.1:8000/dashboard/ >/dev/null
+
+      - name: Verify owner setup CLI
+        run: |
+          cd /opt/bluepanel
+          sudo docker compose -f docker-compose.yml -p bluepanel exec -T bluepanel bluepanel-cli generate-temp-key
+
+      - name: Show diagnostics on failure
+        if: failure()
+        run: |
+          sudo bluepanel status || true
+          cd /opt/bluepanel 2>/dev/null || exit 0
+          sudo docker compose -f docker-compose.yml -p bluepanel ps || true
+          sudo docker compose -f docker-compose.yml -p bluepanel logs --no-color --tail=300 bluepanel || true
+
+      - name: Cleanup
+        if: always()
+        run: |
+          if [ -f /opt/bluepanel/docker-compose.yml ]; then
+            cd /opt/bluepanel
+            sudo docker compose -f docker-compose.yml -p bluepanel down --remove-orphans || true
+          fi
