@@ -8,6 +8,7 @@ import { RouteErrorPage } from '@/components/layout/error-page'
 import { TabbedRouteSuspenseFallback } from '@/components/layout/tabbed-route-suspense-fallback'
 import { lazyWithChunkRecovery } from '@/utils/chunk-recovery'
 import { isAuthenticationError } from '@/utils/error-utils'
+import { getAuthToken } from '@/utils/authStorage'
 // Replace direct imports with lazy imports for route-level components
 const CoresLayout = lazyWithChunkRecovery(() => import('@/pages/_dashboard.nodes.cores'))
 const CoresIndex = lazyWithChunkRecovery(() => import('@/pages/_dashboard.nodes.cores._index'))
@@ -63,6 +64,13 @@ function TemplatesIndex() {
 }
 
 const fetchAdminLoader = async (): Promise<any> => {
+  // The login and owner-recovery screen must remain reachable before an
+  // account/session exists. Avoid turning an expected unauthenticated visit
+  // into a full-page network error.
+  if (!getAuthToken()) {
+    throw Response.redirect('/login')
+  }
+
   try {
     const response = await getCurrentAdmin()
     return response
@@ -71,7 +79,10 @@ const fetchAdminLoader = async (): Promise<any> => {
       throw Response.redirect('/login')
     }
 
-    throw error
+    // A stale session plus a temporary API/network failure must not trap the
+    // user behind the route error boundary. The login page also contains the
+    // one-time-key owner create/reset/delete recovery flows.
+    throw Response.redirect('/login')
   }
 }
 
