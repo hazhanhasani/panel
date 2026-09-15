@@ -4,8 +4,15 @@ services:
       context: ./source
       dockerfile: Dockerfile
     image: bluepanel:local
-    restart: always
+    restart: unless-stopped
     env_file: .env
     network_mode: host
     volumes:
       - /var/lib/bluepanel:/var/lib/bluepanel
+    healthcheck:
+      test: ["CMD", "/code/healthcheck.sh"]
+      interval: 5s
+      timeout: 5s
+      retries: 24
+      start_period: 20s
+    stop_grace_period: 30s
