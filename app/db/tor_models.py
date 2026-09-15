@@ -24,7 +24,6 @@ class TorLocation(Base):
     display_name: Mapped[str] = mapped_column(String(128))
     country_code: Mapped[str] = mapped_column(String(2), index=True)
     base_inbound_tag: Mapped[str] = mapped_column(String(256))
-
     flag: Mapped[str | None] = mapped_column(String(16), default=None)
     protocol: Mapped[str] = mapped_column(String(32), default="vless")
     security: Mapped[str | None] = mapped_column(String(32), default=None)
@@ -33,7 +32,6 @@ class TorLocation(Base):
     auto_health_check: Mapped[bool] = mapped_column(Boolean, default=True, server_default="1")
     auto_repair: Mapped[bool] = mapped_column(Boolean, default=True, server_default="1")
     sort_order: Mapped[int] = mapped_column(Integer, default=0, server_default="0")
-
     xray_inbound_port: Mapped[int | None] = mapped_column(Integer, default=None)
     xray_inbound_tag: Mapped[str | None] = mapped_column(String(256), default=None)
     xray_outbound_tag: Mapped[str | None] = mapped_column(String(256), default=None)
@@ -41,7 +39,6 @@ class TorLocation(Base):
     tor_socks_port: Mapped[int | None] = mapped_column(Integer, default=None)
     tor_control_port: Mapped[int | None] = mapped_column(Integer, default=None)
     tor_data_directory: Mapped[str | None] = mapped_column(String(1024), default=None)
-
     desired_state: Mapped[str] = mapped_column(String(32), default="enabled", server_default="enabled", index=True)
     sync_status: Mapped[str] = mapped_column(String(32), default="pending", server_default="pending", index=True)
     desired_country: Mapped[str | None] = mapped_column(String(2), default=None)
@@ -68,7 +65,9 @@ class TorSettings(Base):
     country_verification: Mapped[bool] = mapped_column(Boolean, default=True, server_default="1")
     health_check_interval: Mapped[int] = mapped_column(Integer, default=60, server_default="60")
     max_restart_attempts: Mapped[int] = mapped_column(Integer, default=5, server_default="5")
-    restart_backoff: Mapped[str] = mapped_column(String(128), default="60,120,300,600,1800", server_default="60,120,300,600,1800")
+    restart_backoff: Mapped[str] = mapped_column(
+        String(128), default="60,120,300,600,1800", server_default="60,120,300,600,1800"
+    )
     xray_port_start: Mapped[int] = mapped_column(Integer, default=31000, server_default="31000")
     xray_port_end: Mapped[int] = mapped_column(Integer, default=31999, server_default="31999")
     socks_port_start: Mapped[int] = mapped_column(Integer, default=19000, server_default="19000")
@@ -83,12 +82,14 @@ class TorSettings(Base):
 class TorLocationEvent(Base):
     __tablename__ = "tor_location_events"
 
-    id: Mapped[int] = mapped_column(SqliteCompatibleBigInteger, primary_key=True, init=False, autoincrement=True)
-    location_id: Mapped[str | None] = mapped_column(String(36), index=True, default=None)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, init=False, autoincrement=True)
     node_id: Mapped[int] = mapped_column(SqliteCompatibleBigInteger, index=True)
     actor: Mapped[str] = mapped_column(String(128))
     action: Mapped[str] = mapped_column(String(64), index=True)
+    location_id: Mapped[str | None] = mapped_column(String(36), index=True, default=None)
     result: Mapped[str] = mapped_column(String(32), default="success")
     detail: Mapped[str | None] = mapped_column(Text, default=None)
     duration_ms: Mapped[int | None] = mapped_column(Integer, default=None)
-    created_at: Mapped[dt] = mapped_column(DateTime(timezone=True), default_factory=lambda: dt.now(UTC), init=False, index=True)
+    created_at: Mapped[dt] = mapped_column(
+        DateTime(timezone=True), default_factory=lambda: dt.now(UTC), init=False, index=True
+    )
