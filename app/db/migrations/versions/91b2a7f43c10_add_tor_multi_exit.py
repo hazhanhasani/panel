@@ -5,6 +5,8 @@ Revises: 48a6bcb8bba1
 Create Date: 2026-09-15
 """
 
+from datetime import UTC, datetime as dt
+
 import sqlalchemy as sa
 from alembic import op
 
@@ -34,14 +36,47 @@ def upgrade() -> None:
         sa.Column("unhealthy_grace_period", sa.Integer(), nullable=False, server_default="900"),
         sa.Column("updated_at", sa.DateTime(timezone=True), nullable=False),
     )
-    op.execute(
-        sa.text(
-            "INSERT INTO tor_settings (id, feature_enabled, auto_repair, country_verification, health_check_interval, "
-            "max_restart_attempts, restart_backoff, xray_port_start, xray_port_end, socks_port_start, socks_port_end, "
-            "control_port_start, control_port_end, subscription_policy, unhealthy_grace_period, updated_at) "
-            "VALUES (1, false, true, true, 60, 5, '60,120,300,600,1800', 31000, 31999, 19000, 19999, "
-            "20000, 20999, 'grace', 900, CURRENT_TIMESTAMP)"
-        )
+    settings_table = sa.table(
+        "tor_settings",
+        sa.column("id", sa.Integer()),
+        sa.column("feature_enabled", sa.Boolean()),
+        sa.column("auto_repair", sa.Boolean()),
+        sa.column("country_verification", sa.Boolean()),
+        sa.column("health_check_interval", sa.Integer()),
+        sa.column("max_restart_attempts", sa.Integer()),
+        sa.column("restart_backoff", sa.String()),
+        sa.column("xray_port_start", sa.Integer()),
+        sa.column("xray_port_end", sa.Integer()),
+        sa.column("socks_port_start", sa.Integer()),
+        sa.column("socks_port_end", sa.Integer()),
+        sa.column("control_port_start", sa.Integer()),
+        sa.column("control_port_end", sa.Integer()),
+        sa.column("subscription_policy", sa.String()),
+        sa.column("unhealthy_grace_period", sa.Integer()),
+        sa.column("updated_at", sa.DateTime(timezone=True)),
+    )
+    op.bulk_insert(
+        settings_table,
+        [
+            {
+                "id": 1,
+                "feature_enabled": False,
+                "auto_repair": True,
+                "country_verification": True,
+                "health_check_interval": 60,
+                "max_restart_attempts": 5,
+                "restart_backoff": "60,120,300,600,1800",
+                "xray_port_start": 31000,
+                "xray_port_end": 31999,
+                "socks_port_start": 19000,
+                "socks_port_end": 19999,
+                "control_port_start": 20000,
+                "control_port_end": 20999,
+                "subscription_policy": "grace",
+                "unhealthy_grace_period": 900,
+                "updated_at": dt.now(UTC),
+            }
+        ],
     )
 
     op.create_table(
@@ -95,7 +130,7 @@ def upgrade() -> None:
 
     op.create_table(
         "tor_location_events",
-        sa.Column("id", sa.BigInteger(), primary_key=True, autoincrement=True),
+        sa.Column("id", sa.Integer(), primary_key=True, autoincrement=True),
         sa.Column("location_id", sa.String(length=36), nullable=True),
         sa.Column("node_id", sa.BigInteger(), nullable=False),
         sa.Column("actor", sa.String(length=128), nullable=False),
