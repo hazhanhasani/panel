@@ -14,6 +14,9 @@ SELF_PATH="/usr/local/bin/bluepanel"
 DEFAULT_PORT="8000"
 HEALTH_TIMEOUT="${BLUEPANEL_HEALTH_TIMEOUT:-180}"
 ROLLBACK_IMAGE="bluepanel:rollback"
+VERSION_FILE="${INSTALL_DIR}/VERSION"
+ACME_HOME="${DATA_DIR}/acme"
+CERTS_DIR="${DATA_DIR}/certs"
 
 log() { printf '\033[1;34m[BluePanel]\033[0m %s\n' "$*"; }
 ok() { printf '\033[1;32m[BluePanel]\033[0m %s\n' "$*"; }
@@ -91,6 +94,17 @@ sync_source() {
   [ -f "${SOURCE_DIR}/docker-compose.bluepanel.yml" ] || die "docker-compose.bluepanel.yml is missing from source."
   [ -f "${SOURCE_DIR}/Dockerfile" ] || die "Dockerfile is missing from source."
   cp "${SOURCE_DIR}/docker-compose.bluepanel.yml" "$COMPOSE_FILE"
+}
+
+source_version() {
+  sed -nE 's/^__version__[[:space:]]*=[[:space:]]*"([^"]+)".*/\1/p' "${SOURCE_DIR}/app/version.py" | head -n1
+}
+
+record_installed_version() {
+  local version commit
+  version="$(source_version)"
+  commit="$(git -C "$SOURCE_DIR" rev-parse HEAD 2>/dev/null || printf 'unknown')"
+  printf 'version=%s\ncommit=%s\nupdated_at=%s\n' "${version:-unknown}" "$commit" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > "$VERSION_FILE"
 }
 
 set_env_value() {
@@ -184,8 +198,15 @@ start_stack() {
 }
 
 wait_for_health() {
-  local port id state health elapsed=0
+  local port id state health scheme curl_args elapsed=0
   port="$(service_port)"
+  scheme="http"
+  curl_args=(-fsS --max-time 5)
+  if grep -Eq '^[[:space:]]*UVICORN_SSL_CERTFILE[[:space:]]*=[[:space:]]*"?[^#[:space:]]+' "$ENV_FILE" &&
+     grep -Eq '^[[:space:]]*UVICORN_SSL_KEYFILE[[:space:]]*=[[:space:]]*"?[^#[:space:]]+' "$ENV_FILE"; then
+    scheme="https"
+    curl_args+=(-k)
+  fi
   id="$(container_id)"
   [ -n "$id" ] || { show_diagnostics; die "BluePanel container was not created."; }
 
@@ -200,7 +221,7 @@ wait_for_health() {
     fi
 
     if [ "$health" = "healthy" ]; then
-      if curl -fsS --max-time 5 "http://127.0.0.1:${port}/healthz" >/dev/null 2>&1; then
+      if curl "${curl_args[@]}" "${scheme}://127.0.0.1:${port}/healthz" >/dev/null 2>&1; then
         ok "BluePanel is healthy on port ${port}."
         return 0
       fi
@@ -244,7 +265,7 @@ print_access_info() {
   port="$(service_port)"
   ok "BluePanel is installed and healthy."
   log "Dashboard: http://YOUR_SERVER_IP:${port}/dashboard/"
-  log "Manager commands: bluepanel status | bluepanel logs | bluepanel doctor | bluepanel update"
+  log "Manager commands: bluepanel status | bluepanel ssl DOMAIN EMAIL | bluepanel generate-temp-key | bluepanel update"
 }
 
 cmd_install() {
@@ -258,12 +279,9 @@ cmd_install() {
   build_image
   start_stack
   wait_for_health
+  record_installed_version
   print_access_info
-  log "Generating one-time owner setup key..."
-  if ! compose exec -T bluepanel bluepanel-cli generate-temp-key; then
-    warn "Panel is healthy, but the setup key could not be generated automatically."
-    warn "Run: cd ${INSTALL_DIR} && docker compose -p ${APP_NAME} exec bluepanel bluepanel-cli generate-temp-key"
-  fi
+  log "Create the one-time owner key when ready: bluepanel generate-temp-key"
 }
 
 cmd_update() {
@@ -287,9 +305,90 @@ cmd_update() {
     exit 1
   fi
 
+  record_installed_version
   docker image rm "$ROLLBACK_IMAGE" >/dev/null 2>&1 || true
   docker image prune -f >/dev/null 2>&1 || true
   ok "BluePanel update completed and passed health checks."
+}
+
+valid_domain() {
+  local domain="$1"
+  [[ ${#domain} -le 253 && "$domain" =~ ^([A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)+[A-Za-z]{2,63}$ ]]
+}
+
+valid_email() {
+  [[ "$1" =~ ^[^[:space:]@]+@[^[:space:]@]+\.[^[:space:]@]+$ ]]
+}
+
+cmd_ssl() {
+  require_root
+  ensure_tools
+  ensure_docker
+  [ -f "$COMPOSE_FILE" ] || die "BluePanel is not installed. Run bluepanel install first."
+  [ -f "$ENV_FILE" ] || die "BluePanel environment file is missing: ${ENV_FILE}"
+
+  local domain="${1:-}" email="${2:-}"
+  if [ -z "$domain" ]; then
+    read -r -p "Panel domain (for example panel.example.com): " domain
+  fi
+  if [ -z "$email" ]; then
+    read -r -p "Email for Let's Encrypt expiry notices: " email
+  fi
+  domain="${domain,,}"
+  valid_domain "$domain" || die "Invalid domain name: ${domain}"
+  valid_email "$email" || die "Invalid email address: ${email}"
+
+  if port_in_use 80; then
+    die "TCP port 80 is already in use. Stop the service using it, then run this command again."
+  fi
+
+  mkdir -p "$ACME_HOME" "${CERTS_DIR}/${domain}"
+  if [ ! -x "${ACME_HOME}/acme.sh" ]; then
+    log "Installing acme.sh in ${ACME_HOME}..."
+    curl -fsSL https://raw.githubusercontent.com/acmesh-official/acme.sh/master/acme.sh \
+      -o "${ACME_HOME}/acme.sh"
+    chmod 700 "${ACME_HOME}/acme.sh"
+    "${ACME_HOME}/acme.sh" --install --home "$ACME_HOME" --accountemail "$email"
+  fi
+
+  log "Requesting a Let's Encrypt certificate for ${domain}..."
+  "$ACME_HOME/acme.sh" --home "$ACME_HOME" --issue --standalone --server letsencrypt \
+    --httpport 80 -d "$domain"
+  "$ACME_HOME/acme.sh" --home "$ACME_HOME" --install-cert -d "$domain" \
+    --fullchain-file "${CERTS_DIR}/${domain}/fullchain.pem" \
+    --key-file "${CERTS_DIR}/${domain}/key.pem" \
+    --reloadcmd "$SELF_PATH restart"
+  chmod 600 "${CERTS_DIR}/${domain}/key.pem"
+
+  set_env_value "UVICORN_SSL_CERTFILE" "\"/var/lib/bluepanel/certs/${domain}/fullchain.pem\""
+  set_env_value "UVICORN_SSL_KEYFILE" "\"/var/lib/bluepanel/certs/${domain}/key.pem\""
+  set_env_value "UVICORN_SSL_CA_TYPE" "\"public\""
+  start_stack
+  wait_for_health
+  ok "SSL enabled. Dashboard: https://${domain}:$(service_port)/dashboard/"
+}
+
+cmd_cli() {
+  [ -f "$COMPOSE_FILE" ] || die "BluePanel is not installed."
+  [ "$#" -gt 0 ] || die "Usage: bluepanel cli <command> [arguments]"
+  compose exec -T bluepanel bluepanel-cli "$@"
+}
+
+cmd_generate_temp_key() {
+  log "Generating a one-time owner setup key..."
+  cmd_cli generate-temp-key
+}
+
+cmd_version() {
+  local installed="unknown" commit="unknown"
+  if [ -f "$VERSION_FILE" ]; then
+    installed="$(sed -nE 's/^version=(.*)$/\1/p' "$VERSION_FILE" | head -n1)"
+    commit="$(sed -nE 's/^commit=(.*)$/\1/p' "$VERSION_FILE" | head -n1)"
+  elif [ -f "${SOURCE_DIR}/app/version.py" ]; then
+    installed="$(source_version)"
+    commit="$(git -C "$SOURCE_DIR" rev-parse HEAD 2>/dev/null || printf 'unknown')"
+  fi
+  printf 'BluePanel %s\nCommit: %s\nChannel: %s/%s\n' "${installed:-unknown}" "$commit" "$REPO" "$BRANCH"
 }
 
 cmd_restart() {
@@ -315,7 +414,7 @@ cmd_doctor() {
   [ -f "$ENV_FILE" ] || die "BluePanel environment file is missing."
   ensure_docker
 
-  local port id state health
+  local port id state health scheme="http" curl_args=(-fsS --max-time 5)
   port="$(service_port)"
   validate_port "$port"
 
@@ -332,7 +431,13 @@ cmd_doctor() {
   health="$(docker inspect -f '{{if .State.Health}}{{.State.Health.Status}}{{else}}none{{end}}' "$id")"
   log "Container state: ${state}; health: ${health}"
 
-  if curl -fsS --max-time 5 "http://127.0.0.1:${port}/healthz" >/dev/null; then
+  if grep -Eq '^[[:space:]]*UVICORN_SSL_CERTFILE[[:space:]]*=[[:space:]]*"?[^#[:space:]]+' "$ENV_FILE" &&
+     grep -Eq '^[[:space:]]*UVICORN_SSL_KEYFILE[[:space:]]*=[[:space:]]*"?[^#[:space:]]+' "$ENV_FILE"; then
+    scheme="https"
+    curl_args+=(-k)
+  fi
+
+  if curl "${curl_args[@]}" "${scheme}://127.0.0.1:${port}/healthz" >/dev/null; then
     ok "HTTP health endpoint: OK"
   else
     show_diagnostics
@@ -362,6 +467,10 @@ Usage:
   bluepanel restart
   bluepanel status
   bluepanel logs
+  bluepanel ssl DOMAIN EMAIL
+  bluepanel generate-temp-key
+  bluepanel cli COMMAND [ARGUMENTS]
+  bluepanel version
   bluepanel doctor
   bluepanel uninstall
 
@@ -382,8 +491,13 @@ case "${1:-install}" in
   restart) cmd_restart ;;
   status) cmd_status ;;
   logs) cmd_logs ;;
+  ssl) shift; cmd_ssl "$@" ;;
+  generate-temp-key|owner-token) cmd_generate_temp_key ;;
+  cli) shift; cmd_cli "$@" ;;
+  version) cmd_version ;;
   doctor) cmd_doctor ;;
   uninstall) cmd_uninstall ;;
   -h|--help|help) usage ;;
   *) usage; exit 1 ;;
 esac
+
