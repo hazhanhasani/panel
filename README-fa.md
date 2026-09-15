@@ -17,6 +17,7 @@ bluepanel status
 bluepanel logs
 bluepanel update
 bluepanel restart
+bluepanel version
 ```
 
 فایل‌های برنامه در `/opt/bluepanel` و داده‌های دائمی در `/var/lib/bluepanel` نگهداری می‌شوند.
@@ -27,12 +28,23 @@ bluepanel restart
 http://SERVER_IP:8000/dashboard/
 ```
 
-برای ساخت کلید راه‌اندازی Owner:
+برای ساخت کلید موقت یک‌بارمصرف و ایجاد حساب Owner:
 
 ```bash
-cd /opt/bluepanel
-docker compose -p bluepanel exec bluepanel bluepanel-cli generate-temp-key
+bluepanel generate-temp-key
+# یا اجرای مستقیم هر فرمان CLI داخلی:
+bluepanel cli generate-temp-key
 ```
+
+## فعال‌سازی SSL بعد از نصب
+
+ابتدا رکورد A/AAAA دامنه را به IP سرور متصل و ورودی TCP پورت 80 را باز کنید. سپس، بعد از اینکه پنل با HTTP بالا آمد، اجرا کنید:
+
+```bash
+bluepanel ssl panel.example.com admin@example.com
+```
+
+این فرمان با acme.sh از Let's Encrypt گواهی می‌گیرد، تمدید خودکار را تنظیم می‌کند، مسیر گواهی‌ها را در `/opt/bluepanel/.env` ثبت می‌کند و پنل را با HTTPS بازراه‌اندازی می‌کند. داده‌های گواهی در `/var/lib/bluepanel/certs` باقی می‌مانند.
 
 ## به‌روزرسانی
 
@@ -42,10 +54,11 @@ docker compose -p bluepanel exec bluepanel bluepanel-cli generate-temp-key
 https://github.com/hazhanhasani/panel
 ```
 
-سورس شاخه `main` به‌روزرسانی می‌شود، Docker image محلی دوباره ساخته می‌شود و سرویس BluePanel راه‌اندازی مجدد می‌شود. نصب و آپدیت به اسکریپت یا Docker image پروژه بالادستی وابسته نیست.
+سورس شاخه `main` به آخرین commit رسمی به‌روزرسانی می‌شود، Docker image محلی دوباره ساخته می‌شود، مهاجرت‌های دیتابیس اجرا می‌شوند و سرویس BluePanel راه‌اندازی مجدد می‌شود. پیش از آپدیت از SQLite و image فعلی نسخهٔ بازگشت نگه داشته می‌شود. نسخه و commit نصب‌شده را با `bluepanel version` ببینید.
 
 بررسی نسخه جدید پنل نیز از Releaseهای همین مخزن انجام می‌شود و بررسی نسخه Node از `hazhanhasani/node` انجام می‌گیرد.
 
 ## مجوز
 
 BluePanel بر پایه یک پروژه متن‌باز توسعه یافته و فایل مجوز و اعلان‌های قانونی موردنیاز مجوز اصلی حفظ می‌شوند. نام تجاری، مسیر نصب، Releaseها و منبع آپدیت BluePanel مستقل هستند.
+
