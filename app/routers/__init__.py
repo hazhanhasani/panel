@@ -15,6 +15,7 @@ from . import (
     setup,
     subscription,
     system,
+    tor,
     user,
     user_template,
 )
@@ -34,6 +35,7 @@ routers = [
     client_template.router,
     host.router,
     node.router,
+    tor.router,
     user.router,
     subscription.router,
     user_template.router,
