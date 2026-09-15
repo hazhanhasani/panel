@@ -11,7 +11,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.pool import NullPool, StaticPool
 
-from app.db import base
+from app.db import base, models as _models  # noqa: F401 - register every table in Base.metadata
 from config import database_settings
 
 
