@@ -1,7 +1,7 @@
 {
   "name": "bluepanel-dashboard",
   "private": true,
-  "version": "5.5.1",
+  "version": "5.5.2",
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
