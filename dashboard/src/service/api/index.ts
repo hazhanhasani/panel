@@ -2951,9 +2951,9 @@ export const getBaseUrl = () => {
 /**
  * @summary Base
  */
-export const base = async ( options?: RequestInit): Promise<stringSuccess> => {
+export const base = async ( options?: RequestInit): Promise<string> => {
 
-  return orvalFetcher<stringSuccess>(getBaseUrl(),
+  return orvalFetcher<string>(getBaseUrl(),
   {
     ...options,
     method: 'GET'
@@ -3052,9 +3052,9 @@ export const getHealthUrl = () => {
 /**
  * @summary Health
  */
-export const health = async ( options?: RequestInit): Promise<Health200Success> => {
+export const health = async ( options?: RequestInit): Promise<Health200> => {
 
-  return orvalFetcher<Health200Success>(getHealthUrl(),
+  return orvalFetcher<Health200>(getHealthUrl(),
   {
     ...options,
     method: 'GET'
@@ -3154,7 +3154,7 @@ export const getAdminTokenUrl = () => {
  * Authenticate an admin and issue a token.
  * @summary Admin Token
  */
-export const adminToken = async (bodyAdminToken: BodyAdminToken, options?: RequestInit): Promise<TokenSuccess> => {
+export const adminToken = async (bodyAdminToken: BodyAdminToken, options?: RequestInit): Promise<Token> => {
     const formUrlEncoded = new URLSearchParams();
 if(bodyAdminToken.grant_type !== undefined && bodyAdminToken.grant_type !== null) {
  formUrlEncoded.append(`grant_type`, bodyAdminToken.grant_type);
@@ -3171,7 +3171,7 @@ if(bodyAdminToken.client_secret !== undefined && bodyAdminToken.client_secret !=
  formUrlEncoded.append(`client_secret`, bodyAdminToken.client_secret);
  }
 
-  return orvalFetcher<TokenSuccess>(getAdminTokenUrl(),
+  return orvalFetcher<Token>(getAdminTokenUrl(),
   {
     ...options,
     method: 'POST',
@@ -3241,9 +3241,9 @@ export const getAdminMiniAppTokenUrl = () => {
  * Authenticate an admin via Telegram MiniApp and issue a token.
  * @summary Admin Mini App Token
  */
-export const adminMiniAppToken = async ( options?: RequestInit): Promise<unknownSuccess> => {
+export const adminMiniAppToken = async ( options?: RequestInit): Promise<unknown> => {
 
-  return orvalFetcher<unknownSuccess>(getAdminMiniAppTokenUrl(),
+  return orvalFetcher<unknown>(getAdminMiniAppTokenUrl(),
   {
     ...options,
     method: 'POST'
@@ -3313,9 +3313,9 @@ export const getGetCurrentAdminUrl = () => {
  * Retrieve the current authenticated admin.
  * @summary Get Current Admin
  */
-export const getCurrentAdmin = async ( options?: RequestInit): Promise<AdminDetailsSuccess> => {
+export const getCurrentAdmin = async ( options?: RequestInit): Promise<AdminDetails> => {
 
-  return orvalFetcher<AdminDetailsSuccess>(getGetCurrentAdminUrl(),
+  return orvalFetcher<AdminDetails>(getGetCurrentAdminUrl(),
   {
     ...options,
     method: 'GET'
@@ -3415,9 +3415,9 @@ export const getCreateAdminUrl = () => {
  * Create a new admin.
  * @summary Create Admin
  */
-export const createAdmin = async (adminCreate: AdminCreate, options?: RequestInit): Promise<AdminDetailsSuccess> => {
+export const createAdmin = async (adminCreate: AdminCreate, options?: RequestInit): Promise<AdminDetails> => {
 
-  return orvalFetcher<AdminDetailsSuccess>(getCreateAdminUrl(),
+  return orvalFetcher<AdminDetails>(getCreateAdminUrl(),
   {
     ...options,
     method: 'POST',
@@ -3488,9 +3488,9 @@ export const getModifyAdminUrl = (username: string,) => {
  * @summary Modify Admin
  */
 export const modifyAdmin = async (username: string,
-    adminModify: AdminModify, options?: RequestInit): Promise<AdminDetailsSuccess> => {
+    adminModify: AdminModify, options?: RequestInit): Promise<AdminDetails> => {
 
-  return orvalFetcher<AdminDetailsSuccess>(getModifyAdminUrl(username),
+  return orvalFetcher<AdminDetails>(getModifyAdminUrl(username),
   {
     ...options,
     method: 'PUT',
@@ -3560,9 +3560,9 @@ export const getRemoveAdminUrl = (username: string,) => {
  * Remove an admin from the database.
  * @summary Remove Admin
  */
-export const removeAdmin = async (username: string, options?: RequestInit): Promise<voidSuccess> => {
+export const removeAdmin = async (username: string, options?: RequestInit): Promise<void> => {
 
-  return orvalFetcher<voidSuccess>(getRemoveAdminUrl(username),
+  return orvalFetcher<void>(getRemoveAdminUrl(username),
   {
     ...options,
     method: 'DELETE'
@@ -3632,9 +3632,9 @@ export const getModifyAdminByUsernameUrl = (username: string,) => {
  * @summary Modify Admin By Username
  */
 export const modifyAdminByUsername = async (username: string,
-    adminModify: AdminModify, options?: RequestInit): Promise<AdminDetailsSuccess> => {
+    adminModify: AdminModify, options?: RequestInit): Promise<AdminDetails> => {
 
-  return orvalFetcher<AdminDetailsSuccess>(getModifyAdminByUsernameUrl(username),
+  return orvalFetcher<AdminDetails>(getModifyAdminByUsernameUrl(username),
   {
     ...options,
     method: 'PUT',
@@ -3703,9 +3703,9 @@ export const getRemoveAdminByUsernameUrl = (username: string,) => {
 /**
  * @summary Remove Admin By Username
  */
-export const removeAdminByUsername = async (username: string, options?: RequestInit): Promise<voidSuccess> => {
+export const removeAdminByUsername = async (username: string, options?: RequestInit): Promise<void> => {
 
-  return orvalFetcher<voidSuccess>(getRemoveAdminByUsernameUrl(username),
+  return orvalFetcher<void>(getRemoveAdminByUsernameUrl(username),
   {
     ...options,
     method: 'DELETE'
@@ -3775,9 +3775,9 @@ export const getModifyAdminByIdUrl = (adminId: number,) => {
  * @summary Modify Admin By Id
  */
 export const modifyAdminById = async (adminId: number,
-    adminModify: AdminModify, options?: RequestInit): Promise<AdminDetailsSuccess> => {
+    adminModify: AdminModify, options?: RequestInit): Promise<AdminDetails> => {
 
-  return orvalFetcher<AdminDetailsSuccess>(getModifyAdminByIdUrl(adminId),
+  return orvalFetcher<AdminDetails>(getModifyAdminByIdUrl(adminId),
   {
     ...options,
     method: 'PUT',
@@ -3846,9 +3846,9 @@ export const getRemoveAdminByIdUrl = (adminId: number,) => {
 /**
  * @summary Remove Admin By Id
  */
-export const removeAdminById = async (adminId: number, options?: RequestInit): Promise<voidSuccess> => {
+export const removeAdminById = async (adminId: number, options?: RequestInit): Promise<void> => {
 
-  return orvalFetcher<voidSuccess>(getRemoveAdminByIdUrl(adminId),
+  return orvalFetcher<void>(getRemoveAdminByIdUrl(adminId),
   {
     ...options,
     method: 'DELETE'
@@ -3933,9 +3933,9 @@ export const getGetAdminsUrl = (params?: GetAdminsParams,) => {
  * Fetch a list of admins with optional filters for pagination and username.
  * @summary Get Admins
  */
-export const getAdmins = async (params?: GetAdminsParams, options?: RequestInit): Promise<AdminsResponseSuccess> => {
+export const getAdmins = async (params?: GetAdminsParams, options?: RequestInit): Promise<AdminsResponse> => {
 
-  return orvalFetcher<AdminsResponseSuccess>(getGetAdminsUrl(params),
+  return orvalFetcher<AdminsResponse>(getGetAdminsUrl(params),
   {
     ...options,
     method: 'GET'
@@ -4050,9 +4050,9 @@ export const getGetAdminsSimpleUrl = (params?: GetAdminsSimpleParams,) => {
  * Returns only id and username for admins. Optimized for dropdowns and autocomplete.
  * @summary Get lightweight admin list
  */
-export const getAdminsSimple = async (params?: GetAdminsSimpleParams, options?: RequestInit): Promise<AdminsSimpleResponseSuccess> => {
+export const getAdminsSimple = async (params?: GetAdminsSimpleParams, options?: RequestInit): Promise<AdminsSimpleResponse> => {
 
-  return orvalFetcher<AdminsSimpleResponseSuccess>(getGetAdminsSimpleUrl(params),
+  return orvalFetcher<AdminsSimpleResponse>(getGetAdminsSimpleUrl(params),
   {
     ...options,
     method: 'GET'
@@ -4161,9 +4161,9 @@ export const getGetAdminUsageUrl = (username: string,
  * @summary Get Admin Usage
  */
 export const getAdminUsage = async (username: string,
-    params?: GetAdminUsageParams, options?: RequestInit): Promise<UserUsageStatsListSuccess> => {
+    params?: GetAdminUsageParams, options?: RequestInit): Promise<UserUsageStatsList> => {
 
-  return orvalFetcher<UserUsageStatsListSuccess>(getGetAdminUsageUrl(username,params),
+  return orvalFetcher<UserUsageStatsList>(getGetAdminUsageUrl(username,params),
   {
     ...options,
     method: 'GET'
@@ -4277,9 +4277,9 @@ export const getGetAdminUsageByUsernameUrl = (username: string,
  * @summary Get Admin Usage By Username
  */
 export const getAdminUsageByUsername = async (username: string,
-    params?: GetAdminUsageByUsernameParams, options?: RequestInit): Promise<UserUsageStatsListSuccess> => {
+    params?: GetAdminUsageByUsernameParams, options?: RequestInit): Promise<UserUsageStatsList> => {
 
-  return orvalFetcher<UserUsageStatsListSuccess>(getGetAdminUsageByUsernameUrl(username,params),
+  return orvalFetcher<UserUsageStatsList>(getGetAdminUsageByUsernameUrl(username,params),
   {
     ...options,
     method: 'GET'
@@ -4393,9 +4393,9 @@ export const getGetAdminUsageByIdUrl = (adminId: number,
  * @summary Get Admin Usage By Id
  */
 export const getAdminUsageById = async (adminId: number,
-    params?: GetAdminUsageByIdParams, options?: RequestInit): Promise<UserUsageStatsListSuccess> => {
+    params?: GetAdminUsageByIdParams, options?: RequestInit): Promise<UserUsageStatsList> => {
 
-  return orvalFetcher<UserUsageStatsListSuccess>(getGetAdminUsageByIdUrl(adminId,params),
+  return orvalFetcher<UserUsageStatsList>(getGetAdminUsageByIdUrl(adminId,params),
   {
     ...options,
     method: 'GET'
@@ -4501,9 +4501,9 @@ export const getDisableAllActiveUsersUrl = (username: string,) => {
  * Disable all active users under a specific admin.
  * @summary Disable All Active Users
  */
-export const disableAllActiveUsers = async (username: string, options?: RequestInit): Promise<unknownSuccess> => {
+export const disableAllActiveUsers = async (username: string, options?: RequestInit): Promise<unknown> => {
 
-  return orvalFetcher<unknownSuccess>(getDisableAllActiveUsersUrl(username),
+  return orvalFetcher<unknown>(getDisableAllActiveUsersUrl(username),
   {
     ...options,
     method: 'POST'
@@ -4572,9 +4572,9 @@ export const getDisableAllActiveUsersByUsernameUrl = (username: string,) => {
 /**
  * @summary Disable All Active Users By Username
  */
-export const disableAllActiveUsersByUsername = async (username: string, options?: RequestInit): Promise<unknownSuccess> => {
+export const disableAllActiveUsersByUsername = async (username: string, options?: RequestInit): Promise<unknown> => {
 
-  return orvalFetcher<unknownSuccess>(getDisableAllActiveUsersByUsernameUrl(username),
+  return orvalFetcher<unknown>(getDisableAllActiveUsersByUsernameUrl(username),
   {
     ...options,
     method: 'POST'
@@ -4643,9 +4643,9 @@ export const getDisableAllActiveUsersByIdUrl = (adminId: number,) => {
 /**
  * @summary Disable All Active Users By Id
  */
-export const disableAllActiveUsersById = async (adminId: number, options?: RequestInit): Promise<unknownSuccess> => {
+export const disableAllActiveUsersById = async (adminId: number, options?: RequestInit): Promise<unknown> => {
 
-  return orvalFetcher<unknownSuccess>(getDisableAllActiveUsersByIdUrl(adminId),
+  return orvalFetcher<unknown>(getDisableAllActiveUsersByIdUrl(adminId),
   {
     ...options,
     method: 'POST'
@@ -4715,9 +4715,9 @@ export const getActivateAllDisabledUsersUrl = (username: string,) => {
  * Activate all disabled users under a specific admin.
  * @summary Activate All Disabled Users
  */
-export const activateAllDisabledUsers = async (username: string, options?: RequestInit): Promise<unknownSuccess> => {
+export const activateAllDisabledUsers = async (username: string, options?: RequestInit): Promise<unknown> => {
 
-  return orvalFetcher<unknownSuccess>(getActivateAllDisabledUsersUrl(username),
+  return orvalFetcher<unknown>(getActivateAllDisabledUsersUrl(username),
   {
     ...options,
     method: 'POST'
@@ -4786,9 +4786,9 @@ export const getActivateAllDisabledUsersByUsernameUrl = (username: string,) => {
 /**
  * @summary Activate All Disabled Users By Username
  */
-export const activateAllDisabledUsersByUsername = async (username: string, options?: RequestInit): Promise<unknownSuccess> => {
+export const activateAllDisabledUsersByUsername = async (username: string, options?: RequestInit): Promise<unknown> => {
 
-  return orvalFetcher<unknownSuccess>(getActivateAllDisabledUsersByUsernameUrl(username),
+  return orvalFetcher<unknown>(getActivateAllDisabledUsersByUsernameUrl(username),
   {
     ...options,
     method: 'POST'
@@ -4857,9 +4857,9 @@ export const getActivateAllDisabledUsersByIdUrl = (adminId: number,) => {
 /**
  * @summary Activate All Disabled Users By Id
  */
-export const activateAllDisabledUsersById = async (adminId: number, options?: RequestInit): Promise<unknownSuccess> => {
+export const activateAllDisabledUsersById = async (adminId: number, options?: RequestInit): Promise<unknown> => {
 
-  return orvalFetcher<unknownSuccess>(getActivateAllDisabledUsersByIdUrl(adminId),
+  return orvalFetcher<unknown>(getActivateAllDisabledUsersByIdUrl(adminId),
   {
     ...options,
     method: 'POST'
@@ -4929,9 +4929,9 @@ export const getRemoveAllUsersUrl = (username: string,) => {
  * Remove all users under a specific admin.
  * @summary Remove All Users
  */
-export const removeAllUsers = async (username: string, options?: RequestInit): Promise<unknownSuccess> => {
+export const removeAllUsers = async (username: string, options?: RequestInit): Promise<unknown> => {
 
-  return orvalFetcher<unknownSuccess>(getRemoveAllUsersUrl(username),
+  return orvalFetcher<unknown>(getRemoveAllUsersUrl(username),
   {
     ...options,
     method: 'DELETE'
@@ -5000,9 +5000,9 @@ export const getRemoveAllUsersByUsernameUrl = (username: string,) => {
 /**
  * @summary Remove All Users By Username
  */
-export const removeAllUsersByUsername = async (username: string, options?: RequestInit): Promise<unknownSuccess> => {
+export const removeAllUsersByUsername = async (username: string, options?: RequestInit): Promise<unknown> => {
 
-  return orvalFetcher<unknownSuccess>(getRemoveAllUsersByUsernameUrl(username),
+  return orvalFetcher<unknown>(getRemoveAllUsersByUsernameUrl(username),
   {
     ...options,
     method: 'DELETE'
@@ -5071,9 +5071,9 @@ export const getRemoveAllUsersByIdUrl = (adminId: number,) => {
 /**
  * @summary Remove All Users By Id
  */
-export const removeAllUsersById = async (adminId: number, options?: RequestInit): Promise<unknownSuccess> => {
+export const removeAllUsersById = async (adminId: number, options?: RequestInit): Promise<unknown> => {
 
-  return orvalFetcher<unknownSuccess>(getRemoveAllUsersByIdUrl(adminId),
+  return orvalFetcher<unknown>(getRemoveAllUsersByIdUrl(adminId),
   {
     ...options,
     method: 'DELETE'
@@ -5143,9 +5143,9 @@ export const getResetAdminUsageUrl = (username: string,) => {
  * Resets usage of admin.
  * @summary Reset Admin Usage
  */
-export const resetAdminUsage = async (username: string, options?: RequestInit): Promise<AdminDetailsSuccess> => {
+export const resetAdminUsage = async (username: string, options?: RequestInit): Promise<AdminDetails> => {
 
-  return orvalFetcher<AdminDetailsSuccess>(getResetAdminUsageUrl(username),
+  return orvalFetcher<AdminDetails>(getResetAdminUsageUrl(username),
   {
     ...options,
     method: 'POST'
@@ -5214,9 +5214,9 @@ export const getResetAdminUsageByUsernameUrl = (username: string,) => {
 /**
  * @summary Reset Admin Usage By Username
  */
-export const resetAdminUsageByUsername = async (username: string, options?: RequestInit): Promise<AdminDetailsSuccess> => {
+export const resetAdminUsageByUsername = async (username: string, options?: RequestInit): Promise<AdminDetails> => {
 
-  return orvalFetcher<AdminDetailsSuccess>(getResetAdminUsageByUsernameUrl(username),
+  return orvalFetcher<AdminDetails>(getResetAdminUsageByUsernameUrl(username),
   {
     ...options,
     method: 'POST'
@@ -5285,9 +5285,9 @@ export const getResetAdminUsageByIdUrl = (adminId: number,) => {
 /**
  * @summary Reset Admin Usage By Id
  */
-export const resetAdminUsageById = async (adminId: number, options?: RequestInit): Promise<AdminDetailsSuccess> => {
+export const resetAdminUsageById = async (adminId: number, options?: RequestInit): Promise<AdminDetails> => {
 
-  return orvalFetcher<AdminDetailsSuccess>(getResetAdminUsageByIdUrl(adminId),
+  return orvalFetcher<AdminDetails>(getResetAdminUsageByIdUrl(adminId),
   {
     ...options,
     method: 'POST'
@@ -5357,9 +5357,9 @@ export const getBulkDeleteAdminsUrl = () => {
  * Delete selected admins by ID.
  * @summary Bulk Delete Admins
  */
-export const bulkDeleteAdmins = async (bulkAdminSelection: BulkAdminSelection, options?: RequestInit): Promise<RemoveAdminsResponseSuccess> => {
+export const bulkDeleteAdmins = async (bulkAdminSelection: BulkAdminSelection, options?: RequestInit): Promise<RemoveAdminsResponse> => {
 
-  return orvalFetcher<RemoveAdminsResponseSuccess>(getBulkDeleteAdminsUrl(),
+  return orvalFetcher<RemoveAdminsResponse>(getBulkDeleteAdminsUrl(),
   {
     ...options,
     method: 'POST',
@@ -5429,9 +5429,9 @@ export const getBulkResetAdminsUsageUrl = () => {
  * Reset usage for selected admins by ID.
  * @summary Bulk Reset Admins Usage
  */
-export const bulkResetAdminsUsage = async (bulkAdminSelection: BulkAdminSelection, options?: RequestInit): Promise<BulkAdminsActionResponseSuccess> => {
+export const bulkResetAdminsUsage = async (bulkAdminSelection: BulkAdminSelection, options?: RequestInit): Promise<BulkAdminsActionResponse> => {
 
-  return orvalFetcher<BulkAdminsActionResponseSuccess>(getBulkResetAdminsUsageUrl(),
+  return orvalFetcher<BulkAdminsActionResponse>(getBulkResetAdminsUsageUrl(),
   {
     ...options,
     method: 'POST',
@@ -5501,9 +5501,9 @@ export const getBulkDisableAdminsUrl = () => {
  * Disable selected admins by ID.
  * @summary Bulk Disable Admins
  */
-export const bulkDisableAdmins = async (bulkAdminSelection: BulkAdminSelection, options?: RequestInit): Promise<BulkAdminsActionResponseSuccess> => {
+export const bulkDisableAdmins = async (bulkAdminSelection: BulkAdminSelection, options?: RequestInit): Promise<BulkAdminsActionResponse> => {
 
-  return orvalFetcher<BulkAdminsActionResponseSuccess>(getBulkDisableAdminsUrl(),
+  return orvalFetcher<BulkAdminsActionResponse>(getBulkDisableAdminsUrl(),
   {
     ...options,
     method: 'POST',
@@ -5573,9 +5573,9 @@ export const getBulkEnableAdminsUrl = () => {
  * Enable selected admins by ID.
  * @summary Bulk Enable Admins
  */
-export const bulkEnableAdmins = async (bulkAdminSelection: BulkAdminSelection, options?: RequestInit): Promise<BulkAdminsActionResponseSuccess> => {
+export const bulkEnableAdmins = async (bulkAdminSelection: BulkAdminSelection, options?: RequestInit): Promise<BulkAdminsActionResponse> => {
 
-  return orvalFetcher<BulkAdminsActionResponseSuccess>(getBulkEnableAdminsUrl(),
+  return orvalFetcher<BulkAdminsActionResponse>(getBulkEnableAdminsUrl(),
   {
     ...options,
     method: 'POST',
@@ -5645,9 +5645,9 @@ export const getBulkDisableAllActiveUsersUrl = () => {
  * Disable all active users under selected admins.
  * @summary Bulk Disable All Active Users
  */
-export const bulkDisableAllActiveUsers = async (bulkAdminSelection: BulkAdminSelection, options?: RequestInit): Promise<BulkAdminsActionResponseSuccess> => {
+export const bulkDisableAllActiveUsers = async (bulkAdminSelection: BulkAdminSelection, options?: RequestInit): Promise<BulkAdminsActionResponse> => {
 
-  return orvalFetcher<BulkAdminsActionResponseSuccess>(getBulkDisableAllActiveUsersUrl(),
+  return orvalFetcher<BulkAdminsActionResponse>(getBulkDisableAllActiveUsersUrl(),
   {
     ...options,
     method: 'POST',
@@ -5717,9 +5717,9 @@ export const getBulkActivateAllDisabledUsersUrl = () => {
  * Activate all disabled users under selected admins.
  * @summary Bulk Activate All Disabled Users
  */
-export const bulkActivateAllDisabledUsers = async (bulkAdminSelection: BulkAdminSelection, options?: RequestInit): Promise<BulkAdminsActionResponseSuccess> => {
+export const bulkActivateAllDisabledUsers = async (bulkAdminSelection: BulkAdminSelection, options?: RequestInit): Promise<BulkAdminsActionResponse> => {
 
-  return orvalFetcher<BulkAdminsActionResponseSuccess>(getBulkActivateAllDisabledUsersUrl(),
+  return orvalFetcher<BulkAdminsActionResponse>(getBulkActivateAllDisabledUsersUrl(),
   {
     ...options,
     method: 'POST',
@@ -5789,9 +5789,9 @@ export const getBulkRemoveAllUsersUrl = () => {
  * Remove all users under selected admins.
  * @summary Bulk Remove All Users
  */
-export const bulkRemoveAllUsers = async (bulkAdminSelection: BulkAdminSelection, options?: RequestInit): Promise<BulkAdminsActionResponseSuccess> => {
+export const bulkRemoveAllUsers = async (bulkAdminSelection: BulkAdminSelection, options?: RequestInit): Promise<BulkAdminsActionResponse> => {
 
-  return orvalFetcher<BulkAdminsActionResponseSuccess>(getBulkRemoveAllUsersUrl(),
+  return orvalFetcher<BulkAdminsActionResponse>(getBulkRemoveAllUsersUrl(),
   {
     ...options,
     method: 'DELETE',
@@ -5860,9 +5860,9 @@ export const getCreateApiKeyUrl = () => {
 /**
  * @summary Create Api Key
  */
-export const createApiKey = async (aPIKeyCreate: APIKeyCreate, options?: RequestInit): Promise<APIKeyCreateResponseSuccess> => {
+export const createApiKey = async (aPIKeyCreate: APIKeyCreate, options?: RequestInit): Promise<APIKeyCreateResponse> => {
 
-  return orvalFetcher<APIKeyCreateResponseSuccess>(getCreateApiKeyUrl(),
+  return orvalFetcher<APIKeyCreateResponse>(getCreateApiKeyUrl(),
   {
     ...options,
     method: 'POST',
@@ -5938,9 +5938,9 @@ export const getListApiKeysUrl = (params?: ListApiKeysParams,) => {
 /**
  * @summary List Api Keys
  */
-export const listApiKeys = async (params?: ListApiKeysParams, options?: RequestInit): Promise<APIKeysResponseSuccess> => {
+export const listApiKeys = async (params?: ListApiKeysParams, options?: RequestInit): Promise<APIKeysResponse> => {
 
-  return orvalFetcher<APIKeysResponseSuccess>(getListApiKeysUrl(params),
+  return orvalFetcher<APIKeysResponse>(getListApiKeysUrl(params),
   {
     ...options,
     method: 'GET'
@@ -6039,9 +6039,9 @@ export const getBulkDeleteApiKeysUrl = () => {
 /**
  * @summary Bulk Delete Api Keys
  */
-export const bulkDeleteApiKeys = async (bulkAPIKeySelection: BulkAPIKeySelection, options?: RequestInit): Promise<RemoveAPIKeysResponseSuccess> => {
+export const bulkDeleteApiKeys = async (bulkAPIKeySelection: BulkAPIKeySelection, options?: RequestInit): Promise<RemoveAPIKeysResponse> => {
 
-  return orvalFetcher<RemoveAPIKeysResponseSuccess>(getBulkDeleteApiKeysUrl(),
+  return orvalFetcher<RemoveAPIKeysResponse>(getBulkDeleteApiKeysUrl(),
   {
     ...options,
     method: 'POST',
@@ -6111,9 +6111,9 @@ export const getModifyApiKeyUrl = (keyId: number,) => {
  * @summary Modify Api Key
  */
 export const modifyApiKey = async (keyId: number,
-    aPIKeyUpdate: APIKeyUpdate, options?: RequestInit): Promise<APIKeyResponseSuccess> => {
+    aPIKeyUpdate: APIKeyUpdate, options?: RequestInit): Promise<APIKeyResponse> => {
 
-  return orvalFetcher<APIKeyResponseSuccess>(getModifyApiKeyUrl(keyId),
+  return orvalFetcher<APIKeyResponse>(getModifyApiKeyUrl(keyId),
   {
     ...options,
     method: 'PATCH',
@@ -6182,9 +6182,9 @@ export const getGetApiKeyUrl = (keyId: number,) => {
 /**
  * @summary Get Api Key
  */
-export const getApiKey = async (keyId: number, options?: RequestInit): Promise<APIKeyResponseSuccess> => {
+export const getApiKey = async (keyId: number, options?: RequestInit): Promise<APIKeyResponse> => {
 
-  return orvalFetcher<APIKeyResponseSuccess>(getGetApiKeyUrl(keyId),
+  return orvalFetcher<APIKeyResponse>(getGetApiKeyUrl(keyId),
   {
     ...options,
     method: 'GET'
@@ -6283,9 +6283,9 @@ export const getRemoveApiKeyUrl = (keyId: number,) => {
 /**
  * @summary Remove Api Key
  */
-export const removeApiKey = async (keyId: number, options?: RequestInit): Promise<voidSuccess> => {
+export const removeApiKey = async (keyId: number, options?: RequestInit): Promise<void> => {
 
-  return orvalFetcher<voidSuccess>(getRemoveApiKeyUrl(keyId),
+  return orvalFetcher<void>(getRemoveApiKeyUrl(keyId),
   {
     ...options,
     method: 'DELETE'
@@ -6354,9 +6354,9 @@ export const getRevokeApiKeyUrl = (keyId: number,) => {
 /**
  * @summary Revoke Api Key
  */
-export const revokeApiKey = async (keyId: number, options?: RequestInit): Promise<APIKeyCreateResponseSuccess> => {
+export const revokeApiKey = async (keyId: number, options?: RequestInit): Promise<APIKeyCreateResponse> => {
 
-  return orvalFetcher<APIKeyCreateResponseSuccess>(getRevokeApiKeyUrl(keyId),
+  return orvalFetcher<APIKeyCreateResponse>(getRevokeApiKeyUrl(keyId),
   {
     ...options,
     method: 'POST'
@@ -6433,9 +6433,9 @@ export const getGetRolesUrl = (params?: GetRolesParams,) => {
  * List all roles.
  * @summary Get Roles
  */
-export const getRoles = async (params?: GetRolesParams, options?: RequestInit): Promise<AdminRolesResponseSuccess> => {
+export const getRoles = async (params?: GetRolesParams, options?: RequestInit): Promise<AdminRolesResponse> => {
 
-  return orvalFetcher<AdminRolesResponseSuccess>(getGetRolesUrl(params),
+  return orvalFetcher<AdminRolesResponse>(getGetRolesUrl(params),
   {
     ...options,
     method: 'GET'
@@ -6535,9 +6535,9 @@ export const getGetRolesSimpleUrl = () => {
  * List all roles as lightweight id/name/is_owner tuples.
  * @summary Get Roles Simple
  */
-export const getRolesSimple = async ( options?: RequestInit): Promise<AdminRolesSimpleResponseSuccess> => {
+export const getRolesSimple = async ( options?: RequestInit): Promise<AdminRolesSimpleResponse> => {
 
-  return orvalFetcher<AdminRolesSimpleResponseSuccess>(getGetRolesSimpleUrl(),
+  return orvalFetcher<AdminRolesSimpleResponse>(getGetRolesSimpleUrl(),
   {
     ...options,
     method: 'GET'
@@ -6637,9 +6637,9 @@ export const getGetRoleUrl = (roleId: number,) => {
  * Get a role by ID.
  * @summary Get Role
  */
-export const getRole = async (roleId: number, options?: RequestInit): Promise<AdminRoleResponseSuccess> => {
+export const getRole = async (roleId: number, options?: RequestInit): Promise<AdminRoleResponse> => {
 
-  return orvalFetcher<AdminRoleResponseSuccess>(getGetRoleUrl(roleId),
+  return orvalFetcher<AdminRoleResponse>(getGetRoleUrl(roleId),
   {
     ...options,
     method: 'GET'
@@ -6740,9 +6740,9 @@ export const getModifyRoleUrl = (roleId: number,) => {
  * @summary Modify Role
  */
 export const modifyRole = async (roleId: number,
-    adminRoleModify: AdminRoleModify, options?: RequestInit): Promise<AdminRoleResponseSuccess> => {
+    adminRoleModify: AdminRoleModify, options?: RequestInit): Promise<AdminRoleResponse> => {
 
-  return orvalFetcher<AdminRoleResponseSuccess>(getModifyRoleUrl(roleId),
+  return orvalFetcher<AdminRoleResponse>(getModifyRoleUrl(roleId),
   {
     ...options,
     method: 'PUT',
@@ -6812,9 +6812,9 @@ export const getDeleteRoleUrl = (roleId: number,) => {
  * Delete a role. Owner only. Built-in roles and in-use roles cannot be deleted.
  * @summary Delete Role
  */
-export const deleteRole = async (roleId: number, options?: RequestInit): Promise<voidSuccess> => {
+export const deleteRole = async (roleId: number, options?: RequestInit): Promise<void> => {
 
-  return orvalFetcher<voidSuccess>(getDeleteRoleUrl(roleId),
+  return orvalFetcher<void>(getDeleteRoleUrl(roleId),
   {
     ...options,
     method: 'DELETE'
@@ -6884,9 +6884,9 @@ export const getCreateRoleUrl = () => {
  * Create a new role. Owner only.
  * @summary Create Role
  */
-export const createRole = async (adminRoleCreate: AdminRoleCreate, options?: RequestInit): Promise<AdminRoleResponseSuccess> => {
+export const createRole = async (adminRoleCreate: AdminRoleCreate, options?: RequestInit): Promise<AdminRoleResponse> => {
 
-  return orvalFetcher<AdminRoleResponseSuccess>(getCreateRoleUrl(),
+  return orvalFetcher<AdminRoleResponse>(getCreateRoleUrl(),
   {
     ...options,
     method: 'POST',
@@ -6956,9 +6956,9 @@ export const getCreateOwnerUrl = () => {
  * Create the owner admin using a one-time temp key.
  * @summary Create Owner
  */
-export const createOwner = async (ownerCreateRequest: OwnerCreateRequest, options?: RequestInit): Promise<AdminDetailsSuccess> => {
+export const createOwner = async (ownerCreateRequest: OwnerCreateRequest, options?: RequestInit): Promise<AdminDetails> => {
 
-  return orvalFetcher<AdminDetailsSuccess>(getCreateOwnerUrl(),
+  return orvalFetcher<AdminDetails>(getCreateOwnerUrl(),
   {
     ...options,
     method: 'POST',
@@ -7028,9 +7028,9 @@ export const getResetOwnerPasswordUrl = () => {
  * Reset the owner admin's password using a one-time temp key.
  * @summary Reset Owner Password
  */
-export const resetOwnerPassword = async (ownerResetRequest: OwnerResetRequest, options?: RequestInit): Promise<AdminDetailsSuccess> => {
+export const resetOwnerPassword = async (ownerResetRequest: OwnerResetRequest, options?: RequestInit): Promise<AdminDetails> => {
 
-  return orvalFetcher<AdminDetailsSuccess>(getResetOwnerPasswordUrl(),
+  return orvalFetcher<AdminDetails>(getResetOwnerPasswordUrl(),
   {
     ...options,
     method: 'PATCH',
@@ -7107,9 +7107,9 @@ export const getDeleteOwnerUrl = (params: DeleteOwnerParams,) => {
  * Delete the owner admin using a one-time temp key.
  * @summary Delete Owner
  */
-export const deleteOwner = async (params: DeleteOwnerParams, options?: RequestInit): Promise<voidSuccess> => {
+export const deleteOwner = async (params: DeleteOwnerParams, options?: RequestInit): Promise<void> => {
 
-  return orvalFetcher<voidSuccess>(getDeleteOwnerUrl(params),
+  return orvalFetcher<void>(getDeleteOwnerUrl(params),
   {
     ...options,
     method: 'DELETE'
@@ -7179,9 +7179,9 @@ export const getUpgradeOwnerUrl = () => {
  * Upgrade an existing admin to owner using a one-time temp key.
  * @summary Upgrade Owner
  */
-export const upgradeOwner = async (ownerUpgradeRequest: OwnerUpgradeRequest, options?: RequestInit): Promise<AdminDetailsSuccess> => {
+export const upgradeOwner = async (ownerUpgradeRequest: OwnerUpgradeRequest, options?: RequestInit): Promise<AdminDetails> => {
 
-  return orvalFetcher<AdminDetailsSuccess>(getUpgradeOwnerUrl(),
+  return orvalFetcher<AdminDetails>(getUpgradeOwnerUrl(),
   {
     ...options,
     method: 'POST',
@@ -7258,9 +7258,9 @@ export const getGetSystemStatsUrl = (params?: GetSystemStatsParams,) => {
  * Fetch system stats including memory, CPU, disk, and user metrics.
  * @summary Get System Stats
  */
-export const getSystemStats = async (params?: GetSystemStatsParams, options?: RequestInit): Promise<SystemStatsSuccess> => {
+export const getSystemStats = async (params?: GetSystemStatsParams, options?: RequestInit): Promise<SystemStats> => {
 
-  return orvalFetcher<SystemStatsSuccess>(getGetSystemStatsUrl(params),
+  return orvalFetcher<SystemStats>(getGetSystemStatsUrl(params),
   {
     ...options,
     method: 'GET'
@@ -7360,9 +7360,9 @@ export const getGetSystemResourceStatsUrl = () => {
  * Fetch system resource stats without user metrics.
  * @summary Get System Resource Stats
  */
-export const getSystemResourceStats = async ( options?: RequestInit): Promise<SystemResourceStatsSuccess> => {
+export const getSystemResourceStats = async ( options?: RequestInit): Promise<SystemResourceStats> => {
 
-  return orvalFetcher<SystemResourceStatsSuccess>(getGetSystemResourceStatsUrl(),
+  return orvalFetcher<SystemResourceStats>(getGetSystemResourceStatsUrl(),
   {
     ...options,
     method: 'GET'
@@ -7469,9 +7469,9 @@ export const getGetSystemUsersStatsUrl = (params?: GetSystemUsersStatsParams,) =
  * Fetch user stats and traffic metrics without system resource stats.
  * @summary Get System Users Stats
  */
-export const getSystemUsersStats = async (params?: GetSystemUsersStatsParams, options?: RequestInit): Promise<SystemUsersStatsSuccess> => {
+export const getSystemUsersStats = async (params?: GetSystemUsersStatsParams, options?: RequestInit): Promise<SystemUsersStats> => {
 
-  return orvalFetcher<SystemUsersStatsSuccess>(getGetSystemUsersStatsUrl(params),
+  return orvalFetcher<SystemUsersStats>(getGetSystemUsersStatsUrl(params),
   {
     ...options,
     method: 'GET'
@@ -7571,9 +7571,9 @@ export const getGetInboundsUrl = () => {
  * Retrieve inbound configurations grouped by protocol.
  * @summary Get Inbounds
  */
-export const getInbounds = async ( options?: RequestInit): Promise<string[]Success> => {
+export const getInbounds = async ( options?: RequestInit): Promise<string[]> => {
 
-  return orvalFetcher<string[]Success>(getGetInboundsUrl(),
+  return orvalFetcher<string[]>(getGetInboundsUrl(),
   {
     ...options,
     method: 'GET'
@@ -7673,9 +7673,9 @@ export const getGetInboundDetailsUrl = () => {
  * Retrieve lightweight inbound metadata for dashboard forms.
  * @summary Get Inbound Details
  */
-export const getInboundDetails = async ( options?: RequestInit): Promise<InboundSummary[]Success> => {
+export const getInboundDetails = async ( options?: RequestInit): Promise<InboundSummary[]> => {
 
-  return orvalFetcher<InboundSummary[]Success>(getGetInboundDetailsUrl(),
+  return orvalFetcher<InboundSummary[]>(getGetInboundDetailsUrl(),
   {
     ...options,
     method: 'GET'
@@ -7775,9 +7775,9 @@ export const getGetWireguardSubnetsUrl = () => {
  * Per-subnet WireGuard address usage: capacity, used/free counts and the first free IPs.
  * @summary Get Wireguard Subnets
  */
-export const getWireguardSubnets = async ( options?: RequestInit): Promise<WireGuardSubnetUsage[]Success> => {
+export const getWireguardSubnets = async ( options?: RequestInit): Promise<WireGuardSubnetUsage[]> => {
 
-  return orvalFetcher<WireGuardSubnetUsage[]Success>(getGetWireguardSubnetsUrl(),
+  return orvalFetcher<WireGuardSubnetUsage[]>(getGetWireguardSubnetsUrl(),
   {
     ...options,
     method: 'GET'
@@ -7876,9 +7876,9 @@ export const getGetWorkersHealthUrl = () => {
 /**
  * @summary Get Workers Health
  */
-export const getWorkersHealth = async ( options?: RequestInit): Promise<WorkersHealthSuccess> => {
+export const getWorkersHealth = async ( options?: RequestInit): Promise<WorkersHealth> => {
 
-  return orvalFetcher<WorkersHealthSuccess>(getGetWorkersHealthUrl(),
+  return orvalFetcher<WorkersHealth>(getGetWorkersHealthUrl(),
   {
     ...options,
     method: 'GET'
@@ -7977,9 +7977,9 @@ export const getGetSettingsUrl = () => {
 /**
  * @summary Get Settings
  */
-export const getSettings = async ( options?: RequestInit): Promise<SettingsSchemaSuccess> => {
+export const getSettings = async ( options?: RequestInit): Promise<SettingsSchema> => {
 
-  return orvalFetcher<SettingsSchemaSuccess>(getGetSettingsUrl(),
+  return orvalFetcher<SettingsSchema>(getGetSettingsUrl(),
   {
     ...options,
     method: 'GET'
@@ -8078,9 +8078,9 @@ export const getModifySettingsUrl = () => {
 /**
  * @summary Modify Settings
  */
-export const modifySettings = async (settingsSchema: SettingsSchema, options?: RequestInit): Promise<SettingsSchemaSuccess> => {
+export const modifySettings = async (settingsSchema: SettingsSchema, options?: RequestInit): Promise<SettingsSchema> => {
 
-  return orvalFetcher<SettingsSchemaSuccess>(getModifySettingsUrl(),
+  return orvalFetcher<SettingsSchema>(getModifySettingsUrl(),
   {
     ...options,
     method: 'PUT',
@@ -8149,9 +8149,9 @@ export const getGetGeneralSettingsUrl = () => {
 /**
  * @summary Get General Settings
  */
-export const getGeneralSettings = async ( options?: RequestInit): Promise<GeneralSuccess> => {
+export const getGeneralSettings = async ( options?: RequestInit): Promise<General> => {
 
-  return orvalFetcher<GeneralSuccess>(getGetGeneralSettingsUrl(),
+  return orvalFetcher<General>(getGetGeneralSettingsUrl(),
   {
     ...options,
     method: 'GET'
@@ -8251,9 +8251,9 @@ export const getCreateGroupUrl = () => {
  * Creates a new group in the system. Only authorized administrators can create groups.
  * @summary Create a new group
  */
-export const createGroup = async (groupCreate: GroupCreate, options?: RequestInit): Promise<GroupResponseSuccess> => {
+export const createGroup = async (groupCreate: GroupCreate, options?: RequestInit): Promise<GroupResponse> => {
 
-  return orvalFetcher<GroupResponseSuccess>(getCreateGroupUrl(),
+  return orvalFetcher<GroupResponse>(getCreateGroupUrl(),
   {
     ...options,
     method: 'POST',
@@ -8338,9 +8338,9 @@ export const getGetAllGroupsUrl = (params?: GetAllGroupsParams,) => {
  * Retrieves a paginated list of all groups in the system. Requires admin authentication.
  * @summary List all groups
  */
-export const getAllGroups = async (params?: GetAllGroupsParams, options?: RequestInit): Promise<GroupsResponseSuccess> => {
+export const getAllGroups = async (params?: GetAllGroupsParams, options?: RequestInit): Promise<GroupsResponse> => {
 
-  return orvalFetcher<GroupsResponseSuccess>(getGetAllGroupsUrl(params),
+  return orvalFetcher<GroupsResponse>(getGetAllGroupsUrl(params),
   {
     ...options,
     method: 'GET'
@@ -8455,9 +8455,9 @@ export const getGetGroupsSimpleUrl = (params?: GetGroupsSimpleParams,) => {
  * Returns only id and name for groups. Optimized for dropdowns and autocomplete.
  * @summary Get lightweight group list
  */
-export const getGroupsSimple = async (params?: GetGroupsSimpleParams, options?: RequestInit): Promise<GroupsSimpleResponseSuccess> => {
+export const getGroupsSimple = async (params?: GetGroupsSimpleParams, options?: RequestInit): Promise<GroupsSimpleResponse> => {
 
-  return orvalFetcher<GroupsSimpleResponseSuccess>(getGetGroupsSimpleUrl(params),
+  return orvalFetcher<GroupsSimpleResponse>(getGetGroupsSimpleUrl(params),
   {
     ...options,
     method: 'GET'
@@ -8557,9 +8557,9 @@ export const getGetGroupUrl = (groupId: number,) => {
  * Retrieves detailed information about a specific group by its ID.
  * @summary Get group details
  */
-export const getGroup = async (groupId: number, options?: RequestInit): Promise<GroupResponseSuccess> => {
+export const getGroup = async (groupId: number, options?: RequestInit): Promise<GroupResponse> => {
 
-  return orvalFetcher<GroupResponseSuccess>(getGetGroupUrl(groupId),
+  return orvalFetcher<GroupResponse>(getGetGroupUrl(groupId),
   {
     ...options,
     method: 'GET'
@@ -8660,9 +8660,9 @@ export const getModifyGroupUrl = (groupId: number,) => {
  * @summary Modify group
  */
 export const modifyGroup = async (groupId: number,
-    groupModify: GroupModify, options?: RequestInit): Promise<GroupResponseSuccess> => {
+    groupModify: GroupModify, options?: RequestInit): Promise<GroupResponse> => {
 
-  return orvalFetcher<GroupResponseSuccess>(getModifyGroupUrl(groupId),
+  return orvalFetcher<GroupResponse>(getModifyGroupUrl(groupId),
   {
     ...options,
     method: 'PUT',
@@ -8732,9 +8732,9 @@ export const getRemoveGroupUrl = (groupId: number,) => {
  * Deletes a group from the system. Only authorized administrators can delete groups.
  * @summary Remove group
  */
-export const removeGroup = async (groupId: number, options?: RequestInit): Promise<voidSuccess> => {
+export const removeGroup = async (groupId: number, options?: RequestInit): Promise<void> => {
 
-  return orvalFetcher<voidSuccess>(getRemoveGroupUrl(groupId),
+  return orvalFetcher<void>(getRemoveGroupUrl(groupId),
   {
     ...options,
     method: 'DELETE'
@@ -8813,9 +8813,9 @@ export const getBulkAddGroupsToUsersUrl = () => {
  * - Returns list of affected users (those who received new group associations)
  * @summary Bulk add groups to users
  */
-export const bulkAddGroupsToUsers = async (bulkGroup: BulkGroup, options?: RequestInit): Promise<unknownSuccess> => {
+export const bulkAddGroupsToUsers = async (bulkGroup: BulkGroup, options?: RequestInit): Promise<unknown> => {
 
-  return orvalFetcher<unknownSuccess>(getBulkAddGroupsToUsersUrl(),
+  return orvalFetcher<unknown>(getBulkAddGroupsToUsersUrl(),
   {
     ...options,
     method: 'POST',
@@ -8894,9 +8894,9 @@ export const getBulkRemoveUsersFromGroupsUrl = () => {
  * - Returns list of affected users (those who had groups removed)
  * @summary Bulk remove groups from users
  */
-export const bulkRemoveUsersFromGroups = async (bulkGroup: BulkGroup, options?: RequestInit): Promise<unknownSuccess> => {
+export const bulkRemoveUsersFromGroups = async (bulkGroup: BulkGroup, options?: RequestInit): Promise<unknown> => {
 
-  return orvalFetcher<unknownSuccess>(getBulkRemoveUsersFromGroupsUrl(),
+  return orvalFetcher<unknown>(getBulkRemoveUsersFromGroupsUrl(),
   {
     ...options,
     method: 'POST',
@@ -8966,9 +8966,9 @@ export const getBulkDeleteGroupsUrl = () => {
  * Delete selected groups by ID.
  * @summary Bulk Delete Groups
  */
-export const bulkDeleteGroups = async (bulkGroupSelection: BulkGroupSelection, options?: RequestInit): Promise<RemoveGroupsResponseSuccess> => {
+export const bulkDeleteGroups = async (bulkGroupSelection: BulkGroupSelection, options?: RequestInit): Promise<RemoveGroupsResponse> => {
 
-  return orvalFetcher<RemoveGroupsResponseSuccess>(getBulkDeleteGroupsUrl(),
+  return orvalFetcher<RemoveGroupsResponse>(getBulkDeleteGroupsUrl(),
   {
     ...options,
     method: 'POST',
@@ -9038,9 +9038,9 @@ export const getBulkDisableGroupsUrl = () => {
  * Disable selected groups by ID.
  * @summary Bulk Disable Groups
  */
-export const bulkDisableGroups = async (bulkGroupSelection: BulkGroupSelection, options?: RequestInit): Promise<BulkGroupsActionResponseSuccess> => {
+export const bulkDisableGroups = async (bulkGroupSelection: BulkGroupSelection, options?: RequestInit): Promise<BulkGroupsActionResponse> => {
 
-  return orvalFetcher<BulkGroupsActionResponseSuccess>(getBulkDisableGroupsUrl(),
+  return orvalFetcher<BulkGroupsActionResponse>(getBulkDisableGroupsUrl(),
   {
     ...options,
     method: 'POST',
@@ -9110,9 +9110,9 @@ export const getBulkEnableGroupsUrl = () => {
  * Enable selected groups by ID.
  * @summary Bulk Enable Groups
  */
-export const bulkEnableGroups = async (bulkGroupSelection: BulkGroupSelection, options?: RequestInit): Promise<BulkGroupsActionResponseSuccess> => {
+export const bulkEnableGroups = async (bulkGroupSelection: BulkGroupSelection, options?: RequestInit): Promise<BulkGroupsActionResponse> => {
 
-  return orvalFetcher<BulkGroupsActionResponseSuccess>(getBulkEnableGroupsUrl(),
+  return orvalFetcher<BulkGroupsActionResponse>(getBulkEnableGroupsUrl(),
   {
     ...options,
     method: 'POST',
@@ -9182,9 +9182,9 @@ export const getCreateCoreConfigUrl = () => {
  * Create a new core configuration.
  * @summary Create Core Config
  */
-export const createCoreConfig = async (coreCreate: CoreCreate, options?: RequestInit): Promise<CoreResponseSuccess> => {
+export const createCoreConfig = async (coreCreate: CoreCreate, options?: RequestInit): Promise<CoreResponse> => {
 
-  return orvalFetcher<CoreResponseSuccess>(getCreateCoreConfigUrl(),
+  return orvalFetcher<CoreResponse>(getCreateCoreConfigUrl(),
   {
     ...options,
     method: 'POST',
@@ -9253,9 +9253,9 @@ export const getScanRealityTargetUrl = () => {
 /**
  * @summary Scan Reality Target
  */
-export const scanRealityTarget = async (realityScanRequest: RealityScanRequest, options?: RequestInit): Promise<RealityScanResultSuccess> => {
+export const scanRealityTarget = async (realityScanRequest: RealityScanRequest, options?: RequestInit): Promise<RealityScanResult> => {
 
-  return orvalFetcher<RealityScanResultSuccess>(getScanRealityTargetUrl(),
+  return orvalFetcher<RealityScanResult>(getScanRealityTargetUrl(),
   {
     ...options,
     method: 'POST',
@@ -9325,9 +9325,9 @@ export const getGetCoreConfigUrl = (coreId: number,) => {
  * Get a core configuration by its ID.
  * @summary Get Core Config
  */
-export const getCoreConfig = async (coreId: number, options?: RequestInit): Promise<CoreResponseSuccess> => {
+export const getCoreConfig = async (coreId: number, options?: RequestInit): Promise<CoreResponse> => {
 
-  return orvalFetcher<CoreResponseSuccess>(getGetCoreConfigUrl(coreId),
+  return orvalFetcher<CoreResponse>(getGetCoreConfigUrl(coreId),
   {
     ...options,
     method: 'GET'
@@ -9437,9 +9437,9 @@ export const getModifyCoreConfigUrl = (coreId: number,
  */
 export const modifyCoreConfig = async (coreId: number,
     coreCreate: CoreCreate,
-    params: ModifyCoreConfigParams, options?: RequestInit): Promise<CoreResponseSuccess> => {
+    params: ModifyCoreConfigParams, options?: RequestInit): Promise<CoreResponse> => {
 
-  return orvalFetcher<CoreResponseSuccess>(getModifyCoreConfigUrl(coreId,params),
+  return orvalFetcher<CoreResponse>(getModifyCoreConfigUrl(coreId,params),
   {
     ...options,
     method: 'PUT',
@@ -9518,9 +9518,9 @@ export const getDeleteCoreConfigUrl = (coreId: number,
  * @summary Delete Core Config
  */
 export const deleteCoreConfig = async (coreId: number,
-    params?: DeleteCoreConfigParams, options?: RequestInit): Promise<voidSuccess> => {
+    params?: DeleteCoreConfigParams, options?: RequestInit): Promise<void> => {
 
-  return orvalFetcher<voidSuccess>(getDeleteCoreConfigUrl(coreId,params),
+  return orvalFetcher<void>(getDeleteCoreConfigUrl(coreId,params),
   {
     ...options,
     method: 'DELETE'
@@ -9605,9 +9605,9 @@ export const getGetAllCoresUrl = (params?: GetAllCoresParams,) => {
  * Get a list of all core configurations.
  * @summary Get All Cores
  */
-export const getAllCores = async (params?: GetAllCoresParams, options?: RequestInit): Promise<CoreResponseListSuccess> => {
+export const getAllCores = async (params?: GetAllCoresParams, options?: RequestInit): Promise<CoreResponseList> => {
 
-  return orvalFetcher<CoreResponseListSuccess>(getGetAllCoresUrl(params),
+  return orvalFetcher<CoreResponseList>(getGetAllCoresUrl(params),
   {
     ...options,
     method: 'GET'
@@ -9722,9 +9722,9 @@ export const getGetCoresSimpleUrl = (params?: GetCoresSimpleParams,) => {
  * Returns only id and name for cores. Optimized for dropdowns and autocomplete.
  * @summary Get lightweight core list
  */
-export const getCoresSimple = async (params?: GetCoresSimpleParams, options?: RequestInit): Promise<CoresSimpleResponseSuccess> => {
+export const getCoresSimple = async (params?: GetCoresSimpleParams, options?: RequestInit): Promise<CoresSimpleResponse> => {
 
-  return orvalFetcher<CoresSimpleResponseSuccess>(getGetCoresSimpleUrl(params),
+  return orvalFetcher<CoresSimpleResponse>(getGetCoresSimpleUrl(params),
   {
     ...options,
     method: 'GET'
@@ -9824,9 +9824,9 @@ export const getRestartCoreUrl = (coreId: number,) => {
  * restart nodes related to the core config
  * @summary Restart Core
  */
-export const restartCore = async (coreId: number, options?: RequestInit): Promise<voidSuccess> => {
+export const restartCore = async (coreId: number, options?: RequestInit): Promise<void> => {
 
-  return orvalFetcher<voidSuccess>(getRestartCoreUrl(coreId),
+  return orvalFetcher<void>(getRestartCoreUrl(coreId),
   {
     ...options,
     method: 'POST'
@@ -9896,9 +9896,9 @@ export const getBulkDeleteCoresUrl = () => {
  * Delete selected cores by ID.
  * @summary Bulk Delete Cores
  */
-export const bulkDeleteCores = async (bulkCoreSelection: BulkCoreSelection, options?: RequestInit): Promise<RemoveCoresResponseSuccess> => {
+export const bulkDeleteCores = async (bulkCoreSelection: BulkCoreSelection, options?: RequestInit): Promise<RemoveCoresResponse> => {
 
-  return orvalFetcher<RemoveCoresResponseSuccess>(getBulkDeleteCoresUrl(),
+  return orvalFetcher<RemoveCoresResponse>(getBulkDeleteCoresUrl(),
   {
     ...options,
     method: 'POST',
@@ -9967,9 +9967,9 @@ export const getCreateClientTemplateUrl = () => {
 /**
  * @summary Create Client Template
  */
-export const createClientTemplate = async (clientTemplateCreate: ClientTemplateCreate, options?: RequestInit): Promise<ClientTemplateResponseSuccess> => {
+export const createClientTemplate = async (clientTemplateCreate: ClientTemplateCreate, options?: RequestInit): Promise<ClientTemplateResponse> => {
 
-  return orvalFetcher<ClientTemplateResponseSuccess>(getCreateClientTemplateUrl(),
+  return orvalFetcher<ClientTemplateResponse>(getCreateClientTemplateUrl(),
   {
     ...options,
     method: 'POST',
@@ -10038,9 +10038,9 @@ export const getGetClientTemplateUrl = (templateId: number,) => {
 /**
  * @summary Get Client Template
  */
-export const getClientTemplate = async (templateId: number, options?: RequestInit): Promise<ClientTemplateResponseSuccess> => {
+export const getClientTemplate = async (templateId: number, options?: RequestInit): Promise<ClientTemplateResponse> => {
 
-  return orvalFetcher<ClientTemplateResponseSuccess>(getGetClientTemplateUrl(templateId),
+  return orvalFetcher<ClientTemplateResponse>(getGetClientTemplateUrl(templateId),
   {
     ...options,
     method: 'GET'
@@ -10140,9 +10140,9 @@ export const getModifyClientTemplateUrl = (templateId: number,) => {
  * @summary Modify Client Template
  */
 export const modifyClientTemplate = async (templateId: number,
-    clientTemplateModify: ClientTemplateModify, options?: RequestInit): Promise<ClientTemplateResponseSuccess> => {
+    clientTemplateModify: ClientTemplateModify, options?: RequestInit): Promise<ClientTemplateResponse> => {
 
-  return orvalFetcher<ClientTemplateResponseSuccess>(getModifyClientTemplateUrl(templateId),
+  return orvalFetcher<ClientTemplateResponse>(getModifyClientTemplateUrl(templateId),
   {
     ...options,
     method: 'PUT',
@@ -10211,9 +10211,9 @@ export const getRemoveClientTemplateUrl = (templateId: number,) => {
 /**
  * @summary Remove Client Template
  */
-export const removeClientTemplate = async (templateId: number, options?: RequestInit): Promise<voidSuccess> => {
+export const removeClientTemplate = async (templateId: number, options?: RequestInit): Promise<void> => {
 
-  return orvalFetcher<voidSuccess>(getRemoveClientTemplateUrl(templateId),
+  return orvalFetcher<void>(getRemoveClientTemplateUrl(templateId),
   {
     ...options,
     method: 'DELETE'
@@ -10297,9 +10297,9 @@ export const getGetClientTemplatesUrl = (params?: GetClientTemplatesParams,) => 
 /**
  * @summary Get Client Templates
  */
-export const getClientTemplates = async (params?: GetClientTemplatesParams, options?: RequestInit): Promise<ClientTemplateResponseListSuccess> => {
+export const getClientTemplates = async (params?: GetClientTemplatesParams, options?: RequestInit): Promise<ClientTemplateResponseList> => {
 
-  return orvalFetcher<ClientTemplateResponseListSuccess>(getGetClientTemplatesUrl(params),
+  return orvalFetcher<ClientTemplateResponseList>(getGetClientTemplatesUrl(params),
   {
     ...options,
     method: 'GET'
@@ -10413,9 +10413,9 @@ export const getGetClientTemplatesSimpleUrl = (params?: GetClientTemplatesSimple
 /**
  * @summary Get Client Templates Simple
  */
-export const getClientTemplatesSimple = async (params?: GetClientTemplatesSimpleParams, options?: RequestInit): Promise<ClientTemplatesSimpleResponseSuccess> => {
+export const getClientTemplatesSimple = async (params?: GetClientTemplatesSimpleParams, options?: RequestInit): Promise<ClientTemplatesSimpleResponse> => {
 
-  return orvalFetcher<ClientTemplatesSimpleResponseSuccess>(getGetClientTemplatesSimpleUrl(params),
+  return orvalFetcher<ClientTemplatesSimpleResponse>(getGetClientTemplatesSimpleUrl(params),
   {
     ...options,
     method: 'GET'
@@ -10515,9 +10515,9 @@ export const getBulkDeleteClientTemplatesUrl = () => {
  * Delete selected client templates by ID.
  * @summary Bulk Delete Client Templates
  */
-export const bulkDeleteClientTemplates = async (bulkClientTemplateSelection: BulkClientTemplateSelection, options?: RequestInit): Promise<RemoveClientTemplatesResponseSuccess> => {
+export const bulkDeleteClientTemplates = async (bulkClientTemplateSelection: BulkClientTemplateSelection, options?: RequestInit): Promise<RemoveClientTemplatesResponse> => {
 
-  return orvalFetcher<RemoveClientTemplatesResponseSuccess>(getBulkDeleteClientTemplatesUrl(),
+  return orvalFetcher<RemoveClientTemplatesResponse>(getBulkDeleteClientTemplatesUrl(),
   {
     ...options,
     method: 'POST',
@@ -10587,9 +10587,9 @@ export const getGetHostUrl = (hostId: number,) => {
  * get host by **id**
  * @summary Get Host
  */
-export const getHost = async (hostId: number, options?: RequestInit): Promise<BaseHostSuccess> => {
+export const getHost = async (hostId: number, options?: RequestInit): Promise<BaseHost> => {
 
-  return orvalFetcher<BaseHostSuccess>(getGetHostUrl(hostId),
+  return orvalFetcher<BaseHost>(getGetHostUrl(hostId),
   {
     ...options,
     method: 'GET'
@@ -10692,9 +10692,9 @@ export const getModifyHostUrl = (hostId: number,) => {
  * @summary Modify Host
  */
 export const modifyHost = async (hostId: number,
-    createHost: CreateHost, options?: RequestInit): Promise<BaseHostSuccess> => {
+    createHost: CreateHost, options?: RequestInit): Promise<BaseHost> => {
 
-  return orvalFetcher<BaseHostSuccess>(getModifyHostUrl(hostId),
+  return orvalFetcher<BaseHost>(getModifyHostUrl(hostId),
   {
     ...options,
     method: 'PUT',
@@ -10764,9 +10764,9 @@ export const getRemoveHostUrl = (hostId: number,) => {
  * remove host by **id**
  * @summary Remove Host
  */
-export const removeHost = async (hostId: number, options?: RequestInit): Promise<voidSuccess> => {
+export const removeHost = async (hostId: number, options?: RequestInit): Promise<void> => {
 
-  return orvalFetcher<voidSuccess>(getRemoveHostUrl(hostId),
+  return orvalFetcher<void>(getRemoveHostUrl(hostId),
   {
     ...options,
     method: 'DELETE'
@@ -10851,9 +10851,9 @@ export const getGetHostsUrl = (params?: GetHostsParams,) => {
  * Get proxy hosts.
  * @summary Get Hosts
  */
-export const getHosts = async (params?: GetHostsParams, options?: RequestInit): Promise<BaseHost[]Success> => {
+export const getHosts = async (params?: GetHostsParams, options?: RequestInit): Promise<BaseHost[]> => {
 
-  return orvalFetcher<BaseHost[]Success>(getGetHostsUrl(params),
+  return orvalFetcher<BaseHost[]>(getGetHostsUrl(params),
   {
     ...options,
     method: 'GET'
@@ -10953,9 +10953,9 @@ export const getModifyHostsUrl = () => {
  * Modify proxy hosts and update the configuration.
  * @summary Modify Hosts
  */
-export const modifyHosts = async (createHost: CreateHost[], options?: RequestInit): Promise<BaseHost[]Success> => {
+export const modifyHosts = async (createHost: CreateHost[], options?: RequestInit): Promise<BaseHost[]> => {
 
-  return orvalFetcher<BaseHost[]Success>(getModifyHostsUrl(),
+  return orvalFetcher<BaseHost[]>(getModifyHostsUrl(),
   {
     ...options,
     method: 'PUT',
@@ -11027,9 +11027,9 @@ export const getCreateHostUrl = () => {
  * **inbound_tag** must be available in one of the configured cores
  * @summary Create Host
  */
-export const createHost = async (createHost: CreateHost, options?: RequestInit): Promise<BaseHostSuccess> => {
+export const createHost = async (createHost: CreateHost, options?: RequestInit): Promise<BaseHost> => {
 
-  return orvalFetcher<BaseHostSuccess>(getCreateHostUrl(),
+  return orvalFetcher<BaseHost>(getCreateHostUrl(),
   {
     ...options,
     method: 'POST',
@@ -11099,9 +11099,9 @@ export const getBulkDeleteHostsUrl = () => {
  * Delete selected hosts by ID.
  * @summary Bulk Delete Hosts
  */
-export const bulkDeleteHosts = async (bulkHostSelection: BulkHostSelection, options?: RequestInit): Promise<RemoveHostsResponseSuccess> => {
+export const bulkDeleteHosts = async (bulkHostSelection: BulkHostSelection, options?: RequestInit): Promise<RemoveHostsResponse> => {
 
-  return orvalFetcher<RemoveHostsResponseSuccess>(getBulkDeleteHostsUrl(),
+  return orvalFetcher<RemoveHostsResponse>(getBulkDeleteHostsUrl(),
   {
     ...options,
     method: 'POST',
@@ -11171,9 +11171,9 @@ export const getBulkDisableHostsUrl = () => {
  * Disable selected hosts by ID.
  * @summary Bulk Disable Hosts
  */
-export const bulkDisableHosts = async (bulkHostSelection: BulkHostSelection, options?: RequestInit): Promise<BulkHostsActionResponseSuccess> => {
+export const bulkDisableHosts = async (bulkHostSelection: BulkHostSelection, options?: RequestInit): Promise<BulkHostsActionResponse> => {
 
-  return orvalFetcher<BulkHostsActionResponseSuccess>(getBulkDisableHostsUrl(),
+  return orvalFetcher<BulkHostsActionResponse>(getBulkDisableHostsUrl(),
   {
     ...options,
     method: 'POST',
@@ -11243,9 +11243,9 @@ export const getBulkEnableHostsUrl = () => {
  * Enable selected hosts by ID.
  * @summary Bulk Enable Hosts
  */
-export const bulkEnableHosts = async (bulkHostSelection: BulkHostSelection, options?: RequestInit): Promise<BulkHostsActionResponseSuccess> => {
+export const bulkEnableHosts = async (bulkHostSelection: BulkHostSelection, options?: RequestInit): Promise<BulkHostsActionResponse> => {
 
-  return orvalFetcher<BulkHostsActionResponseSuccess>(getBulkEnableHostsUrl(),
+  return orvalFetcher<BulkHostsActionResponse>(getBulkEnableHostsUrl(),
   {
     ...options,
     method: 'POST',
@@ -11315,9 +11315,9 @@ export const getGetNodeSettingsUrl = () => {
  * Retrieve the current node settings.
  * @summary Get Node Settings
  */
-export const getNodeSettings = async ( options?: RequestInit): Promise<NodeSettingsSuccess> => {
+export const getNodeSettings = async ( options?: RequestInit): Promise<NodeSettings> => {
 
-  return orvalFetcher<NodeSettingsSuccess>(getGetNodeSettingsUrl(),
+  return orvalFetcher<NodeSettings>(getGetNodeSettingsUrl(),
   {
     ...options,
     method: 'GET'
@@ -11424,9 +11424,9 @@ export const getGetUsageUrl = (params?: GetUsageParams,) => {
  * Retrieve usage statistics for nodes within a specified date range.
  * @summary Get Usage
  */
-export const getUsage = async (params?: GetUsageParams, options?: RequestInit): Promise<NodeUsageStatsListSuccess> => {
+export const getUsage = async (params?: GetUsageParams, options?: RequestInit): Promise<NodeUsageStatsList> => {
 
-  return orvalFetcher<NodeUsageStatsListSuccess>(getGetUsageUrl(params),
+  return orvalFetcher<NodeUsageStatsList>(getGetUsageUrl(params),
   {
     ...options,
     method: 'GET'
@@ -11535,9 +11535,9 @@ export const getGetUserCountMetricUrl = (metric: UserCountMetric,
  * @summary Get User Count Metric
  */
 export const getUserCountMetric = async (metric: UserCountMetric,
-    params?: GetUserCountMetricParams, options?: RequestInit): Promise<UserCountMetricStatsListSuccess> => {
+    params?: GetUserCountMetricParams, options?: RequestInit): Promise<UserCountMetricStatsList> => {
 
-  return orvalFetcher<UserCountMetricStatsListSuccess>(getGetUserCountMetricUrl(metric,params),
+  return orvalFetcher<UserCountMetricStatsList>(getGetUserCountMetricUrl(metric,params),
   {
     ...options,
     method: 'GET'
@@ -11658,9 +11658,9 @@ export const getGetNodesUrl = (params?: GetNodesParams,) => {
  * Retrieve a list of all nodes. Accessible only to authorized admins.
  * @summary Get Nodes
  */
-export const getNodes = async (params?: GetNodesParams, options?: RequestInit): Promise<NodesResponseSuccess> => {
+export const getNodes = async (params?: GetNodesParams, options?: RequestInit): Promise<NodesResponse> => {
 
-  return orvalFetcher<NodesResponseSuccess>(getGetNodesUrl(params),
+  return orvalFetcher<NodesResponse>(getGetNodesUrl(params),
   {
     ...options,
     method: 'GET'
@@ -11775,9 +11775,9 @@ export const getGetNodesSimpleUrl = (params?: GetNodesSimpleParams,) => {
  * Returns only id and name for nodes. Optimized for dropdowns and autocomplete.
  * @summary Get lightweight node list
  */
-export const getNodesSimple = async (params?: GetNodesSimpleParams, options?: RequestInit): Promise<NodesSimpleResponseSuccess> => {
+export const getNodesSimple = async (params?: GetNodesSimpleParams, options?: RequestInit): Promise<NodesSimpleResponse> => {
 
-  return orvalFetcher<NodesSimpleResponseSuccess>(getGetNodesSimpleUrl(params),
+  return orvalFetcher<NodesSimpleResponse>(getGetNodesSimpleUrl(params),
   {
     ...options,
     method: 'GET'
@@ -11884,9 +11884,9 @@ export const getReconnectAllNodeUrl = (params?: ReconnectAllNodeParams,) => {
  * Trigger reconnection for all nodes or a specific core.
  * @summary Reconnect All Node
  */
-export const reconnectAllNode = async (params?: ReconnectAllNodeParams, options?: RequestInit): Promise<unknownSuccess> => {
+export const reconnectAllNode = async (params?: ReconnectAllNodeParams, options?: RequestInit): Promise<unknown> => {
 
-  return orvalFetcher<unknownSuccess>(getReconnectAllNodeUrl(params),
+  return orvalFetcher<unknown>(getReconnectAllNodeUrl(params),
   {
     ...options,
     method: 'POST'
@@ -11956,9 +11956,9 @@ export const getCreateNodeUrl = () => {
  * Create a new node to the database.
  * @summary Create Node
  */
-export const createNode = async (nodeCreate: NodeCreate, options?: RequestInit): Promise<NodeResponseSuccess> => {
+export const createNode = async (nodeCreate: NodeCreate, options?: RequestInit): Promise<NodeResponse> => {
 
-  return orvalFetcher<NodeResponseSuccess>(getCreateNodeUrl(),
+  return orvalFetcher<NodeResponse>(getCreateNodeUrl(),
   {
     ...options,
     method: 'POST',
@@ -12028,9 +12028,9 @@ export const getGetNodeUrl = (nodeId: number,) => {
  * Retrieve details of a specific node by its ID.
  * @summary Get Node
  */
-export const getNode = async (nodeId: number, options?: RequestInit): Promise<NodeResponseSuccess> => {
+export const getNode = async (nodeId: number, options?: RequestInit): Promise<NodeResponse> => {
 
-  return orvalFetcher<NodeResponseSuccess>(getGetNodeUrl(nodeId),
+  return orvalFetcher<NodeResponse>(getGetNodeUrl(nodeId),
   {
     ...options,
     method: 'GET'
@@ -12131,9 +12131,9 @@ export const getModifyNodeUrl = (nodeId: number,) => {
  * @summary Modify Node
  */
 export const modifyNode = async (nodeId: number,
-    nodeModify: NodeModify, options?: RequestInit): Promise<NodeResponseSuccess> => {
+    nodeModify: NodeModify, options?: RequestInit): Promise<NodeResponse> => {
 
-  return orvalFetcher<NodeResponseSuccess>(getModifyNodeUrl(nodeId),
+  return orvalFetcher<NodeResponse>(getModifyNodeUrl(nodeId),
   {
     ...options,
     method: 'PUT',
@@ -12203,9 +12203,9 @@ export const getRemoveNodeUrl = (nodeId: number,) => {
  * Remove a node and remove it from xray in the background.
  * @summary Remove Node
  */
-export const removeNode = async (nodeId: number, options?: RequestInit): Promise<voidSuccess> => {
+export const removeNode = async (nodeId: number, options?: RequestInit): Promise<void> => {
 
-  return orvalFetcher<voidSuccess>(getRemoveNodeUrl(nodeId),
+  return orvalFetcher<void>(getRemoveNodeUrl(nodeId),
   {
     ...options,
     method: 'DELETE'
@@ -12274,9 +12274,9 @@ export const getUpdateNodeUrl = (nodeId: number,) => {
 /**
  * @summary Update Node
  */
-export const updateNode = async (nodeId: number, options?: RequestInit): Promise<unknownSuccess> => {
+export const updateNode = async (nodeId: number, options?: RequestInit): Promise<unknown> => {
 
-  return orvalFetcher<unknownSuccess>(getUpdateNodeUrl(nodeId),
+  return orvalFetcher<unknown>(getUpdateNodeUrl(nodeId),
   {
     ...options,
     method: 'POST'
@@ -12346,9 +12346,9 @@ export const getUpdateCoreUrl = (nodeId: number,) => {
  * @summary Update Core
  */
 export const updateCore = async (nodeId: number,
-    nodeCoreUpdate: NodeCoreUpdate, options?: RequestInit): Promise<unknownSuccess> => {
+    nodeCoreUpdate: NodeCoreUpdate, options?: RequestInit): Promise<unknown> => {
 
-  return orvalFetcher<unknownSuccess>(getUpdateCoreUrl(nodeId),
+  return orvalFetcher<unknown>(getUpdateCoreUrl(nodeId),
   {
     ...options,
     method: 'POST',
@@ -12418,9 +12418,9 @@ export const getUpdateGeofilesUrl = (nodeId: number,) => {
  * @summary Update Geofiles
  */
 export const updateGeofiles = async (nodeId: number,
-    nodeGeoFilesUpdate: NodeGeoFilesUpdate, options?: RequestInit): Promise<unknownSuccess> => {
+    nodeGeoFilesUpdate: NodeGeoFilesUpdate, options?: RequestInit): Promise<unknown> => {
 
-  return orvalFetcher<unknownSuccess>(getUpdateGeofilesUrl(nodeId),
+  return orvalFetcher<unknown>(getUpdateGeofilesUrl(nodeId),
   {
     ...options,
     method: 'POST',
@@ -12492,9 +12492,9 @@ export const getResetNodeUsageUrl = (nodeId: number,) => {
  * Only accessible to authorized admins.
  * @summary Reset Node Usage
  */
-export const resetNodeUsage = async (nodeId: number, options?: RequestInit): Promise<NodeResponseSuccess> => {
+export const resetNodeUsage = async (nodeId: number, options?: RequestInit): Promise<NodeResponse> => {
 
-  return orvalFetcher<NodeResponseSuccess>(getResetNodeUsageUrl(nodeId),
+  return orvalFetcher<NodeResponse>(getResetNodeUsageUrl(nodeId),
   {
     ...options,
     method: 'POST'
@@ -12564,9 +12564,9 @@ export const getReconnectNodeUrl = (nodeId: number,) => {
  * Trigger a reconnection for the specified node. Only accessible to authorized admins.
  * @summary Reconnect Node
  */
-export const reconnectNode = async (nodeId: number, options?: RequestInit): Promise<unknownSuccess> => {
+export const reconnectNode = async (nodeId: number, options?: RequestInit): Promise<unknown> => {
 
-  return orvalFetcher<unknownSuccess>(getReconnectNodeUrl(nodeId),
+  return orvalFetcher<unknown>(getReconnectNodeUrl(nodeId),
   {
     ...options,
     method: 'POST'
@@ -12644,9 +12644,9 @@ export const getSyncNodeUrl = (nodeId: number,
  * @summary Sync Node
  */
 export const syncNode = async (nodeId: number,
-    params?: SyncNodeParams, options?: RequestInit): Promise<unknownSuccess> => {
+    params?: SyncNodeParams, options?: RequestInit): Promise<unknown> => {
 
-  return orvalFetcher<unknownSuccess>(getSyncNodeUrl(nodeId,params),
+  return orvalFetcher<unknown>(getSyncNodeUrl(nodeId,params),
   {
     ...options,
     method: 'PUT'
@@ -12716,9 +12716,9 @@ export const getNodeLogsUrl = (nodeId: number,) => {
  * Stream logs for a specific node as Server-Sent Events.
  * @summary Node Logs
  */
-export const nodeLogs = async (nodeId: number, options?: RequestInit): Promise<unknownSuccess> => {
+export const nodeLogs = async (nodeId: number, options?: RequestInit): Promise<unknown> => {
 
-  return orvalFetcher<unknownSuccess>(getNodeLogsUrl(nodeId),
+  return orvalFetcher<unknown>(getNodeLogsUrl(nodeId),
   {
     ...options,
     method: 'GET'
@@ -12826,9 +12826,9 @@ export const getGetNodeStatsPeriodicUrl = (nodeId: number,
  * @summary Get Node Stats Periodic
  */
 export const getNodeStatsPeriodic = async (nodeId: number,
-    params?: GetNodeStatsPeriodicParams, options?: RequestInit): Promise<NodeStatsListSuccess> => {
+    params?: GetNodeStatsPeriodicParams, options?: RequestInit): Promise<NodeStatsList> => {
 
-  return orvalFetcher<NodeStatsListSuccess>(getGetNodeStatsPeriodicUrl(nodeId,params),
+  return orvalFetcher<NodeStatsList>(getGetNodeStatsPeriodicUrl(nodeId,params),
   {
     ...options,
     method: 'GET'
@@ -12934,9 +12934,9 @@ export const getRealtimeNodeStatsUrl = (nodeId: number,) => {
  * Retrieve node real-time statistics.
  * @summary Realtime Node Stats
  */
-export const realtimeNodeStats = async (nodeId: number, options?: RequestInit): Promise<NodeRealtimeStatsSuccess> => {
+export const realtimeNodeStats = async (nodeId: number, options?: RequestInit): Promise<NodeRealtimeStats> => {
 
-  return orvalFetcher<NodeRealtimeStatsSuccess>(getRealtimeNodeStatsUrl(nodeId),
+  return orvalFetcher<NodeRealtimeStats>(getRealtimeNodeStatsUrl(nodeId),
   {
     ...options,
     method: 'GET'
@@ -13045,9 +13045,9 @@ export const getNodeOutboundsLatencyUrl = (nodeId: number,
  * @summary Node Outbounds Latency
  */
 export const nodeOutboundsLatency = async (nodeId: number,
-    params?: NodeOutboundsLatencyParams, options?: RequestInit): Promise<NodeOutboundsLatencyResponseSuccess> => {
+    params?: NodeOutboundsLatencyParams, options?: RequestInit): Promise<NodeOutboundsLatencyResponse> => {
 
-  return orvalFetcher<NodeOutboundsLatencyResponseSuccess>(getNodeOutboundsLatencyUrl(nodeId,params),
+  return orvalFetcher<NodeOutboundsLatencyResponse>(getNodeOutboundsLatencyUrl(nodeId,params),
   {
     ...options,
     method: 'GET'
@@ -13153,9 +13153,9 @@ export const getRealtimeNodesStatsUrl = () => {
  * Retrieve nodes real-time statistics.
  * @summary Realtime Nodes Stats
  */
-export const realtimeNodesStats = async ( options?: RequestInit): Promise<RealtimeNodesStats200Success> => {
+export const realtimeNodesStats = async ( options?: RequestInit): Promise<RealtimeNodesStats200> => {
 
-  return orvalFetcher<RealtimeNodesStats200Success>(getRealtimeNodesStatsUrl(),
+  return orvalFetcher<RealtimeNodesStats200>(getRealtimeNodesStatsUrl(),
   {
     ...options,
     method: 'GET'
@@ -13255,9 +13255,9 @@ export const getUserOnlineIpListAllNodesUrl = (userId: number,) => {
  * Retrieve user ips from all nodes.
  * @summary User Online Ip List All Nodes
  */
-export const userOnlineIpListAllNodes = async (userId: number, options?: RequestInit): Promise<UserIPListAllSuccess> => {
+export const userOnlineIpListAllNodes = async (userId: number, options?: RequestInit): Promise<UserIPListAll> => {
 
-  return orvalFetcher<UserIPListAllSuccess>(getUserOnlineIpListAllNodesUrl(userId),
+  return orvalFetcher<UserIPListAll>(getUserOnlineIpListAllNodesUrl(userId),
   {
     ...options,
     method: 'GET'
@@ -13359,9 +13359,9 @@ export const getUserOnlineStatsUrl = (nodeId: number,
  * @summary User Online Stats
  */
 export const userOnlineStats = async (nodeId: number,
-    userId: number, options?: RequestInit): Promise<UserOnlineStats200Success> => {
+    userId: number, options?: RequestInit): Promise<UserOnlineStats200> => {
 
-  return orvalFetcher<UserOnlineStats200Success>(getUserOnlineStatsUrl(nodeId,userId),
+  return orvalFetcher<UserOnlineStats200>(getUserOnlineStatsUrl(nodeId,userId),
   {
     ...options,
     method: 'GET'
@@ -13469,9 +13469,9 @@ export const getUserOnlineIpListUrl = (nodeId: number,
  * @summary User Online Ip List
  */
 export const userOnlineIpList = async (nodeId: number,
-    userId: number, options?: RequestInit): Promise<UserIPListSuccess> => {
+    userId: number, options?: RequestInit): Promise<UserIPList> => {
 
-  return orvalFetcher<UserIPListSuccess>(getUserOnlineIpListUrl(nodeId,userId),
+  return orvalFetcher<UserIPList>(getUserOnlineIpListUrl(nodeId,userId),
   {
     ...options,
     method: 'GET'
@@ -13596,9 +13596,9 @@ export const getClearUsageDataUrl = (table: UsageTable,
  * @summary Clear usage data from a specified table
  */
 export const clearUsageData = async (table: UsageTable,
-    params?: ClearUsageDataParams, options?: RequestInit): Promise<unknownSuccess> => {
+    params?: ClearUsageDataParams, options?: RequestInit): Promise<unknown> => {
 
-  return orvalFetcher<unknownSuccess>(getClearUsageDataUrl(table,params),
+  return orvalFetcher<unknown>(getClearUsageDataUrl(table,params),
   {
     ...options,
     method: 'DELETE'
@@ -13668,9 +13668,9 @@ export const getBulkDeleteNodesUrl = () => {
  * Delete selected nodes by ID.
  * @summary Bulk Delete Nodes
  */
-export const bulkDeleteNodes = async (bulkNodeSelection: BulkNodeSelection, options?: RequestInit): Promise<RemoveNodesResponseSuccess> => {
+export const bulkDeleteNodes = async (bulkNodeSelection: BulkNodeSelection, options?: RequestInit): Promise<RemoveNodesResponse> => {
 
-  return orvalFetcher<RemoveNodesResponseSuccess>(getBulkDeleteNodesUrl(),
+  return orvalFetcher<RemoveNodesResponse>(getBulkDeleteNodesUrl(),
   {
     ...options,
     method: 'POST',
@@ -13740,9 +13740,9 @@ export const getBulkDisableNodesUrl = () => {
  * Disable selected nodes by ID.
  * @summary Bulk Disable Nodes
  */
-export const bulkDisableNodes = async (bulkNodeSelection: BulkNodeSelection, options?: RequestInit): Promise<BulkNodesActionResponseSuccess> => {
+export const bulkDisableNodes = async (bulkNodeSelection: BulkNodeSelection, options?: RequestInit): Promise<BulkNodesActionResponse> => {
 
-  return orvalFetcher<BulkNodesActionResponseSuccess>(getBulkDisableNodesUrl(),
+  return orvalFetcher<BulkNodesActionResponse>(getBulkDisableNodesUrl(),
   {
     ...options,
     method: 'POST',
@@ -13812,9 +13812,9 @@ export const getBulkEnableNodesUrl = () => {
  * Enable selected nodes by ID.
  * @summary Bulk Enable Nodes
  */
-export const bulkEnableNodes = async (bulkNodeSelection: BulkNodeSelection, options?: RequestInit): Promise<BulkNodesActionResponseSuccess> => {
+export const bulkEnableNodes = async (bulkNodeSelection: BulkNodeSelection, options?: RequestInit): Promise<BulkNodesActionResponse> => {
 
-  return orvalFetcher<BulkNodesActionResponseSuccess>(getBulkEnableNodesUrl(),
+  return orvalFetcher<BulkNodesActionResponse>(getBulkEnableNodesUrl(),
   {
     ...options,
     method: 'POST',
@@ -13884,9 +13884,9 @@ export const getBulkResetNodesUsageUrl = () => {
  * Reset usage for selected nodes by ID.
  * @summary Bulk Reset Nodes Usage
  */
-export const bulkResetNodesUsage = async (bulkNodeSelection: BulkNodeSelection, options?: RequestInit): Promise<BulkNodesActionResponseSuccess> => {
+export const bulkResetNodesUsage = async (bulkNodeSelection: BulkNodeSelection, options?: RequestInit): Promise<BulkNodesActionResponse> => {
 
-  return orvalFetcher<BulkNodesActionResponseSuccess>(getBulkResetNodesUsageUrl(),
+  return orvalFetcher<BulkNodesActionResponse>(getBulkResetNodesUsageUrl(),
   {
     ...options,
     method: 'POST',
@@ -13956,9 +13956,9 @@ export const getBulkReconnectNodesUrl = () => {
  * Reconnect selected nodes by ID.
  * @summary Bulk Reconnect Nodes
  */
-export const bulkReconnectNodes = async (bulkNodeSelection: BulkNodeSelection, options?: RequestInit): Promise<BulkNodesActionResponseSuccess> => {
+export const bulkReconnectNodes = async (bulkNodeSelection: BulkNodeSelection, options?: RequestInit): Promise<BulkNodesActionResponse> => {
 
-  return orvalFetcher<BulkNodesActionResponseSuccess>(getBulkReconnectNodesUrl(),
+  return orvalFetcher<BulkNodesActionResponse>(getBulkReconnectNodesUrl(),
   {
     ...options,
     method: 'POST',
@@ -14028,9 +14028,9 @@ export const getBulkUpdateNodesUrl = () => {
  * Update selected nodes by ID.
  * @summary Bulk Update Nodes
  */
-export const bulkUpdateNodes = async (bulkNodeSelection: BulkNodeSelection, options?: RequestInit): Promise<BulkNodesActionResponseSuccess> => {
+export const bulkUpdateNodes = async (bulkNodeSelection: BulkNodeSelection, options?: RequestInit): Promise<BulkNodesActionResponse> => {
 
-  return orvalFetcher<BulkNodesActionResponseSuccess>(getBulkUpdateNodesUrl(),
+  return orvalFetcher<BulkNodesActionResponse>(getBulkUpdateNodesUrl(),
   {
     ...options,
     method: 'POST',
@@ -14112,9 +14112,9 @@ export const getCreateUserUrl = () => {
  * - **next_plan**: Next user plan (resets after use).
  * @summary Create User
  */
-export const createUser = async (userCreate: UserCreate, options?: RequestInit): Promise<UserResponseSuccess> => {
+export const createUser = async (userCreate: UserCreate, options?: RequestInit): Promise<UserResponse> => {
 
-  return orvalFetcher<UserResponseSuccess>(getCreateUserUrl(),
+  return orvalFetcher<UserResponse>(getCreateUserUrl(),
   {
     ...options,
     method: 'POST',
@@ -14199,9 +14199,9 @@ export const getModifyUserUrl = (username: string,) => {
  * @summary Modify User
  */
 export const modifyUser = async (username: string,
-    userModify: UserModify, options?: RequestInit): Promise<UserResponseSuccess> => {
+    userModify: UserModify, options?: RequestInit): Promise<UserResponse> => {
 
-  return orvalFetcher<UserResponseSuccess>(getModifyUserUrl(username),
+  return orvalFetcher<UserResponse>(getModifyUserUrl(username),
   {
     ...options,
     method: 'PUT',
@@ -14271,9 +14271,9 @@ export const getRemoveUserUrl = (username: string,) => {
  * Remove a user
  * @summary Remove User
  */
-export const removeUser = async (username: string, options?: RequestInit): Promise<voidSuccess> => {
+export const removeUser = async (username: string, options?: RequestInit): Promise<void> => {
 
-  return orvalFetcher<voidSuccess>(getRemoveUserUrl(username),
+  return orvalFetcher<void>(getRemoveUserUrl(username),
   {
     ...options,
     method: 'DELETE'
@@ -14343,9 +14343,9 @@ export const getGetUserUrl = (username: string,) => {
  * Get user information
  * @summary Get User
  */
-export const getUser = async (username: string, options?: RequestInit): Promise<UserResponseSuccess> => {
+export const getUser = async (username: string, options?: RequestInit): Promise<UserResponse> => {
 
-  return orvalFetcher<UserResponseSuccess>(getGetUserUrl(username),
+  return orvalFetcher<UserResponse>(getGetUserUrl(username),
   {
     ...options,
     method: 'GET'
@@ -14445,9 +14445,9 @@ export const getModifyUserByUsernameUrl = (username: string,) => {
  * @summary Modify User By Username
  */
 export const modifyUserByUsername = async (username: string,
-    userModify: UserModify, options?: RequestInit): Promise<UserResponseSuccess> => {
+    userModify: UserModify, options?: RequestInit): Promise<UserResponse> => {
 
-  return orvalFetcher<UserResponseSuccess>(getModifyUserByUsernameUrl(username),
+  return orvalFetcher<UserResponse>(getModifyUserByUsernameUrl(username),
   {
     ...options,
     method: 'PUT',
@@ -14516,9 +14516,9 @@ export const getRemoveUserByUsernameUrl = (username: string,) => {
 /**
  * @summary Remove User By Username
  */
-export const removeUserByUsername = async (username: string, options?: RequestInit): Promise<voidSuccess> => {
+export const removeUserByUsername = async (username: string, options?: RequestInit): Promise<void> => {
 
-  return orvalFetcher<voidSuccess>(getRemoveUserByUsernameUrl(username),
+  return orvalFetcher<void>(getRemoveUserByUsernameUrl(username),
   {
     ...options,
     method: 'DELETE'
@@ -14587,9 +14587,9 @@ export const getGetUserByUsernameUrl = (username: string,) => {
 /**
  * @summary Get User By Username
  */
-export const getUserByUsername = async (username: string, options?: RequestInit): Promise<UserResponseSuccess> => {
+export const getUserByUsername = async (username: string, options?: RequestInit): Promise<UserResponse> => {
 
-  return orvalFetcher<UserResponseSuccess>(getGetUserByUsernameUrl(username),
+  return orvalFetcher<UserResponse>(getGetUserByUsernameUrl(username),
   {
     ...options,
     method: 'GET'
@@ -14689,9 +14689,9 @@ export const getModifyUserByIdUrl = (userId: number,) => {
  * @summary Modify User By Id
  */
 export const modifyUserById = async (userId: number,
-    userModify: UserModify, options?: RequestInit): Promise<UserResponseSuccess> => {
+    userModify: UserModify, options?: RequestInit): Promise<UserResponse> => {
 
-  return orvalFetcher<UserResponseSuccess>(getModifyUserByIdUrl(userId),
+  return orvalFetcher<UserResponse>(getModifyUserByIdUrl(userId),
   {
     ...options,
     method: 'PUT',
@@ -14760,9 +14760,9 @@ export const getRemoveUserByIdUrl = (userId: number,) => {
 /**
  * @summary Remove User By Id
  */
-export const removeUserById = async (userId: number, options?: RequestInit): Promise<voidSuccess> => {
+export const removeUserById = async (userId: number, options?: RequestInit): Promise<void> => {
 
-  return orvalFetcher<voidSuccess>(getRemoveUserByIdUrl(userId),
+  return orvalFetcher<void>(getRemoveUserByIdUrl(userId),
   {
     ...options,
     method: 'DELETE'
@@ -14831,9 +14831,9 @@ export const getGetUserByIdUrl = (userId: number,) => {
 /**
  * @summary Get User By Id
  */
-export const getUserById = async (userId: number, options?: RequestInit): Promise<UserResponseSuccess> => {
+export const getUserById = async (userId: number, options?: RequestInit): Promise<UserResponse> => {
 
-  return orvalFetcher<UserResponseSuccess>(getGetUserByIdUrl(userId),
+  return orvalFetcher<UserResponse>(getGetUserByIdUrl(userId),
   {
     ...options,
     method: 'GET'
@@ -14933,9 +14933,9 @@ export const getSetUserDisabledUrl = (username: string,) => {
  * @summary Set User Disabled
  */
 export const setUserDisabled = async (username: string,
-    userStatusToggle: UserStatusToggle, options?: RequestInit): Promise<UserResponseSuccess> => {
+    userStatusToggle: UserStatusToggle, options?: RequestInit): Promise<UserResponse> => {
 
-  return orvalFetcher<UserResponseSuccess>(getSetUserDisabledUrl(username),
+  return orvalFetcher<UserResponse>(getSetUserDisabledUrl(username),
   {
     ...options,
     method: 'PUT',
@@ -15005,9 +15005,9 @@ export const getSetUserDisabledByUsernameUrl = (username: string,) => {
  * @summary Set User Disabled By Username
  */
 export const setUserDisabledByUsername = async (username: string,
-    userStatusToggle: UserStatusToggle, options?: RequestInit): Promise<UserResponseSuccess> => {
+    userStatusToggle: UserStatusToggle, options?: RequestInit): Promise<UserResponse> => {
 
-  return orvalFetcher<UserResponseSuccess>(getSetUserDisabledByUsernameUrl(username),
+  return orvalFetcher<UserResponse>(getSetUserDisabledByUsernameUrl(username),
   {
     ...options,
     method: 'PUT',
@@ -15077,9 +15077,9 @@ export const getSetUserDisabledByIdUrl = (userId: number,) => {
  * @summary Set User Disabled By Id
  */
 export const setUserDisabledById = async (userId: number,
-    userStatusToggle: UserStatusToggle, options?: RequestInit): Promise<UserResponseSuccess> => {
+    userStatusToggle: UserStatusToggle, options?: RequestInit): Promise<UserResponse> => {
 
-  return orvalFetcher<UserResponseSuccess>(getSetUserDisabledByIdUrl(userId),
+  return orvalFetcher<UserResponse>(getSetUserDisabledByIdUrl(userId),
   {
     ...options,
     method: 'PUT',
@@ -15149,9 +15149,9 @@ export const getResetUserDataUsageUrl = (username: string,) => {
  * Reset user data usage
  * @summary Reset User Data Usage
  */
-export const resetUserDataUsage = async (username: string, options?: RequestInit): Promise<UserResponseSuccess> => {
+export const resetUserDataUsage = async (username: string, options?: RequestInit): Promise<UserResponse> => {
 
-  return orvalFetcher<UserResponseSuccess>(getResetUserDataUsageUrl(username),
+  return orvalFetcher<UserResponse>(getResetUserDataUsageUrl(username),
   {
     ...options,
     method: 'POST'
@@ -15220,9 +15220,9 @@ export const getResetUserDataUsageByUsernameUrl = (username: string,) => {
 /**
  * @summary Reset User Data Usage By Username
  */
-export const resetUserDataUsageByUsername = async (username: string, options?: RequestInit): Promise<UserResponseSuccess> => {
+export const resetUserDataUsageByUsername = async (username: string, options?: RequestInit): Promise<UserResponse> => {
 
-  return orvalFetcher<UserResponseSuccess>(getResetUserDataUsageByUsernameUrl(username),
+  return orvalFetcher<UserResponse>(getResetUserDataUsageByUsernameUrl(username),
   {
     ...options,
     method: 'POST'
@@ -15291,9 +15291,9 @@ export const getResetUserDataUsageByIdUrl = (userId: number,) => {
 /**
  * @summary Reset User Data Usage By Id
  */
-export const resetUserDataUsageById = async (userId: number, options?: RequestInit): Promise<UserResponseSuccess> => {
+export const resetUserDataUsageById = async (userId: number, options?: RequestInit): Promise<UserResponse> => {
 
-  return orvalFetcher<UserResponseSuccess>(getResetUserDataUsageByIdUrl(userId),
+  return orvalFetcher<UserResponse>(getResetUserDataUsageByIdUrl(userId),
   {
     ...options,
     method: 'POST'
@@ -15363,9 +15363,9 @@ export const getRevokeUserSubscriptionUrl = (username: string,) => {
  * Revoke users subscription (Subscription link and proxies)
  * @summary Revoke User Subscription
  */
-export const revokeUserSubscription = async (username: string, options?: RequestInit): Promise<UserResponseSuccess> => {
+export const revokeUserSubscription = async (username: string, options?: RequestInit): Promise<UserResponse> => {
 
-  return orvalFetcher<UserResponseSuccess>(getRevokeUserSubscriptionUrl(username),
+  return orvalFetcher<UserResponse>(getRevokeUserSubscriptionUrl(username),
   {
     ...options,
     method: 'POST'
@@ -15434,9 +15434,9 @@ export const getRevokeUserSubscriptionByUsernameUrl = (username: string,) => {
 /**
  * @summary Revoke User Subscription By Username
  */
-export const revokeUserSubscriptionByUsername = async (username: string, options?: RequestInit): Promise<UserResponseSuccess> => {
+export const revokeUserSubscriptionByUsername = async (username: string, options?: RequestInit): Promise<UserResponse> => {
 
-  return orvalFetcher<UserResponseSuccess>(getRevokeUserSubscriptionByUsernameUrl(username),
+  return orvalFetcher<UserResponse>(getRevokeUserSubscriptionByUsernameUrl(username),
   {
     ...options,
     method: 'POST'
@@ -15505,9 +15505,9 @@ export const getRevokeUserSubscriptionByIdUrl = (userId: number,) => {
 /**
  * @summary Revoke User Subscription By Id
  */
-export const revokeUserSubscriptionById = async (userId: number, options?: RequestInit): Promise<UserResponseSuccess> => {
+export const revokeUserSubscriptionById = async (userId: number, options?: RequestInit): Promise<UserResponse> => {
 
-  return orvalFetcher<UserResponseSuccess>(getRevokeUserSubscriptionByIdUrl(userId),
+  return orvalFetcher<UserResponse>(getRevokeUserSubscriptionByIdUrl(userId),
   {
     ...options,
     method: 'POST'
@@ -15577,9 +15577,9 @@ export const getResetUsersDataUsageUrl = () => {
  * Reset all users data usage
  * @summary Reset Users Data Usage
  */
-export const resetUsersDataUsage = async ( options?: RequestInit): Promise<unknownSuccess> => {
+export const resetUsersDataUsage = async ( options?: RequestInit): Promise<unknown> => {
 
-  return orvalFetcher<unknownSuccess>(getResetUsersDataUsageUrl(),
+  return orvalFetcher<unknown>(getResetUsersDataUsageUrl(),
   {
     ...options,
     method: 'POST'
@@ -15656,9 +15656,9 @@ export const getGetUsersSubUpdateChartUrl = (params?: GetUsersSubUpdateChartPara
  * Get subscription agent distribution over a period (optionally filtered by user_id/username).
  * @summary Get Users Sub Update Chart
  */
-export const getUsersSubUpdateChart = async (params?: GetUsersSubUpdateChartParams, options?: RequestInit): Promise<UserSubscriptionUpdateChartSuccess> => {
+export const getUsersSubUpdateChart = async (params?: GetUsersSubUpdateChartParams, options?: RequestInit): Promise<UserSubscriptionUpdateChart> => {
 
-  return orvalFetcher<UserSubscriptionUpdateChartSuccess>(getGetUsersSubUpdateChartUrl(params),
+  return orvalFetcher<UserSubscriptionUpdateChart>(getGetUsersSubUpdateChartUrl(params),
   {
     ...options,
     method: 'GET'
@@ -15767,9 +15767,9 @@ export const getSetOwnerUrl = (username: string,
  * @summary Set Owner
  */
 export const setOwner = async (username: string,
-    params: SetOwnerParams, options?: RequestInit): Promise<UserResponseSuccess> => {
+    params: SetOwnerParams, options?: RequestInit): Promise<UserResponse> => {
 
-  return orvalFetcher<UserResponseSuccess>(getSetOwnerUrl(username,params),
+  return orvalFetcher<UserResponse>(getSetOwnerUrl(username,params),
   {
     ...options,
     method: 'PUT'
@@ -15847,9 +15847,9 @@ export const getSetOwnerByUsernameUrl = (username: string,
  * @summary Set Owner By Username
  */
 export const setOwnerByUsername = async (username: string,
-    params: SetOwnerByUsernameParams, options?: RequestInit): Promise<UserResponseSuccess> => {
+    params: SetOwnerByUsernameParams, options?: RequestInit): Promise<UserResponse> => {
 
-  return orvalFetcher<UserResponseSuccess>(getSetOwnerByUsernameUrl(username,params),
+  return orvalFetcher<UserResponse>(getSetOwnerByUsernameUrl(username,params),
   {
     ...options,
     method: 'PUT'
@@ -15927,9 +15927,9 @@ export const getSetOwnerByIdUrl = (userId: number,
  * @summary Set Owner By Id
  */
 export const setOwnerById = async (userId: number,
-    params: SetOwnerByIdParams, options?: RequestInit): Promise<UserResponseSuccess> => {
+    params: SetOwnerByIdParams, options?: RequestInit): Promise<UserResponse> => {
 
-  return orvalFetcher<UserResponseSuccess>(getSetOwnerByIdUrl(userId,params),
+  return orvalFetcher<UserResponse>(getSetOwnerByIdUrl(userId,params),
   {
     ...options,
     method: 'PUT'
@@ -15999,9 +15999,9 @@ export const getActiveNextPlanUrl = (username: string,) => {
  * Reset user by next plan
  * @summary Active Next Plan
  */
-export const activeNextPlan = async (username: string, options?: RequestInit): Promise<UserResponseSuccess> => {
+export const activeNextPlan = async (username: string, options?: RequestInit): Promise<UserResponse> => {
 
-  return orvalFetcher<UserResponseSuccess>(getActiveNextPlanUrl(username),
+  return orvalFetcher<UserResponse>(getActiveNextPlanUrl(username),
   {
     ...options,
     method: 'POST'
@@ -16070,9 +16070,9 @@ export const getActiveNextPlanByUsernameUrl = (username: string,) => {
 /**
  * @summary Active Next Plan By Username
  */
-export const activeNextPlanByUsername = async (username: string, options?: RequestInit): Promise<UserResponseSuccess> => {
+export const activeNextPlanByUsername = async (username: string, options?: RequestInit): Promise<UserResponse> => {
 
-  return orvalFetcher<UserResponseSuccess>(getActiveNextPlanByUsernameUrl(username),
+  return orvalFetcher<UserResponse>(getActiveNextPlanByUsernameUrl(username),
   {
     ...options,
     method: 'POST'
@@ -16141,9 +16141,9 @@ export const getActiveNextPlanByIdUrl = (userId: number,) => {
 /**
  * @summary Active Next Plan By Id
  */
-export const activeNextPlanById = async (userId: number, options?: RequestInit): Promise<UserResponseSuccess> => {
+export const activeNextPlanById = async (userId: number, options?: RequestInit): Promise<UserResponse> => {
 
-  return orvalFetcher<UserResponseSuccess>(getActiveNextPlanByIdUrl(userId),
+  return orvalFetcher<UserResponse>(getActiveNextPlanByIdUrl(userId),
   {
     ...options,
     method: 'POST'
@@ -16215,9 +16215,9 @@ export const getGetUserSubscriptionByIdUrl = (userId: number,
  * @summary Get User Subscription By Id
  */
 export const getUserSubscriptionById = async (userId: number,
-    clientType: ConfigFormat, options?: RequestInit): Promise<unknownSuccess> => {
+    clientType: ConfigFormat, options?: RequestInit): Promise<unknown> => {
 
-  return orvalFetcher<unknownSuccess>(getGetUserSubscriptionByIdUrl(userId,clientType),
+  return orvalFetcher<unknown>(getGetUserSubscriptionByIdUrl(userId,clientType),
   {
     ...options,
     method: 'GET'
@@ -16332,9 +16332,9 @@ export const getGetUserSubUpdateListUrl = (username: string,
  * @summary Get User Sub Update List
  */
 export const getUserSubUpdateList = async (username: string,
-    params?: GetUserSubUpdateListParams, options?: RequestInit): Promise<UserSubscriptionUpdateListSuccess> => {
+    params?: GetUserSubUpdateListParams, options?: RequestInit): Promise<UserSubscriptionUpdateList> => {
 
-  return orvalFetcher<UserSubscriptionUpdateListSuccess>(getGetUserSubUpdateListUrl(username,params),
+  return orvalFetcher<UserSubscriptionUpdateList>(getGetUserSubUpdateListUrl(username,params),
   {
     ...options,
     method: 'GET'
@@ -16448,9 +16448,9 @@ export const getGetUserSubUpdateListByUsernameUrl = (username: string,
  * @summary Get User Sub Update List By Username
  */
 export const getUserSubUpdateListByUsername = async (username: string,
-    params?: GetUserSubUpdateListByUsernameParams, options?: RequestInit): Promise<UserSubscriptionUpdateListSuccess> => {
+    params?: GetUserSubUpdateListByUsernameParams, options?: RequestInit): Promise<UserSubscriptionUpdateList> => {
 
-  return orvalFetcher<UserSubscriptionUpdateListSuccess>(getGetUserSubUpdateListByUsernameUrl(username,params),
+  return orvalFetcher<UserSubscriptionUpdateList>(getGetUserSubUpdateListByUsernameUrl(username,params),
   {
     ...options,
     method: 'GET'
@@ -16564,9 +16564,9 @@ export const getGetUserSubUpdateListByIdUrl = (userId: number,
  * @summary Get User Sub Update List By Id
  */
 export const getUserSubUpdateListById = async (userId: number,
-    params?: GetUserSubUpdateListByIdParams, options?: RequestInit): Promise<UserSubscriptionUpdateListSuccess> => {
+    params?: GetUserSubUpdateListByIdParams, options?: RequestInit): Promise<UserSubscriptionUpdateList> => {
 
-  return orvalFetcher<UserSubscriptionUpdateListSuccess>(getGetUserSubUpdateListByIdUrl(userId,params),
+  return orvalFetcher<UserSubscriptionUpdateList>(getGetUserSubUpdateListByIdUrl(userId,params),
   {
     ...options,
     method: 'GET'
@@ -16687,9 +16687,9 @@ export const getGetUsersUrl = (params?: GetUsersParams,) => {
  * Get all users
  * @summary Get Users
  */
-export const getUsers = async (params?: GetUsersParams, options?: RequestInit): Promise<UsersResponseSuccess> => {
+export const getUsers = async (params?: GetUsersParams, options?: RequestInit): Promise<UsersResponse> => {
 
-  return orvalFetcher<UsersResponseSuccess>(getGetUsersUrl(params),
+  return orvalFetcher<UsersResponse>(getGetUsersUrl(params),
   {
     ...options,
     method: 'GET'
@@ -16804,9 +16804,9 @@ export const getGetUsersSimpleUrl = (params?: GetUsersSimpleParams,) => {
  * Returns only id and username for users. Optimized for dropdowns and autocomplete.
  * @summary Get lightweight user list
  */
-export const getUsersSimple = async (params?: GetUsersSimpleParams, options?: RequestInit): Promise<UsersSimpleResponseSuccess> => {
+export const getUsersSimple = async (params?: GetUsersSimpleParams, options?: RequestInit): Promise<UsersSimpleResponse> => {
 
-  return orvalFetcher<UsersSimpleResponseSuccess>(getGetUsersSimpleUrl(params),
+  return orvalFetcher<UsersSimpleResponse>(getGetUsersSimpleUrl(params),
   {
     ...options,
     method: 'GET'
@@ -16915,9 +16915,9 @@ export const getGetUserUsageUrl = (username: string,
  * @summary Get User Usage
  */
 export const getUserUsage = async (username: string,
-    params?: GetUserUsageParams, options?: RequestInit): Promise<UserUsageStatsListSuccess> => {
+    params?: GetUserUsageParams, options?: RequestInit): Promise<UserUsageStatsList> => {
 
-  return orvalFetcher<UserUsageStatsListSuccess>(getGetUserUsageUrl(username,params),
+  return orvalFetcher<UserUsageStatsList>(getGetUserUsageUrl(username,params),
   {
     ...options,
     method: 'GET'
@@ -17031,9 +17031,9 @@ export const getGetUserUsageByUsernameUrl = (username: string,
  * @summary Get User Usage By Username
  */
 export const getUserUsageByUsername = async (username: string,
-    params?: GetUserUsageByUsernameParams, options?: RequestInit): Promise<UserUsageStatsListSuccess> => {
+    params?: GetUserUsageByUsernameParams, options?: RequestInit): Promise<UserUsageStatsList> => {
 
-  return orvalFetcher<UserUsageStatsListSuccess>(getGetUserUsageByUsernameUrl(username,params),
+  return orvalFetcher<UserUsageStatsList>(getGetUserUsageByUsernameUrl(username,params),
   {
     ...options,
     method: 'GET'
@@ -17147,9 +17147,9 @@ export const getGetUserUsageByIdUrl = (userId: number,
  * @summary Get User Usage By Id
  */
 export const getUserUsageById = async (userId: number,
-    params?: GetUserUsageByIdParams, options?: RequestInit): Promise<UserUsageStatsListSuccess> => {
+    params?: GetUserUsageByIdParams, options?: RequestInit): Promise<UserUsageStatsList> => {
 
-  return orvalFetcher<UserUsageStatsListSuccess>(getGetUserUsageByIdUrl(userId,params),
+  return orvalFetcher<UserUsageStatsList>(getGetUserUsageByIdUrl(userId,params),
   {
     ...options,
     method: 'GET'
@@ -17270,9 +17270,9 @@ export const getGetUsersUsageUrl = (params?: GetUsersUsageParams,) => {
  * Get all users usage
  * @summary Get Users Usage
  */
-export const getUsersUsage = async (params?: GetUsersUsageParams, options?: RequestInit): Promise<UserUsageStatsListSuccess> => {
+export const getUsersUsage = async (params?: GetUsersUsageParams, options?: RequestInit): Promise<UserUsageStatsList> => {
 
-  return orvalFetcher<UserUsageStatsListSuccess>(getGetUsersUsageUrl(params),
+  return orvalFetcher<UserUsageStatsList>(getGetUsersUsageUrl(params),
   {
     ...options,
     method: 'GET'
@@ -17389,9 +17389,9 @@ export const getGetUsersCountMetricUrl = (metric: UserCountMetric,
  * @summary Get Users Count Metric
  */
 export const getUsersCountMetric = async (metric: UserCountMetric,
-    params?: GetUsersCountMetricParams, options?: RequestInit): Promise<UserCountMetricStatsListSuccess> => {
+    params?: GetUsersCountMetricParams, options?: RequestInit): Promise<UserCountMetricStatsList> => {
 
-  return orvalFetcher<UserCountMetricStatsListSuccess>(getGetUsersCountMetricUrl(metric,params),
+  return orvalFetcher<UserCountMetricStatsList>(getGetUsersCountMetricUrl(metric,params),
   {
     ...options,
     method: 'GET'
@@ -17509,9 +17509,9 @@ export const getGetExpiredUsersUrl = (params?: GetExpiredUsersParams,) => {
  * - For `limited` / `on_hold` / `disabled`: filters by last_status_change (when they entered that status).
  * @summary Get Expired Users
  */
-export const getExpiredUsers = async (params?: GetExpiredUsersParams, options?: RequestInit): Promise<string[]Success> => {
+export const getExpiredUsers = async (params?: GetExpiredUsersParams, options?: RequestInit): Promise<string[]> => {
 
-  return orvalFetcher<string[]Success>(getGetExpiredUsersUrl(params),
+  return orvalFetcher<string[]>(getGetExpiredUsersUrl(params),
   {
     ...options,
     method: 'GET'
@@ -17624,9 +17624,9 @@ export const getDeleteExpiredUsersUrl = (params?: DeleteExpiredUsersParams,) => 
  * - **dry_run**: if true, returns users that would be deleted without deleting them.
  * @summary Delete Expired Users
  */
-export const deleteExpiredUsers = async (params?: DeleteExpiredUsersParams, options?: RequestInit): Promise<RemoveUsersResponseSuccess> => {
+export const deleteExpiredUsers = async (params?: DeleteExpiredUsersParams, options?: RequestInit): Promise<RemoveUsersResponse> => {
 
-  return orvalFetcher<RemoveUsersResponseSuccess>(getDeleteExpiredUsersUrl(params),
+  return orvalFetcher<RemoveUsersResponse>(getDeleteExpiredUsersUrl(params),
   {
     ...options,
     method: 'DELETE'
@@ -17696,9 +17696,9 @@ export const getBulkDeleteUsersUrl = () => {
  * Delete selected users by ID.
  * @summary Bulk Delete Users
  */
-export const bulkDeleteUsers = async (bulkUsersSelection: BulkUsersSelection, options?: RequestInit): Promise<RemoveUsersResponseSuccess> => {
+export const bulkDeleteUsers = async (bulkUsersSelection: BulkUsersSelection, options?: RequestInit): Promise<RemoveUsersResponse> => {
 
-  return orvalFetcher<RemoveUsersResponseSuccess>(getBulkDeleteUsersUrl(),
+  return orvalFetcher<RemoveUsersResponse>(getBulkDeleteUsersUrl(),
   {
     ...options,
     method: 'POST',
@@ -17768,9 +17768,9 @@ export const getBulkResetUsersDataUsageUrl = () => {
  * Reset usage for selected users by ID.
  * @summary Bulk Reset Users Data Usage
  */
-export const bulkResetUsersDataUsage = async (bulkUsersSelection: BulkUsersSelection, options?: RequestInit): Promise<BulkUsersActionResponseSuccess> => {
+export const bulkResetUsersDataUsage = async (bulkUsersSelection: BulkUsersSelection, options?: RequestInit): Promise<BulkUsersActionResponse> => {
 
-  return orvalFetcher<BulkUsersActionResponseSuccess>(getBulkResetUsersDataUsageUrl(),
+  return orvalFetcher<BulkUsersActionResponse>(getBulkResetUsersDataUsageUrl(),
   {
     ...options,
     method: 'POST',
@@ -17840,9 +17840,9 @@ export const getBulkDisableUsersUrl = () => {
  * Disable selected users by ID.
  * @summary Bulk Disable Users
  */
-export const bulkDisableUsers = async (bulkUsersSelection: BulkUsersSelection, options?: RequestInit): Promise<BulkUsersActionResponseSuccess> => {
+export const bulkDisableUsers = async (bulkUsersSelection: BulkUsersSelection, options?: RequestInit): Promise<BulkUsersActionResponse> => {
 
-  return orvalFetcher<BulkUsersActionResponseSuccess>(getBulkDisableUsersUrl(),
+  return orvalFetcher<BulkUsersActionResponse>(getBulkDisableUsersUrl(),
   {
     ...options,
     method: 'POST',
@@ -17912,9 +17912,9 @@ export const getBulkEnableUsersUrl = () => {
  * Enable selected users by ID.
  * @summary Bulk Enable Users
  */
-export const bulkEnableUsers = async (bulkUsersSelection: BulkUsersSelection, options?: RequestInit): Promise<BulkUsersActionResponseSuccess> => {
+export const bulkEnableUsers = async (bulkUsersSelection: BulkUsersSelection, options?: RequestInit): Promise<BulkUsersActionResponse> => {
 
-  return orvalFetcher<BulkUsersActionResponseSuccess>(getBulkEnableUsersUrl(),
+  return orvalFetcher<BulkUsersActionResponse>(getBulkEnableUsersUrl(),
   {
     ...options,
     method: 'POST',
@@ -17984,9 +17984,9 @@ export const getBulkRevokeUsersSubscriptionUrl = () => {
  * Revoke subscriptions for selected users by ID.
  * @summary Bulk Revoke Users Subscription
  */
-export const bulkRevokeUsersSubscription = async (bulkUsersSelection: BulkUsersSelection, options?: RequestInit): Promise<BulkUsersActionResponseSuccess> => {
+export const bulkRevokeUsersSubscription = async (bulkUsersSelection: BulkUsersSelection, options?: RequestInit): Promise<BulkUsersActionResponse> => {
 
-  return orvalFetcher<BulkUsersActionResponseSuccess>(getBulkRevokeUsersSubscriptionUrl(),
+  return orvalFetcher<BulkUsersActionResponse>(getBulkRevokeUsersSubscriptionUrl(),
   {
     ...options,
     method: 'POST',
@@ -18056,9 +18056,9 @@ export const getBulkSetOwnerUrl = () => {
  * Set a new owner for selected users by ID.
  * @summary Bulk Set Owner
  */
-export const bulkSetOwner = async (bulkUsersSetOwner: BulkUsersSetOwner, options?: RequestInit): Promise<BulkUsersActionResponseSuccess> => {
+export const bulkSetOwner = async (bulkUsersSetOwner: BulkUsersSetOwner, options?: RequestInit): Promise<BulkUsersActionResponse> => {
 
-  return orvalFetcher<BulkUsersActionResponseSuccess>(getBulkSetOwnerUrl(),
+  return orvalFetcher<BulkUsersActionResponse>(getBulkSetOwnerUrl(),
   {
     ...options,
     method: 'PUT',
@@ -18127,9 +18127,9 @@ export const getCreateUserFromTemplateUrl = () => {
 /**
  * @summary Create User From Template
  */
-export const createUserFromTemplate = async (createUserFromTemplate: CreateUserFromTemplate, options?: RequestInit): Promise<UserResponseSuccess> => {
+export const createUserFromTemplate = async (createUserFromTemplate: CreateUserFromTemplate, options?: RequestInit): Promise<UserResponse> => {
 
-  return orvalFetcher<UserResponseSuccess>(getCreateUserFromTemplateUrl(),
+  return orvalFetcher<UserResponse>(getCreateUserFromTemplateUrl(),
   {
     ...options,
     method: 'POST',
@@ -18205,9 +18205,9 @@ export const getBulkCreateUsersFromTemplateUrl = () => {
  * Returns subscription URLs for created users.
  * @summary Bulk Create Users From Template
  */
-export const bulkCreateUsersFromTemplate = async (bulkUsersFromTemplate: BulkUsersFromTemplate, options?: RequestInit): Promise<BulkUsersCreateResponseSuccess> => {
+export const bulkCreateUsersFromTemplate = async (bulkUsersFromTemplate: BulkUsersFromTemplate, options?: RequestInit): Promise<BulkUsersCreateResponse> => {
 
-  return orvalFetcher<BulkUsersCreateResponseSuccess>(getBulkCreateUsersFromTemplateUrl(),
+  return orvalFetcher<BulkUsersCreateResponse>(getBulkCreateUsersFromTemplateUrl(),
   {
     ...options,
     method: 'POST',
@@ -18277,9 +18277,9 @@ export const getBulkApplyTemplateToUsersUrl = () => {
  * Apply a user template to selected existing users by ID.
  * @summary Bulk Apply Template To Users
  */
-export const bulkApplyTemplateToUsers = async (bulkUsersApplyTemplate: BulkUsersApplyTemplate, options?: RequestInit): Promise<BulkUsersActionResponseSuccess> => {
+export const bulkApplyTemplateToUsers = async (bulkUsersApplyTemplate: BulkUsersApplyTemplate, options?: RequestInit): Promise<BulkUsersActionResponse> => {
 
-  return orvalFetcher<BulkUsersActionResponseSuccess>(getBulkApplyTemplateToUsersUrl(),
+  return orvalFetcher<BulkUsersActionResponse>(getBulkApplyTemplateToUsersUrl(),
   {
     ...options,
     method: 'POST',
@@ -18349,9 +18349,9 @@ export const getModifyUserWithTemplateUrl = (username: string,) => {
  * @summary Modify User With Template
  */
 export const modifyUserWithTemplate = async (username: string,
-    modifyUserByTemplate: ModifyUserByTemplate, options?: RequestInit): Promise<UserResponseSuccess> => {
+    modifyUserByTemplate: ModifyUserByTemplate, options?: RequestInit): Promise<UserResponse> => {
 
-  return orvalFetcher<UserResponseSuccess>(getModifyUserWithTemplateUrl(username),
+  return orvalFetcher<UserResponse>(getModifyUserWithTemplateUrl(username),
   {
     ...options,
     method: 'PUT',
@@ -18421,9 +18421,9 @@ export const getModifyUserWithTemplateByUsernameUrl = (username: string,) => {
  * @summary Modify User With Template By Username
  */
 export const modifyUserWithTemplateByUsername = async (username: string,
-    modifyUserByTemplate: ModifyUserByTemplate, options?: RequestInit): Promise<UserResponseSuccess> => {
+    modifyUserByTemplate: ModifyUserByTemplate, options?: RequestInit): Promise<UserResponse> => {
 
-  return orvalFetcher<UserResponseSuccess>(getModifyUserWithTemplateByUsernameUrl(username),
+  return orvalFetcher<UserResponse>(getModifyUserWithTemplateByUsernameUrl(username),
   {
     ...options,
     method: 'PUT',
@@ -18493,9 +18493,9 @@ export const getModifyUserWithTemplateByIdUrl = (userId: number,) => {
  * @summary Modify User With Template By Id
  */
 export const modifyUserWithTemplateById = async (userId: number,
-    modifyUserByTemplate: ModifyUserByTemplate, options?: RequestInit): Promise<UserResponseSuccess> => {
+    modifyUserByTemplate: ModifyUserByTemplate, options?: RequestInit): Promise<UserResponse> => {
 
-  return orvalFetcher<UserResponseSuccess>(getModifyUserWithTemplateByIdUrl(userId),
+  return orvalFetcher<UserResponse>(getModifyUserWithTemplateByIdUrl(userId),
   {
     ...options,
     method: 'PUT',
@@ -18573,9 +18573,9 @@ export const getBulkModifyUsersExpireUrl = () => {
  * - **expire_before**: Optional UTC datetime to filter users whose expire date is on or before this date
  * @summary Bulk sum/sub to expire of users
  */
-export const bulkModifyUsersExpire = async (bulkUser: BulkUser, options?: RequestInit): Promise<unknownSuccess> => {
+export const bulkModifyUsersExpire = async (bulkUser: BulkUser, options?: RequestInit): Promise<unknown> => {
 
-  return orvalFetcher<unknownSuccess>(getBulkModifyUsersExpireUrl(),
+  return orvalFetcher<unknown>(getBulkModifyUsersExpireUrl(),
   {
     ...options,
     method: 'POST',
@@ -18653,9 +18653,9 @@ export const getBulkModifyUsersDatalimitUrl = () => {
  * - **expire_before**: Optional UTC datetime to filter users whose expire date is on or before this date
  * @summary Bulk sum/sub to data limit of users
  */
-export const bulkModifyUsersDatalimit = async (bulkUser: BulkUser, options?: RequestInit): Promise<unknownSuccess> => {
+export const bulkModifyUsersDatalimit = async (bulkUser: BulkUser, options?: RequestInit): Promise<unknown> => {
 
-  return orvalFetcher<unknownSuccess>(getBulkModifyUsersDatalimitUrl(),
+  return orvalFetcher<unknown>(getBulkModifyUsersDatalimitUrl(),
   {
     ...options,
     method: 'POST',
@@ -18724,9 +18724,9 @@ export const getBulkModifyUsersProxySettingsUrl = () => {
 /**
  * @summary Bulk modify users proxy settings
  */
-export const bulkModifyUsersProxySettings = async (bulkUsersProxy: BulkUsersProxy, options?: RequestInit): Promise<unknownSuccess> => {
+export const bulkModifyUsersProxySettings = async (bulkUsersProxy: BulkUsersProxy, options?: RequestInit): Promise<unknown> => {
 
-  return orvalFetcher<unknownSuccess>(getBulkModifyUsersProxySettingsUrl(),
+  return orvalFetcher<unknown>(getBulkModifyUsersProxySettingsUrl(),
   {
     ...options,
     method: 'POST',
@@ -18796,9 +18796,9 @@ export const getUserSubscriptionUrl = (token: string,) => {
  * Provides a subscription link based on the user agent (Clash, V2Ray, etc.).
  * @summary User Subscription
  */
-export const userSubscription = async (token: string, options?: RequestInit): Promise<unknownSuccess> => {
+export const userSubscription = async (token: string, options?: RequestInit): Promise<unknown> => {
 
-  return orvalFetcher<unknownSuccess>(getUserSubscriptionUrl(token),
+  return orvalFetcher<unknown>(getUserSubscriptionUrl(token),
   {
     ...options,
     method: 'GET'
@@ -18898,9 +18898,9 @@ export const getUserSubscriptionHeadersUrl = (token: string,) => {
  * Provides subscription headers without response body.
  * @summary User Subscription Headers
  */
-export const userSubscriptionHeaders = async (token: string, options?: RequestInit): Promise<unknownSuccess> => {
+export const userSubscriptionHeaders = async (token: string, options?: RequestInit): Promise<unknown> => {
 
-  return orvalFetcher<unknownSuccess>(getUserSubscriptionHeadersUrl(token),
+  return orvalFetcher<unknown>(getUserSubscriptionHeadersUrl(token),
   {
     ...options,
     method: 'HEAD'
@@ -18970,9 +18970,9 @@ export const getUserSubscriptionInfoUrl = (token: string,) => {
  * Retrieves detailed information about the user's subscription.
  * @summary User Subscription Info
  */
-export const userSubscriptionInfo = async (token: string, options?: RequestInit): Promise<SubscriptionUserResponseSuccess> => {
+export const userSubscriptionInfo = async (token: string, options?: RequestInit): Promise<SubscriptionUserResponse> => {
 
-  return orvalFetcher<SubscriptionUserResponseSuccess>(getUserSubscriptionInfoUrl(token),
+  return orvalFetcher<SubscriptionUserResponse>(getUserSubscriptionInfoUrl(token),
   {
     ...options,
     method: 'GET'
@@ -19071,9 +19071,9 @@ export const getUserSubscriptionRawUrl = (token: string,) => {
 /**
  * @summary User Subscription Raw
  */
-export const userSubscriptionRaw = async (token: string, options?: RequestInit): Promise<unknownSuccess> => {
+export const userSubscriptionRaw = async (token: string, options?: RequestInit): Promise<unknown> => {
 
-  return orvalFetcher<unknownSuccess>(getUserSubscriptionRawUrl(token),
+  return orvalFetcher<unknown>(getUserSubscriptionRawUrl(token),
   {
     ...options,
     method: 'GET'
@@ -19173,9 +19173,9 @@ export const getUserSubscriptionAppsUrl = (token: string,) => {
  * Get applications available for user's subscription.
  * @summary User Subscription Apps
  */
-export const userSubscriptionApps = async (token: string, options?: RequestInit): Promise<Application[]Success> => {
+export const userSubscriptionApps = async (token: string, options?: RequestInit): Promise<Application[]> => {
 
-  return orvalFetcher<Application[]Success>(getUserSubscriptionAppsUrl(token),
+  return orvalFetcher<Application[]>(getUserSubscriptionAppsUrl(token),
   {
     ...options,
     method: 'GET'
@@ -19284,9 +19284,9 @@ export const getGetSubUserUsageUrl = (token: string,
  * @summary Get Sub User Usage
  */
 export const getSubUserUsage = async (token: string,
-    params?: GetSubUserUsageParams, options?: RequestInit): Promise<UserUsageStatsListSuccess> => {
+    params?: GetSubUserUsageParams, options?: RequestInit): Promise<UserUsageStatsList> => {
 
-  return orvalFetcher<UserUsageStatsListSuccess>(getGetSubUserUsageUrl(token,params),
+  return orvalFetcher<UserUsageStatsList>(getGetSubUserUsageUrl(token,params),
   {
     ...options,
     method: 'GET'
@@ -19394,9 +19394,9 @@ export const getUserSubscriptionWithClientTypeUrl = (token: string,
  * @summary User Subscription With Client Type
  */
 export const userSubscriptionWithClientType = async (token: string,
-    clientType: ConfigFormat, options?: RequestInit): Promise<unknownSuccess> => {
+    clientType: ConfigFormat, options?: RequestInit): Promise<unknown> => {
 
-  return orvalFetcher<unknownSuccess>(getUserSubscriptionWithClientTypeUrl(token,clientType),
+  return orvalFetcher<unknown>(getUserSubscriptionWithClientTypeUrl(token,clientType),
   {
     ...options,
     method: 'GET'
@@ -19507,9 +19507,9 @@ export const getCreateUserTemplateUrl = () => {
  * - **group_ids** list of group ids
  * @summary Create User Template
  */
-export const createUserTemplate = async (userTemplateCreate: UserTemplateCreate, options?: RequestInit): Promise<UserTemplateResponseSuccess> => {
+export const createUserTemplate = async (userTemplateCreate: UserTemplateCreate, options?: RequestInit): Promise<UserTemplateResponse> => {
 
-  return orvalFetcher<UserTemplateResponseSuccess>(getCreateUserTemplateUrl(),
+  return orvalFetcher<UserTemplateResponse>(getCreateUserTemplateUrl(),
   {
     ...options,
     method: 'POST',
@@ -19579,9 +19579,9 @@ export const getGetUserTemplateUrl = (templateId: number,) => {
  * Get User Template information with id
  * @summary Get User Template
  */
-export const getUserTemplate = async (templateId: number, options?: RequestInit): Promise<UserTemplateResponseSuccess> => {
+export const getUserTemplate = async (templateId: number, options?: RequestInit): Promise<UserTemplateResponse> => {
 
-  return orvalFetcher<UserTemplateResponseSuccess>(getGetUserTemplateUrl(templateId),
+  return orvalFetcher<UserTemplateResponse>(getGetUserTemplateUrl(templateId),
   {
     ...options,
     method: 'GET'
@@ -19687,9 +19687,9 @@ export const getModifyUserTemplateUrl = (templateId: number,) => {
  * @summary Modify User Template
  */
 export const modifyUserTemplate = async (templateId: number,
-    userTemplateModify: UserTemplateModify, options?: RequestInit): Promise<UserTemplateResponseSuccess> => {
+    userTemplateModify: UserTemplateModify, options?: RequestInit): Promise<UserTemplateResponse> => {
 
-  return orvalFetcher<UserTemplateResponseSuccess>(getModifyUserTemplateUrl(templateId),
+  return orvalFetcher<UserTemplateResponse>(getModifyUserTemplateUrl(templateId),
   {
     ...options,
     method: 'PUT',
@@ -19759,9 +19759,9 @@ export const getRemoveUserTemplateUrl = (templateId: number,) => {
  * Remove a User Template by its ID
  * @summary Remove User Template
  */
-export const removeUserTemplate = async (templateId: number, options?: RequestInit): Promise<voidSuccess> => {
+export const removeUserTemplate = async (templateId: number, options?: RequestInit): Promise<void> => {
 
-  return orvalFetcher<voidSuccess>(getRemoveUserTemplateUrl(templateId),
+  return orvalFetcher<void>(getRemoveUserTemplateUrl(templateId),
   {
     ...options,
     method: 'DELETE'
@@ -19846,9 +19846,9 @@ export const getGetUserTemplatesUrl = (params?: GetUserTemplatesParams,) => {
  * Get a list of User Templates with optional pagination
  * @summary Get User Templates
  */
-export const getUserTemplates = async (params?: GetUserTemplatesParams, options?: RequestInit): Promise<UserTemplateResponse[]Success> => {
+export const getUserTemplates = async (params?: GetUserTemplatesParams, options?: RequestInit): Promise<UserTemplateResponse[]> => {
 
-  return orvalFetcher<UserTemplateResponse[]Success>(getGetUserTemplatesUrl(params),
+  return orvalFetcher<UserTemplateResponse[]>(getGetUserTemplatesUrl(params),
   {
     ...options,
     method: 'GET'
@@ -19963,9 +19963,9 @@ export const getGetUserTemplatesSimpleUrl = (params?: GetUserTemplatesSimplePara
  * Returns only id and name for user templates. Optimized for dropdowns and autocomplete.
  * @summary Get lightweight user template list
  */
-export const getUserTemplatesSimple = async (params?: GetUserTemplatesSimpleParams, options?: RequestInit): Promise<UserTemplatesSimpleResponseSuccess> => {
+export const getUserTemplatesSimple = async (params?: GetUserTemplatesSimpleParams, options?: RequestInit): Promise<UserTemplatesSimpleResponse> => {
 
-  return orvalFetcher<UserTemplatesSimpleResponseSuccess>(getGetUserTemplatesSimpleUrl(params),
+  return orvalFetcher<UserTemplatesSimpleResponse>(getGetUserTemplatesSimpleUrl(params),
   {
     ...options,
     method: 'GET'
@@ -20065,9 +20065,9 @@ export const getBulkDeleteUserTemplatesUrl = () => {
  * Delete selected user templates by ID.
  * @summary Bulk Delete User Templates
  */
-export const bulkDeleteUserTemplates = async (bulkUserTemplateSelection: BulkUserTemplateSelection, options?: RequestInit): Promise<RemoveUserTemplatesResponseSuccess> => {
+export const bulkDeleteUserTemplates = async (bulkUserTemplateSelection: BulkUserTemplateSelection, options?: RequestInit): Promise<RemoveUserTemplatesResponse> => {
 
-  return orvalFetcher<RemoveUserTemplatesResponseSuccess>(getBulkDeleteUserTemplatesUrl(),
+  return orvalFetcher<RemoveUserTemplatesResponse>(getBulkDeleteUserTemplatesUrl(),
   {
     ...options,
     method: 'POST',
@@ -20137,9 +20137,9 @@ export const getBulkDisableUserTemplatesUrl = () => {
  * Disable selected user templates by ID.
  * @summary Bulk Disable User Templates
  */
-export const bulkDisableUserTemplates = async (bulkUserTemplateSelection: BulkUserTemplateSelection, options?: RequestInit): Promise<BulkUserTemplatesActionResponseSuccess> => {
+export const bulkDisableUserTemplates = async (bulkUserTemplateSelection: BulkUserTemplateSelection, options?: RequestInit): Promise<BulkUserTemplatesActionResponse> => {
 
-  return orvalFetcher<BulkUserTemplatesActionResponseSuccess>(getBulkDisableUserTemplatesUrl(),
+  return orvalFetcher<BulkUserTemplatesActionResponse>(getBulkDisableUserTemplatesUrl(),
   {
     ...options,
     method: 'POST',
@@ -20209,9 +20209,9 @@ export const getBulkEnableUserTemplatesUrl = () => {
  * Enable selected user templates by ID.
  * @summary Bulk Enable User Templates
  */
-export const bulkEnableUserTemplates = async (bulkUserTemplateSelection: BulkUserTemplateSelection, options?: RequestInit): Promise<BulkUserTemplatesActionResponseSuccess> => {
+export const bulkEnableUserTemplates = async (bulkUserTemplateSelection: BulkUserTemplateSelection, options?: RequestInit): Promise<BulkUserTemplatesActionResponse> => {
 
-  return orvalFetcher<BulkUserTemplatesActionResponseSuccess>(getBulkEnableUserTemplatesUrl(),
+  return orvalFetcher<BulkUserTemplatesActionResponse>(getBulkEnableUserTemplatesUrl(),
   {
     ...options,
     method: 'POST',
@@ -20281,9 +20281,9 @@ export const getGetUserHwidsUrl = (userId: number,) => {
  * Get user's registered hardware IDs
  * @summary Get User Hwids
  */
-export const getUserHwids = async (userId: number, options?: RequestInit): Promise<UserHWIDListResponseSuccess> => {
+export const getUserHwids = async (userId: number, options?: RequestInit): Promise<UserHWIDListResponse> => {
 
-  return orvalFetcher<UserHWIDListResponseSuccess>(getGetUserHwidsUrl(userId),
+  return orvalFetcher<UserHWIDListResponse>(getGetUserHwidsUrl(userId),
   {
     ...options,
     method: 'GET'
@@ -20385,9 +20385,9 @@ export const getDeleteUserHwidUrl = (userId: number,
  * @summary Delete User Hwid
  */
 export const deleteUserHwid = async (userId: number,
-    hwid: string, options?: RequestInit): Promise<unknownSuccess> => {
+    hwid: string, options?: RequestInit): Promise<unknown> => {
 
-  return orvalFetcher<unknownSuccess>(getDeleteUserHwidUrl(userId,hwid),
+  return orvalFetcher<unknown>(getDeleteUserHwidUrl(userId,hwid),
   {
     ...options,
     method: 'DELETE'
@@ -20457,9 +20457,9 @@ export const getResetUserHwidsUrl = (userId: number,) => {
  * Delete all hardware IDs for user
  * @summary Reset User Hwids
  */
-export const resetUserHwids = async (userId: number, options?: RequestInit): Promise<unknownSuccess> => {
+export const resetUserHwids = async (userId: number, options?: RequestInit): Promise<unknown> => {
 
-  return orvalFetcher<unknownSuccess>(getResetUserHwidsUrl(userId),
+  return orvalFetcher<unknown>(getResetUserHwidsUrl(userId),
   {
     ...options,
     method: 'POST'
