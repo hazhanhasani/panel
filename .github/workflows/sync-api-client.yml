@@ -46,6 +46,12 @@ jobs:
       - name: Export OpenAPI and regenerate client
         run: uv run python scripts/export_openapi.py /tmp/bluepanel-openapi.json --gen-client
 
+      - name: Validate generated API client
+        working-directory: dashboard
+        run: |
+          bunx tsc -b --pretty false
+          VITE_BASE_API=/ bun run build
+
       - name: Commit generated client when changed
         run: |
           if git diff --quiet -- dashboard/src/service/api/index.ts; then
