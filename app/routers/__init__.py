@@ -1,5 +1,8 @@
 from fastapi import APIRouter
 
+from app.jobs import tor as _tor_job  # noqa: F401
+from app.subscription.tor_hosts import install_tor_host_overlay
+
 from . import (
     admin,
     admin_role,
@@ -19,7 +22,6 @@ from . import (
     user,
     user_template,
 )
-from app.subscription.tor_hosts import install_tor_host_overlay
 
 install_tor_host_overlay()
 
