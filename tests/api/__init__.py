@@ -102,9 +102,11 @@ def run_migrations_sync():
 
 def run_migrations():
     """Run Alembic migrations, with fallback to create_tables for in-memory SQLite."""
-    migrations_ran = run_migrations_sync()
-    if not migrations_ran:
-        asyncio.run(create_tables())
+    run_migrations_sync()
+    # Keep the test schema complete even when an older migration branch does not
+    # reach every model (notably the JWT table). create_all is additive and safe
+    # to run after Alembic migrations.
+    asyncio.run(create_tables())
 
 
 async def create_tables():
