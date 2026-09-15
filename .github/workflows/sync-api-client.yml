@@ -2,7 +2,9 @@ name: Sync BluePanel API Client
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+      - feature/bluepanel-tor-multi-exit
     paths-ignore:
       - 'dashboard/src/service/api/index.ts'
   workflow_dispatch:
@@ -60,5 +62,5 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add dashboard/src/service/api/index.ts
           git commit -m "chore: regenerate BluePanel API client"
-          git pull --rebase origin main
-          git push origin main
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git push origin "${GITHUB_REF_NAME}"
