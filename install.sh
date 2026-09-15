@@ -500,4 +500,3 @@ case "${1:-install}" in
   -h|--help|help) usage ;;
   *) usage; exit 1 ;;
 esac
-
