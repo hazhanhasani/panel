@@ -31,8 +31,10 @@ XRAY_JSON_TEST_FILE = "tests/api/xray_config-test.json"
 TEST_FROM = test_settings.test_from
 # In local mode, use in-memory SQLite by default, but allow override via DATABASE_URL env var
 if TEST_FROM == "local":
-    # DATABASE_URL = "sqlite+aiosqlite:///:memory:"
-    DATABASE_URL = test_settings.database_url
+    # Always isolate integration tests from unit-test fixtures that deliberately
+    # drop the application's shared test database. Environment/.env values must
+    # not override this local test-only database.
+    DATABASE_URL = "sqlite+aiosqlite:///./test-api.db"
 
 else:
     DATABASE_URL = database_settings.url
