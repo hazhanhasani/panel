@@ -16,9 +16,3 @@ __all__ = [
     "WireGuardConfiguration",
     "XrayConfiguration",
 ]
-
-# Installed after the subscription classes are initialized to avoid circular
-# imports through app.core.hosts -> app.subscription.base.
-from .tor_hosts import install_tor_host_overlay  # noqa: E402
-
-install_tor_host_overlay()
