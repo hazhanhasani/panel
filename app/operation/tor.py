@@ -199,10 +199,11 @@ class TorOperation:
         db_node = await get_node_by_id(db, model.node_id, load_usage_logs=False)
         if db_node is None:
             raise ValueError("Node not found")
-        if model.protocol.lower() not in {p.value for p in ProxyProtocol}:
+        protocol = model.protocol.strip().lower()
+        if ProxyProtocol.from_value(protocol) is None:
             raise ValueError("Unsupported protocol")
         base_tag, detected_security = await self._resolve_base_inbound(
-            model.node_id, model.base_inbound_tag, model.protocol
+            model.node_id, model.base_inbound_tag, protocol
         )
         country = model.country_code.upper()
         location_id = str(uuid.uuid4())
@@ -215,7 +216,7 @@ class TorOperation:
             country_code=country,
             base_inbound_tag=base_tag,
             flag=_country_flag(country),
-            protocol=model.protocol.lower(),
+            protocol=protocol,
             security=model.security or detected_security,
             enabled=True,
             subscription_enabled=model.subscription_enabled,
@@ -274,10 +275,13 @@ class TorOperation:
             location.flag = _country_flag(data["country_code"])
         if "base_inbound_tag" in data or "protocol" in data:
             protocol = data.get("protocol") or location.protocol
+            if ProxyProtocol.from_value(str(protocol).lower()) is None:
+                raise ValueError("Unsupported protocol")
             base, security = await self._resolve_base_inbound(
-                location.node_id, data.get("base_inbound_tag") or location.base_inbound_tag, protocol
+                location.node_id, data.get("base_inbound_tag") or location.base_inbound_tag, str(protocol)
             )
             data["base_inbound_tag"] = base
+            data["protocol"] = str(protocol).lower()
             if data.get("security") is None and security:
                 data["security"] = security
         for key, value in data.items():
@@ -359,60 +363,48 @@ class TorOperation:
             await self._event(
                 db, location=location, node_id=location.node_id, actor=actor, action="deleted", started=started
             )
-            await db.delete(location)
+            await db.execute(delete(TorLocation).where(TorLocation.id == location.id))
         except Exception as exc:
-            location.sync_status = "cleanup_failed"
-            location.health_status = "cleanup_failed"
             location.last_error = str(exc)
+            location.sync_status = "pending"
+            location.health_status = "deleting"
             await self._event(
                 db,
                 location=location,
                 node_id=location.node_id,
                 actor=actor,
-                action="delete_cleanup",
-                result="error",
+                action="delete_deferred",
+                result="pending",
                 detail=str(exc),
                 started=started,
             )
-            logger.warning("Tor location cleanup deferred id=%s: %s", location.id, exc)
+            logger.warning("Tor location delete deferred id=%s: %s", location.id, exc)
         await db.commit()
 
     async def reconcile_location(
-        self, db: AsyncSession, location: TorLocation, *, actor: str = "reconciliation", action: str = "reconciled"
+        self, db: AsyncSession, location: TorLocation, actor: str = "system", action: str = "reconciled"
     ) -> TorLocation:
-        started = time.monotonic()
+        if location.desired_state == "deleted":
+            await self.delete_location(db, location.id, actor=actor)
+            raise KeyError("Tor location deleted")
         try:
             bridge = await self._bridge(db, location.node_id)
-            if location.desired_state == "deleted":
-                await bridge.delete_tor_location(location.id, purge_data=False)
-                await self._event(
-                    db, location=location, node_id=location.node_id, actor=actor, action="cleanup_reconciled", started=started
-                )
-                await db.delete(location)
-                await db.commit()
-                return location
-
-            try:
-                actual = await bridge.get_tor_location(location.id)
-            except Exception:
-                actual = await bridge.create_tor_location(self._spec(location))
-
-            if location.desired_state == "enabled" and not actual.enabled:
-                actual = await bridge.enable_tor_location(location.id)
-            elif location.desired_state == "disabled" and actual.enabled:
+            if location.desired_state == "disabled" or not location.enabled:
                 actual = await bridge.disable_tor_location(location.id)
-            elif location.desired_state in {"enabled", "disabled"}:
-                # Update is idempotent and reconciles tags/ports/country drift.
-                actual = await bridge.update_tor_location(self._spec(location))
-
+            else:
+                try:
+                    actual = await bridge.get_tor_location(location.id)
+                    actual = await bridge.update_tor_location(self._spec(location))
+                except NodeAPIError as exc:
+                    if getattr(exc, "status", None) not in {404, "404"}:
+                        raise
+                    actual = await bridge.create_tor_location(self._spec(location))
             self._apply_actual(location, actual)
-            await self._event(
-                db, location=location, node_id=location.node_id, actor=actor, action=action, started=started
-            )
+            await self._event(db, location=location, node_id=location.node_id, actor=actor, action=action)
         except Exception as exc:
             location.sync_status = "pending"
             location.last_error = str(exc)
-            if location.health_status not in {"disabled", "cleanup_failed"}:
+            if location.health_status not in {"disabled", "deleting"}:
                 location.health_status = "unreachable"
             await self._event(
                 db,
@@ -422,42 +414,59 @@ class TorOperation:
                 action=action,
                 result="pending",
                 detail=str(exc),
-                started=started,
             )
-            logger.warning("Tor reconcile deferred location=%s node=%s: %s", location.id, location.node_id, exc)
+            logger.warning("Tor reconcile deferred id=%s node=%s: %s", location.id, location.node_id, exc)
         await db.commit()
         await db.refresh(location)
         return location
 
-    async def reconcile_all(self, db: AsyncSession, actor: str = "reconciliation") -> list[TorLocation]:
+    async def reconcile_all(self, db: AsyncSession, actor: str = "system") -> list[TorLocation]:
+        if _reconcile_lock.locked():
+            return await self.list_locations(db)
         async with _reconcile_lock:
-            settings = await self.get_settings(db)
-            if not settings.feature_enabled:
-                return []
-            stmt = select(TorLocation).order_by(TorLocation.node_id, TorLocation.sort_order).with_for_update(skip_locked=True)
-            locations = list((await db.execute(stmt)).scalars().all())
+            locations = await self.list_locations(db)
             results: list[TorLocation] = []
             for location in locations:
+                if location.desired_state == "deleted":
+                    try:
+                        await self.delete_location(db, location.id, actor=actor)
+                    except Exception:
+                        logger.exception("Failed to reconcile deletion for Tor location %s", location.id)
+                    continue
                 results.append(await self.reconcile_location(db, location, actor=actor))
             return results
 
-    async def recent_events(self, db: AsyncSession, location_id: str, limit: int = 100):
+    async def recent_events(self, db: AsyncSession, location_id: str, limit: int = 100) -> list[TorLocationEvent]:
         stmt = (
             select(TorLocationEvent)
             .where(TorLocationEvent.location_id == location_id)
-            .order_by(TorLocationEvent.created_at.desc())
-            .limit(max(1, min(limit, 500)))
+            .order_by(TorLocationEvent.created_at.desc(), TorLocationEvent.id.desc())
+            .limit(limit)
         )
         return list((await db.execute(stmt)).scalars().all())
 
 
-tor_operation = TorOperation()
+async def _tor_reconcile_loop() -> None:
+    while True:
+        try:
+            async with GetDB() as db:
+                settings = await tor_operation.get_settings(db)
+                interval = max(30, settings.health_check_interval)
+                if settings.feature_enabled:
+                    await tor_operation.reconcile_all(db)
+        except Exception:
+            logger.exception("Tor background reconciliation failed")
+            interval = 60
+        await asyncio.sleep(interval)
 
 
 @on_startup
-async def reconcile_tor_locations_on_startup() -> None:
+async def start_tor_reconciliation() -> None:
     async with GetDB() as db:
-        try:
-            await tor_operation.reconcile_all(db, actor="startup_recovery")
-        except Exception:
-            logger.exception("Tor startup reconciliation failed")
+        settings = await tor_operation.get_settings(db)
+        if settings.feature_enabled:
+            await tor_operation.reconcile_all(db)
+    asyncio.create_task(_tor_reconcile_loop())
+
+
+tor_operation = TorOperation()
