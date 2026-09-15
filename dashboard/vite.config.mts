@@ -155,17 +155,17 @@ export default defineConfig({
     react(),
     svgr(),
     VitePWA({
-      registerType: 'prompt',
-      injectRegister: false,
+      registerType: 'autoUpdate',
+      injectRegister: 'auto',
       workbox: {
         navigateFallback: '/index.html',
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
         // Monaco is loaded lazily in editor dialogs, so its largest chunks
         // should stay network-fetched instead of bloating the app shell precache.
         globIgnores: ['statics/editor.api*.js', 'statics/ts.worker*.js'],
-        cleanupOutdatedCaches: false,
-        skipWaiting: false,
-        clientsClaim: false,
+        cleanupOutdatedCaches: true,
+        skipWaiting: true,
+        clientsClaim: true,
       },
     }),
   ],
