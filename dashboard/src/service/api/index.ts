@@ -2248,6 +2248,159 @@ export interface Token {
   token_type?: string;
 }
 
+export interface TorEventResponse {
+  id: number;
+  location_id: string | null;
+  node_id: number;
+  actor: string;
+  action: string;
+  result: string;
+  detail: string | null;
+  duration_ms: number | null;
+  created_at: string;
+}
+
+export interface TorLocationCreate {
+  node_id: number;
+  country_code: string;
+  display_name?: string | null;
+  slug?: string | null;
+  protocol?: string;
+  security?: string | null;
+  base_inbound_tag?: string | null;
+  subscription_enabled?: boolean;
+  auto_health_check?: boolean;
+  auto_repair?: boolean;
+  sort_order?: number;
+  xray_inbound_port?: number | null;
+  tor_socks_port?: number | null;
+  tor_control_port?: number | null;
+}
+
+export interface TorLocationResponse {
+  id: string;
+  node_id: number;
+  slug: string;
+  display_name: string;
+  country_code: string;
+  flag: string | null;
+  protocol: string;
+  security: string | null;
+  enabled: boolean;
+  subscription_enabled: boolean;
+  auto_health_check: boolean;
+  auto_repair: boolean;
+  sort_order: number;
+  base_inbound_tag: string;
+  xray_inbound_port: number | null;
+  xray_inbound_tag: string | null;
+  xray_outbound_tag: string | null;
+  xray_rule_tag: string | null;
+  tor_socks_port: number | null;
+  tor_control_port: number | null;
+  desired_country: string | null;
+  detected_country: string | null;
+  detected_exit_ip: string | null;
+  health_status: string;
+  process_status: string;
+  latency_ms: number;
+  restart_attempts: number;
+  desired_state: string;
+  sync_status: string;
+  last_checked_at: string | null;
+  last_healthy_at: string | null;
+  last_error: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface TorLocationUpdate {
+  display_name?: string | null;
+  country_code?: string | null;
+  protocol?: string | null;
+  security?: string | null;
+  base_inbound_tag?: string | null;
+  subscription_enabled?: boolean | null;
+  auto_health_check?: boolean | null;
+  auto_repair?: boolean | null;
+  sort_order?: number | null;
+  xray_inbound_port?: number | null;
+  tor_socks_port?: number | null;
+  tor_control_port?: number | null;
+}
+
+export type TorSettingsModelSubscriptionPolicy = typeof TorSettingsModelSubscriptionPolicy[keyof typeof TorSettingsModelSubscriptionPolicy];
+
+
+export const TorSettingsModelSubscriptionPolicy = {
+  always: 'always',
+  healthy: 'healthy',
+  grace: 'grace',
+} as const;
+
+export interface TorSettingsModel {
+  feature_enabled?: boolean;
+  auto_repair?: boolean;
+  country_verification?: boolean;
+  /**
+     * @minimum 15
+     * @maximum 3600
+     */
+  health_check_interval?: number;
+  /**
+     * @minimum 1
+     * @maximum 20
+     */
+  max_restart_attempts?: number;
+  restart_backoff?: string;
+  /**
+     * @minimum 1
+     * @maximum 65535
+     */
+  xray_port_start?: number;
+  /**
+     * @minimum 1
+     * @maximum 65535
+     */
+  xray_port_end?: number;
+  /**
+     * @minimum 1
+     * @maximum 65535
+     */
+  socks_port_start?: number;
+  /**
+     * @minimum 1
+     * @maximum 65535
+     */
+  socks_port_end?: number;
+  /**
+     * @minimum 1
+     * @maximum 65535
+     */
+  control_port_start?: number;
+  /**
+     * @minimum 1
+     * @maximum 65535
+     */
+  control_port_end?: number;
+  subscription_policy?: TorSettingsModelSubscriptionPolicy;
+  /**
+     * @minimum 0
+     * @maximum 86400
+     */
+  unhealthy_grace_period?: number;
+}
+
+export interface TorSummary {
+  total: number;
+  healthy: number;
+  degraded: number;
+  offline: number;
+  disabled: number;
+  node_count: number;
+  pending: number;
+}
+
 export interface Unauthorized {
   detail?: string;
 }
@@ -2747,6 +2900,22 @@ export type UserOnlineStats200 = {[key: string]: number};
 export type ClearUsageDataParams = {
 start?: string | null;
 end?: string | null;
+};
+
+export type ListTorLocationsParams = {
+node_id?: number | null;
+};
+
+export type DeleteTorLocationParams = {
+purge_data?: boolean;
+};
+
+export type TorLocationEventsParams = {
+/**
+ * @minimum 1
+ * @maximum 500
+ */
+limit?: number;
 };
 
 export type GetUsersSubUpdateChartParams = {
@@ -14086,6 +14255,1425 @@ export const useBulkUpdateNodes = <TError = ErrorType<HTTPException | Unauthoriz
         TContext
       > => {
       return useMutation(getBulkUpdateNodesMutationOptions(options), queryClient);
+    }
+
+export const getListTorLocationsUrl = (params?: ListTorLocationsParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/tor/locations?${stringifiedParams}` : `/api/tor/locations`
+}
+
+/**
+ * @summary List Tor Locations
+ */
+export const listTorLocations = async (params?: ListTorLocationsParams, options?: RequestInit): Promise<TorLocationResponse[]> => {
+
+  return orvalFetcher<TorLocationResponse[]>(getListTorLocationsUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListTorLocationsQueryKey = (params?: ListTorLocationsParams,) => {
+    return [
+    `/api/tor/locations`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getListTorLocationsQueryOptions = <TData = Awaited<ReturnType<typeof listTorLocations>>, TError = ErrorType<Unauthorized | Forbidden | HTTPValidationError>>(params?: ListTorLocationsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listTorLocations>>, TError, TData>>, request?: SecondParameter<typeof orvalFetcher>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListTorLocationsQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listTorLocations>>> = ({ signal }) => listTorLocations(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listTorLocations>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ListTorLocationsQueryResult = NonNullable<Awaited<ReturnType<typeof listTorLocations>>>
+export type ListTorLocationsQueryError = ErrorType<Unauthorized | Forbidden | HTTPValidationError>
+
+
+export function useListTorLocations<TData = Awaited<ReturnType<typeof listTorLocations>>, TError = ErrorType<Unauthorized | Forbidden | HTTPValidationError>>(
+ params: undefined |  ListTorLocationsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listTorLocations>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listTorLocations>>,
+          TError,
+          Awaited<ReturnType<typeof listTorLocations>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof orvalFetcher>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListTorLocations<TData = Awaited<ReturnType<typeof listTorLocations>>, TError = ErrorType<Unauthorized | Forbidden | HTTPValidationError>>(
+ params?: ListTorLocationsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listTorLocations>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listTorLocations>>,
+          TError,
+          Awaited<ReturnType<typeof listTorLocations>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof orvalFetcher>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListTorLocations<TData = Awaited<ReturnType<typeof listTorLocations>>, TError = ErrorType<Unauthorized | Forbidden | HTTPValidationError>>(
+ params?: ListTorLocationsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listTorLocations>>, TError, TData>>, request?: SecondParameter<typeof orvalFetcher>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary List Tor Locations
+ */
+
+export function useListTorLocations<TData = Awaited<ReturnType<typeof listTorLocations>>, TError = ErrorType<Unauthorized | Forbidden | HTTPValidationError>>(
+ params?: ListTorLocationsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listTorLocations>>, TError, TData>>, request?: SecondParameter<typeof orvalFetcher>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getListTorLocationsQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getCreateTorLocationUrl = () => {
+
+
+
+
+  return `/api/tor/locations`
+}
+
+/**
+ * @summary Create Tor Location
+ */
+export const createTorLocation = async (torLocationCreate: TorLocationCreate, options?: RequestInit): Promise<TorLocationResponse> => {
+
+  return orvalFetcher<TorLocationResponse>(getCreateTorLocationUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(torLocationCreate)
+  }
+);}
+
+
+
+
+
+export const getCreateTorLocationMutationOptions = <TError = ErrorType<Unauthorized | Forbidden | HTTPValidationError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createTorLocation>>, TError,{data: BodyType<TorLocationCreate>}, TContext>, request?: SecondParameter<typeof orvalFetcher>}
+): UseMutationOptions<Awaited<ReturnType<typeof createTorLocation>>, TError,{data: BodyType<TorLocationCreate>}, TContext> => {
+
+const mutationKey = ['createTorLocation'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createTorLocation>>, {data: BodyType<TorLocationCreate>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  createTorLocation(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateTorLocationMutationResult = NonNullable<Awaited<ReturnType<typeof createTorLocation>>>
+    export type CreateTorLocationMutationBody = BodyType<TorLocationCreate>
+    export type CreateTorLocationMutationError = ErrorType<Unauthorized | Forbidden | HTTPValidationError>
+
+    /**
+ * @summary Create Tor Location
+ */
+export const useCreateTorLocation = <TError = ErrorType<Unauthorized | Forbidden | HTTPValidationError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createTorLocation>>, TError,{data: BodyType<TorLocationCreate>}, TContext>, request?: SecondParameter<typeof orvalFetcher>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof createTorLocation>>,
+        TError,
+        {data: BodyType<TorLocationCreate>},
+        TContext
+      > => {
+      return useMutation(getCreateTorLocationMutationOptions(options), queryClient);
+    }
+
+export const getTorSummaryUrl = () => {
+
+
+
+
+  return `/api/tor/summary`
+}
+
+/**
+ * @summary Tor Summary
+ */
+export const torSummary = async ( options?: RequestInit): Promise<TorSummary> => {
+
+  return orvalFetcher<TorSummary>(getTorSummaryUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getTorSummaryQueryKey = () => {
+    return [
+    `/api/tor/summary`
+    ] as const;
+    }
+
+
+export const getTorSummaryQueryOptions = <TData = Awaited<ReturnType<typeof torSummary>>, TError = ErrorType<Unauthorized | Forbidden>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof torSummary>>, TError, TData>>, request?: SecondParameter<typeof orvalFetcher>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getTorSummaryQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof torSummary>>> = ({ signal }) => torSummary({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof torSummary>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type TorSummaryQueryResult = NonNullable<Awaited<ReturnType<typeof torSummary>>>
+export type TorSummaryQueryError = ErrorType<Unauthorized | Forbidden>
+
+
+export function useTorSummary<TData = Awaited<ReturnType<typeof torSummary>>, TError = ErrorType<Unauthorized | Forbidden>>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof torSummary>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof torSummary>>,
+          TError,
+          Awaited<ReturnType<typeof torSummary>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof orvalFetcher>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useTorSummary<TData = Awaited<ReturnType<typeof torSummary>>, TError = ErrorType<Unauthorized | Forbidden>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof torSummary>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof torSummary>>,
+          TError,
+          Awaited<ReturnType<typeof torSummary>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof orvalFetcher>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useTorSummary<TData = Awaited<ReturnType<typeof torSummary>>, TError = ErrorType<Unauthorized | Forbidden>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof torSummary>>, TError, TData>>, request?: SecondParameter<typeof orvalFetcher>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Tor Summary
+ */
+
+export function useTorSummary<TData = Awaited<ReturnType<typeof torSummary>>, TError = ErrorType<Unauthorized | Forbidden>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof torSummary>>, TError, TData>>, request?: SecondParameter<typeof orvalFetcher>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getTorSummaryQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getGetTorLocationUrl = (locationId: string,) => {
+
+
+
+
+  return `/api/tor/locations/${locationId}`
+}
+
+/**
+ * @summary Get Tor Location
+ */
+export const getTorLocation = async (locationId: string, options?: RequestInit): Promise<TorLocationResponse> => {
+
+  return orvalFetcher<TorLocationResponse>(getGetTorLocationUrl(locationId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetTorLocationQueryKey = (locationId: string,) => {
+    return [
+    `/api/tor/locations/${locationId}`
+    ] as const;
+    }
+
+
+export const getGetTorLocationQueryOptions = <TData = Awaited<ReturnType<typeof getTorLocation>>, TError = ErrorType<Unauthorized | Forbidden | HTTPValidationError>>(locationId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTorLocation>>, TError, TData>>, request?: SecondParameter<typeof orvalFetcher>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetTorLocationQueryKey(locationId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getTorLocation>>> = ({ signal }) => getTorLocation(locationId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: locationId !== null && locationId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getTorLocation>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetTorLocationQueryResult = NonNullable<Awaited<ReturnType<typeof getTorLocation>>>
+export type GetTorLocationQueryError = ErrorType<Unauthorized | Forbidden | HTTPValidationError>
+
+
+export function useGetTorLocation<TData = Awaited<ReturnType<typeof getTorLocation>>, TError = ErrorType<Unauthorized | Forbidden | HTTPValidationError>>(
+ locationId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTorLocation>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getTorLocation>>,
+          TError,
+          Awaited<ReturnType<typeof getTorLocation>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof orvalFetcher>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetTorLocation<TData = Awaited<ReturnType<typeof getTorLocation>>, TError = ErrorType<Unauthorized | Forbidden | HTTPValidationError>>(
+ locationId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTorLocation>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getTorLocation>>,
+          TError,
+          Awaited<ReturnType<typeof getTorLocation>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof orvalFetcher>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetTorLocation<TData = Awaited<ReturnType<typeof getTorLocation>>, TError = ErrorType<Unauthorized | Forbidden | HTTPValidationError>>(
+ locationId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTorLocation>>, TError, TData>>, request?: SecondParameter<typeof orvalFetcher>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get Tor Location
+ */
+
+export function useGetTorLocation<TData = Awaited<ReturnType<typeof getTorLocation>>, TError = ErrorType<Unauthorized | Forbidden | HTTPValidationError>>(
+ locationId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTorLocation>>, TError, TData>>, request?: SecondParameter<typeof orvalFetcher>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetTorLocationQueryOptions(locationId,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getUpdateTorLocationUrl = (locationId: string,) => {
+
+
+
+
+  return `/api/tor/locations/${locationId}`
+}
+
+/**
+ * @summary Update Tor Location
+ */
+export const updateTorLocation = async (locationId: string,
+    torLocationUpdate: TorLocationUpdate, options?: RequestInit): Promise<TorLocationResponse> => {
+
+  return orvalFetcher<TorLocationResponse>(getUpdateTorLocationUrl(locationId),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(torLocationUpdate)
+  }
+);}
+
+
+
+
+
+export const getUpdateTorLocationMutationOptions = <TError = ErrorType<Unauthorized | Forbidden | HTTPValidationError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateTorLocation>>, TError,{locationId: string;data: BodyType<TorLocationUpdate>}, TContext>, request?: SecondParameter<typeof orvalFetcher>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateTorLocation>>, TError,{locationId: string;data: BodyType<TorLocationUpdate>}, TContext> => {
+
+const mutationKey = ['updateTorLocation'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateTorLocation>>, {locationId: string;data: BodyType<TorLocationUpdate>}> = (props) => {
+          const {locationId,data} = props ?? {};
+
+          return  updateTorLocation(locationId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateTorLocationMutationResult = NonNullable<Awaited<ReturnType<typeof updateTorLocation>>>
+    export type UpdateTorLocationMutationBody = BodyType<TorLocationUpdate>
+    export type UpdateTorLocationMutationError = ErrorType<Unauthorized | Forbidden | HTTPValidationError>
+
+    /**
+ * @summary Update Tor Location
+ */
+export const useUpdateTorLocation = <TError = ErrorType<Unauthorized | Forbidden | HTTPValidationError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateTorLocation>>, TError,{locationId: string;data: BodyType<TorLocationUpdate>}, TContext>, request?: SecondParameter<typeof orvalFetcher>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof updateTorLocation>>,
+        TError,
+        {locationId: string;data: BodyType<TorLocationUpdate>},
+        TContext
+      > => {
+      return useMutation(getUpdateTorLocationMutationOptions(options), queryClient);
+    }
+
+export const getDeleteTorLocationUrl = (locationId: string,
+    params?: DeleteTorLocationParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/tor/locations/${locationId}?${stringifiedParams}` : `/api/tor/locations/${locationId}`
+}
+
+/**
+ * @summary Delete Tor Location
+ */
+export const deleteTorLocation = async (locationId: string,
+    params?: DeleteTorLocationParams, options?: RequestInit): Promise<void> => {
+
+  return orvalFetcher<void>(getDeleteTorLocationUrl(locationId,params),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+
+export const getDeleteTorLocationMutationOptions = <TError = ErrorType<Unauthorized | Forbidden | HTTPValidationError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteTorLocation>>, TError,{locationId: string;params?: DeleteTorLocationParams}, TContext>, request?: SecondParameter<typeof orvalFetcher>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteTorLocation>>, TError,{locationId: string;params?: DeleteTorLocationParams}, TContext> => {
+
+const mutationKey = ['deleteTorLocation'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteTorLocation>>, {locationId: string;params?: DeleteTorLocationParams}> = (props) => {
+          const {locationId,params} = props ?? {};
+
+          return  deleteTorLocation(locationId,params,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteTorLocationMutationResult = NonNullable<Awaited<ReturnType<typeof deleteTorLocation>>>
+
+    export type DeleteTorLocationMutationError = ErrorType<Unauthorized | Forbidden | HTTPValidationError>
+
+    /**
+ * @summary Delete Tor Location
+ */
+export const useDeleteTorLocation = <TError = ErrorType<Unauthorized | Forbidden | HTTPValidationError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteTorLocation>>, TError,{locationId: string;params?: DeleteTorLocationParams}, TContext>, request?: SecondParameter<typeof orvalFetcher>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deleteTorLocation>>,
+        TError,
+        {locationId: string;params?: DeleteTorLocationParams},
+        TContext
+      > => {
+      return useMutation(getDeleteTorLocationMutationOptions(options), queryClient);
+    }
+
+export const getEnableTorLocationUrl = (locationId: string,) => {
+
+
+
+
+  return `/api/tor/locations/${locationId}/enable`
+}
+
+/**
+ * @summary Enable Tor Location
+ */
+export const enableTorLocation = async (locationId: string, options?: RequestInit): Promise<TorLocationResponse> => {
+
+  return orvalFetcher<TorLocationResponse>(getEnableTorLocationUrl(locationId),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+
+export const getEnableTorLocationMutationOptions = <TError = ErrorType<Unauthorized | Forbidden | HTTPValidationError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof enableTorLocation>>, TError,{locationId: string}, TContext>, request?: SecondParameter<typeof orvalFetcher>}
+): UseMutationOptions<Awaited<ReturnType<typeof enableTorLocation>>, TError,{locationId: string}, TContext> => {
+
+const mutationKey = ['enableTorLocation'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof enableTorLocation>>, {locationId: string}> = (props) => {
+          const {locationId} = props ?? {};
+
+          return  enableTorLocation(locationId,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type EnableTorLocationMutationResult = NonNullable<Awaited<ReturnType<typeof enableTorLocation>>>
+
+    export type EnableTorLocationMutationError = ErrorType<Unauthorized | Forbidden | HTTPValidationError>
+
+    /**
+ * @summary Enable Tor Location
+ */
+export const useEnableTorLocation = <TError = ErrorType<Unauthorized | Forbidden | HTTPValidationError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof enableTorLocation>>, TError,{locationId: string}, TContext>, request?: SecondParameter<typeof orvalFetcher>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof enableTorLocation>>,
+        TError,
+        {locationId: string},
+        TContext
+      > => {
+      return useMutation(getEnableTorLocationMutationOptions(options), queryClient);
+    }
+
+export const getDisableTorLocationUrl = (locationId: string,) => {
+
+
+
+
+  return `/api/tor/locations/${locationId}/disable`
+}
+
+/**
+ * @summary Disable Tor Location
+ */
+export const disableTorLocation = async (locationId: string, options?: RequestInit): Promise<TorLocationResponse> => {
+
+  return orvalFetcher<TorLocationResponse>(getDisableTorLocationUrl(locationId),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+
+export const getDisableTorLocationMutationOptions = <TError = ErrorType<Unauthorized | Forbidden | HTTPValidationError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof disableTorLocation>>, TError,{locationId: string}, TContext>, request?: SecondParameter<typeof orvalFetcher>}
+): UseMutationOptions<Awaited<ReturnType<typeof disableTorLocation>>, TError,{locationId: string}, TContext> => {
+
+const mutationKey = ['disableTorLocation'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof disableTorLocation>>, {locationId: string}> = (props) => {
+          const {locationId} = props ?? {};
+
+          return  disableTorLocation(locationId,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DisableTorLocationMutationResult = NonNullable<Awaited<ReturnType<typeof disableTorLocation>>>
+
+    export type DisableTorLocationMutationError = ErrorType<Unauthorized | Forbidden | HTTPValidationError>
+
+    /**
+ * @summary Disable Tor Location
+ */
+export const useDisableTorLocation = <TError = ErrorType<Unauthorized | Forbidden | HTTPValidationError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof disableTorLocation>>, TError,{locationId: string}, TContext>, request?: SecondParameter<typeof orvalFetcher>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof disableTorLocation>>,
+        TError,
+        {locationId: string},
+        TContext
+      > => {
+      return useMutation(getDisableTorLocationMutationOptions(options), queryClient);
+    }
+
+export const getRestartTorLocationUrl = (locationId: string,) => {
+
+
+
+
+  return `/api/tor/locations/${locationId}/restart`
+}
+
+/**
+ * @summary Restart Tor Location
+ */
+export const restartTorLocation = async (locationId: string, options?: RequestInit): Promise<TorLocationResponse> => {
+
+  return orvalFetcher<TorLocationResponse>(getRestartTorLocationUrl(locationId),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+
+export const getRestartTorLocationMutationOptions = <TError = ErrorType<Unauthorized | Forbidden | HTTPValidationError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof restartTorLocation>>, TError,{locationId: string}, TContext>, request?: SecondParameter<typeof orvalFetcher>}
+): UseMutationOptions<Awaited<ReturnType<typeof restartTorLocation>>, TError,{locationId: string}, TContext> => {
+
+const mutationKey = ['restartTorLocation'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof restartTorLocation>>, {locationId: string}> = (props) => {
+          const {locationId} = props ?? {};
+
+          return  restartTorLocation(locationId,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RestartTorLocationMutationResult = NonNullable<Awaited<ReturnType<typeof restartTorLocation>>>
+
+    export type RestartTorLocationMutationError = ErrorType<Unauthorized | Forbidden | HTTPValidationError>
+
+    /**
+ * @summary Restart Tor Location
+ */
+export const useRestartTorLocation = <TError = ErrorType<Unauthorized | Forbidden | HTTPValidationError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof restartTorLocation>>, TError,{locationId: string}, TContext>, request?: SecondParameter<typeof orvalFetcher>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof restartTorLocation>>,
+        TError,
+        {locationId: string},
+        TContext
+      > => {
+      return useMutation(getRestartTorLocationMutationOptions(options), queryClient);
+    }
+
+export const getNewTorIdentityUrl = (locationId: string,) => {
+
+
+
+
+  return `/api/tor/locations/${locationId}/new-identity`
+}
+
+/**
+ * @summary New Tor Identity
+ */
+export const newTorIdentity = async (locationId: string, options?: RequestInit): Promise<TorLocationResponse> => {
+
+  return orvalFetcher<TorLocationResponse>(getNewTorIdentityUrl(locationId),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+
+export const getNewTorIdentityMutationOptions = <TError = ErrorType<Unauthorized | Forbidden | HTTPValidationError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof newTorIdentity>>, TError,{locationId: string}, TContext>, request?: SecondParameter<typeof orvalFetcher>}
+): UseMutationOptions<Awaited<ReturnType<typeof newTorIdentity>>, TError,{locationId: string}, TContext> => {
+
+const mutationKey = ['newTorIdentity'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof newTorIdentity>>, {locationId: string}> = (props) => {
+          const {locationId} = props ?? {};
+
+          return  newTorIdentity(locationId,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type NewTorIdentityMutationResult = NonNullable<Awaited<ReturnType<typeof newTorIdentity>>>
+
+    export type NewTorIdentityMutationError = ErrorType<Unauthorized | Forbidden | HTTPValidationError>
+
+    /**
+ * @summary New Tor Identity
+ */
+export const useNewTorIdentity = <TError = ErrorType<Unauthorized | Forbidden | HTTPValidationError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof newTorIdentity>>, TError,{locationId: string}, TContext>, request?: SecondParameter<typeof orvalFetcher>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof newTorIdentity>>,
+        TError,
+        {locationId: string},
+        TContext
+      > => {
+      return useMutation(getNewTorIdentityMutationOptions(options), queryClient);
+    }
+
+export const getRepairTorLocationUrl = (locationId: string,) => {
+
+
+
+
+  return `/api/tor/locations/${locationId}/repair`
+}
+
+/**
+ * @summary Repair Tor Location
+ */
+export const repairTorLocation = async (locationId: string, options?: RequestInit): Promise<TorLocationResponse> => {
+
+  return orvalFetcher<TorLocationResponse>(getRepairTorLocationUrl(locationId),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+
+export const getRepairTorLocationMutationOptions = <TError = ErrorType<Unauthorized | Forbidden | HTTPValidationError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof repairTorLocation>>, TError,{locationId: string}, TContext>, request?: SecondParameter<typeof orvalFetcher>}
+): UseMutationOptions<Awaited<ReturnType<typeof repairTorLocation>>, TError,{locationId: string}, TContext> => {
+
+const mutationKey = ['repairTorLocation'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof repairTorLocation>>, {locationId: string}> = (props) => {
+          const {locationId} = props ?? {};
+
+          return  repairTorLocation(locationId,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RepairTorLocationMutationResult = NonNullable<Awaited<ReturnType<typeof repairTorLocation>>>
+
+    export type RepairTorLocationMutationError = ErrorType<Unauthorized | Forbidden | HTTPValidationError>
+
+    /**
+ * @summary Repair Tor Location
+ */
+export const useRepairTorLocation = <TError = ErrorType<Unauthorized | Forbidden | HTTPValidationError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof repairTorLocation>>, TError,{locationId: string}, TContext>, request?: SecondParameter<typeof orvalFetcher>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof repairTorLocation>>,
+        TError,
+        {locationId: string},
+        TContext
+      > => {
+      return useMutation(getRepairTorLocationMutationOptions(options), queryClient);
+    }
+
+export const getTestTorLocationUrl = (locationId: string,) => {
+
+
+
+
+  return `/api/tor/locations/${locationId}/test`
+}
+
+/**
+ * @summary Test Tor Location
+ */
+export const testTorLocation = async (locationId: string, options?: RequestInit): Promise<TorLocationResponse> => {
+
+  return orvalFetcher<TorLocationResponse>(getTestTorLocationUrl(locationId),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+
+export const getTestTorLocationMutationOptions = <TError = ErrorType<Unauthorized | Forbidden | HTTPValidationError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof testTorLocation>>, TError,{locationId: string}, TContext>, request?: SecondParameter<typeof orvalFetcher>}
+): UseMutationOptions<Awaited<ReturnType<typeof testTorLocation>>, TError,{locationId: string}, TContext> => {
+
+const mutationKey = ['testTorLocation'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof testTorLocation>>, {locationId: string}> = (props) => {
+          const {locationId} = props ?? {};
+
+          return  testTorLocation(locationId,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type TestTorLocationMutationResult = NonNullable<Awaited<ReturnType<typeof testTorLocation>>>
+
+    export type TestTorLocationMutationError = ErrorType<Unauthorized | Forbidden | HTTPValidationError>
+
+    /**
+ * @summary Test Tor Location
+ */
+export const useTestTorLocation = <TError = ErrorType<Unauthorized | Forbidden | HTTPValidationError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof testTorLocation>>, TError,{locationId: string}, TContext>, request?: SecondParameter<typeof orvalFetcher>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof testTorLocation>>,
+        TError,
+        {locationId: string},
+        TContext
+      > => {
+      return useMutation(getTestTorLocationMutationOptions(options), queryClient);
+    }
+
+export const getTorLocationDiagnosticsUrl = (locationId: string,) => {
+
+
+
+
+  return `/api/tor/locations/${locationId}/diagnostics`
+}
+
+/**
+ * @summary Tor Location Diagnostics
+ */
+export const torLocationDiagnostics = async (locationId: string, options?: RequestInit): Promise<unknown> => {
+
+  return orvalFetcher<unknown>(getTorLocationDiagnosticsUrl(locationId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getTorLocationDiagnosticsQueryKey = (locationId: string,) => {
+    return [
+    `/api/tor/locations/${locationId}/diagnostics`
+    ] as const;
+    }
+
+
+export const getTorLocationDiagnosticsQueryOptions = <TData = Awaited<ReturnType<typeof torLocationDiagnostics>>, TError = ErrorType<Unauthorized | Forbidden | HTTPValidationError>>(locationId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof torLocationDiagnostics>>, TError, TData>>, request?: SecondParameter<typeof orvalFetcher>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getTorLocationDiagnosticsQueryKey(locationId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof torLocationDiagnostics>>> = ({ signal }) => torLocationDiagnostics(locationId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: locationId !== null && locationId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof torLocationDiagnostics>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type TorLocationDiagnosticsQueryResult = NonNullable<Awaited<ReturnType<typeof torLocationDiagnostics>>>
+export type TorLocationDiagnosticsQueryError = ErrorType<Unauthorized | Forbidden | HTTPValidationError>
+
+
+export function useTorLocationDiagnostics<TData = Awaited<ReturnType<typeof torLocationDiagnostics>>, TError = ErrorType<Unauthorized | Forbidden | HTTPValidationError>>(
+ locationId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof torLocationDiagnostics>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof torLocationDiagnostics>>,
+          TError,
+          Awaited<ReturnType<typeof torLocationDiagnostics>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof orvalFetcher>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useTorLocationDiagnostics<TData = Awaited<ReturnType<typeof torLocationDiagnostics>>, TError = ErrorType<Unauthorized | Forbidden | HTTPValidationError>>(
+ locationId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof torLocationDiagnostics>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof torLocationDiagnostics>>,
+          TError,
+          Awaited<ReturnType<typeof torLocationDiagnostics>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof orvalFetcher>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useTorLocationDiagnostics<TData = Awaited<ReturnType<typeof torLocationDiagnostics>>, TError = ErrorType<Unauthorized | Forbidden | HTTPValidationError>>(
+ locationId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof torLocationDiagnostics>>, TError, TData>>, request?: SecondParameter<typeof orvalFetcher>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Tor Location Diagnostics
+ */
+
+export function useTorLocationDiagnostics<TData = Awaited<ReturnType<typeof torLocationDiagnostics>>, TError = ErrorType<Unauthorized | Forbidden | HTTPValidationError>>(
+ locationId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof torLocationDiagnostics>>, TError, TData>>, request?: SecondParameter<typeof orvalFetcher>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getTorLocationDiagnosticsQueryOptions(locationId,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getTorLocationEventsUrl = (locationId: string,
+    params?: TorLocationEventsParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/tor/locations/${locationId}/events?${stringifiedParams}` : `/api/tor/locations/${locationId}/events`
+}
+
+/**
+ * @summary Tor Location Events
+ */
+export const torLocationEvents = async (locationId: string,
+    params?: TorLocationEventsParams, options?: RequestInit): Promise<TorEventResponse[]> => {
+
+  return orvalFetcher<TorEventResponse[]>(getTorLocationEventsUrl(locationId,params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getTorLocationEventsQueryKey = (locationId: string,
+    params?: TorLocationEventsParams,) => {
+    return [
+    `/api/tor/locations/${locationId}/events`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getTorLocationEventsQueryOptions = <TData = Awaited<ReturnType<typeof torLocationEvents>>, TError = ErrorType<Unauthorized | Forbidden | HTTPValidationError>>(locationId: string,
+    params?: TorLocationEventsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof torLocationEvents>>, TError, TData>>, request?: SecondParameter<typeof orvalFetcher>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getTorLocationEventsQueryKey(locationId,params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof torLocationEvents>>> = ({ signal }) => torLocationEvents(locationId,params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: locationId !== null && locationId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof torLocationEvents>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type TorLocationEventsQueryResult = NonNullable<Awaited<ReturnType<typeof torLocationEvents>>>
+export type TorLocationEventsQueryError = ErrorType<Unauthorized | Forbidden | HTTPValidationError>
+
+
+export function useTorLocationEvents<TData = Awaited<ReturnType<typeof torLocationEvents>>, TError = ErrorType<Unauthorized | Forbidden | HTTPValidationError>>(
+ locationId: string,
+    params: undefined |  TorLocationEventsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof torLocationEvents>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof torLocationEvents>>,
+          TError,
+          Awaited<ReturnType<typeof torLocationEvents>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof orvalFetcher>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useTorLocationEvents<TData = Awaited<ReturnType<typeof torLocationEvents>>, TError = ErrorType<Unauthorized | Forbidden | HTTPValidationError>>(
+ locationId: string,
+    params?: TorLocationEventsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof torLocationEvents>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof torLocationEvents>>,
+          TError,
+          Awaited<ReturnType<typeof torLocationEvents>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof orvalFetcher>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useTorLocationEvents<TData = Awaited<ReturnType<typeof torLocationEvents>>, TError = ErrorType<Unauthorized | Forbidden | HTTPValidationError>>(
+ locationId: string,
+    params?: TorLocationEventsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof torLocationEvents>>, TError, TData>>, request?: SecondParameter<typeof orvalFetcher>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Tor Location Events
+ */
+
+export function useTorLocationEvents<TData = Awaited<ReturnType<typeof torLocationEvents>>, TError = ErrorType<Unauthorized | Forbidden | HTTPValidationError>>(
+ locationId: string,
+    params?: TorLocationEventsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof torLocationEvents>>, TError, TData>>, request?: SecondParameter<typeof orvalFetcher>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getTorLocationEventsQueryOptions(locationId,params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getReconcileTorUrl = () => {
+
+
+
+
+  return `/api/tor/reconcile`
+}
+
+/**
+ * @summary Reconcile Tor
+ */
+export const reconcileTor = async ( options?: RequestInit): Promise<TorLocationResponse[]> => {
+
+  return orvalFetcher<TorLocationResponse[]>(getReconcileTorUrl(),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+
+export const getReconcileTorMutationOptions = <TError = ErrorType<Unauthorized | Forbidden>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof reconcileTor>>, TError,void, TContext>, request?: SecondParameter<typeof orvalFetcher>}
+): UseMutationOptions<Awaited<ReturnType<typeof reconcileTor>>, TError,void, TContext> => {
+
+const mutationKey = ['reconcileTor'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof reconcileTor>>, void> = () => {
+
+
+          return  reconcileTor(requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ReconcileTorMutationResult = NonNullable<Awaited<ReturnType<typeof reconcileTor>>>
+
+    export type ReconcileTorMutationError = ErrorType<Unauthorized | Forbidden>
+
+    /**
+ * @summary Reconcile Tor
+ */
+export const useReconcileTor = <TError = ErrorType<Unauthorized | Forbidden>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof reconcileTor>>, TError,void, TContext>, request?: SecondParameter<typeof orvalFetcher>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof reconcileTor>>,
+        TError,
+        void,
+        TContext
+      > => {
+      return useMutation(getReconcileTorMutationOptions(options), queryClient);
+    }
+
+export const getGetTorSettingsUrl = () => {
+
+
+
+
+  return `/api/tor/settings`
+}
+
+/**
+ * @summary Get Tor Settings
+ */
+export const getTorSettings = async ( options?: RequestInit): Promise<TorSettingsModel> => {
+
+  return orvalFetcher<TorSettingsModel>(getGetTorSettingsUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetTorSettingsQueryKey = () => {
+    return [
+    `/api/tor/settings`
+    ] as const;
+    }
+
+
+export const getGetTorSettingsQueryOptions = <TData = Awaited<ReturnType<typeof getTorSettings>>, TError = ErrorType<Unauthorized | Forbidden>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTorSettings>>, TError, TData>>, request?: SecondParameter<typeof orvalFetcher>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetTorSettingsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getTorSettings>>> = ({ signal }) => getTorSettings({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getTorSettings>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetTorSettingsQueryResult = NonNullable<Awaited<ReturnType<typeof getTorSettings>>>
+export type GetTorSettingsQueryError = ErrorType<Unauthorized | Forbidden>
+
+
+export function useGetTorSettings<TData = Awaited<ReturnType<typeof getTorSettings>>, TError = ErrorType<Unauthorized | Forbidden>>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTorSettings>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getTorSettings>>,
+          TError,
+          Awaited<ReturnType<typeof getTorSettings>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof orvalFetcher>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetTorSettings<TData = Awaited<ReturnType<typeof getTorSettings>>, TError = ErrorType<Unauthorized | Forbidden>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTorSettings>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getTorSettings>>,
+          TError,
+          Awaited<ReturnType<typeof getTorSettings>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof orvalFetcher>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetTorSettings<TData = Awaited<ReturnType<typeof getTorSettings>>, TError = ErrorType<Unauthorized | Forbidden>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTorSettings>>, TError, TData>>, request?: SecondParameter<typeof orvalFetcher>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get Tor Settings
+ */
+
+export function useGetTorSettings<TData = Awaited<ReturnType<typeof getTorSettings>>, TError = ErrorType<Unauthorized | Forbidden>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTorSettings>>, TError, TData>>, request?: SecondParameter<typeof orvalFetcher>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetTorSettingsQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getUpdateTorSettingsUrl = () => {
+
+
+
+
+  return `/api/tor/settings`
+}
+
+/**
+ * @summary Update Tor Settings
+ */
+export const updateTorSettings = async (torSettingsModel: TorSettingsModel, options?: RequestInit): Promise<TorSettingsModel> => {
+
+  return orvalFetcher<TorSettingsModel>(getUpdateTorSettingsUrl(),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(torSettingsModel)
+  }
+);}
+
+
+
+
+
+export const getUpdateTorSettingsMutationOptions = <TError = ErrorType<Unauthorized | Forbidden | HTTPValidationError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateTorSettings>>, TError,{data: BodyType<TorSettingsModel>}, TContext>, request?: SecondParameter<typeof orvalFetcher>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateTorSettings>>, TError,{data: BodyType<TorSettingsModel>}, TContext> => {
+
+const mutationKey = ['updateTorSettings'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateTorSettings>>, {data: BodyType<TorSettingsModel>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  updateTorSettings(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateTorSettingsMutationResult = NonNullable<Awaited<ReturnType<typeof updateTorSettings>>>
+    export type UpdateTorSettingsMutationBody = BodyType<TorSettingsModel>
+    export type UpdateTorSettingsMutationError = ErrorType<Unauthorized | Forbidden | HTTPValidationError>
+
+    /**
+ * @summary Update Tor Settings
+ */
+export const useUpdateTorSettings = <TError = ErrorType<Unauthorized | Forbidden | HTTPValidationError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateTorSettings>>, TError,{data: BodyType<TorSettingsModel>}, TContext>, request?: SecondParameter<typeof orvalFetcher>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof updateTorSettings>>,
+        TError,
+        {data: BodyType<TorSettingsModel>},
+        TContext
+      > => {
+      return useMutation(getUpdateTorSettingsMutationOptions(options), queryClient);
     }
 
 export const getCreateUserUrl = () => {
