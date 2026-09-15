@@ -343,12 +343,22 @@ cmd_ssl() {
   fi
 
   mkdir -p "$ACME_HOME" "${CERTS_DIR}/${domain}"
-  if [ ! -x "${ACME_HOME}/acme.sh" ]; then
+  if [ ! -x "${ACME_HOME}/acme.sh" ] || [ ! -f "${ACME_HOME}/account.conf" ]; then
     log "Installing acme.sh in ${ACME_HOME}..."
-    curl -fsSL https://raw.githubusercontent.com/acmesh-official/acme.sh/master/acme.sh \
-      -o "${ACME_HOME}/acme.sh"
-    chmod 700 "${ACME_HOME}/acme.sh"
-    "${ACME_HOME}/acme.sh" --install --home "$ACME_HOME" --accountemail "$email"
+    # acme.sh's installer copies ./acme.sh into --home. Running that installer
+    # from the destination directory makes its source disappear during install,
+    # which produces "cp: cannot stat 'acme.sh'". Install from an isolated source.
+    (
+      local acme_tmp
+      acme_tmp="$(mktemp -d)"
+      trap 'rm -rf -- "$acme_tmp"' EXIT
+      curl -fsSL https://raw.githubusercontent.com/acmesh-official/acme.sh/master/acme.sh \
+        -o "${acme_tmp}/acme.sh"
+      chmod 700 "${acme_tmp}/acme.sh"
+      cd "$acme_tmp"
+      ./acme.sh --install --home "$ACME_HOME" --accountemail "$email"
+    )
+    [ -x "${ACME_HOME}/acme.sh" ] || die "acme.sh installation did not create ${ACME_HOME}/acme.sh"
   fi
 
   log "Requesting a Let's Encrypt certificate for ${domain}..."

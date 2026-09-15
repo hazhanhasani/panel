@@ -1,6 +1,6 @@
 [project]
 name = "BluePanel"
-version = "5.5.2"
+version = "5.5.3"
 description = "BluePanel unified proxy management platform"
 readme = "README.md"
 requires-python = ">=3.14"
