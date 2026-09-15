@@ -1,0 +1,61 @@
+name: Tor Multi-Exit Panel Feature Tests
+
+on:
+  push:
+    branches:
+      - "feature/bluepanel-tor-multi-exit"
+  workflow_dispatch:
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.14"
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+      - name: Sync dependencies
+        run: uv sync --frozen --all-extras --dev
+      - name: Ruff
+        run: uv run ruff check app tests
+      - name: Compile application
+        run: uv run python -m compileall app
+      - name: Run tests
+        run: uv run pytest -q
+
+  dashboard:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: dashboard
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+      - name: Build dashboard
+        run: bun run build
+
+  migration:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.14"
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+      - name: Sync dependencies
+        run: uv sync --frozen --all-extras --dev
+      - name: Verify migration graph
+        run: uv run alembic heads
